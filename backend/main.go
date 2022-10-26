@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/account"
 	"backend/auth"
 	_ "backend/docs"
 	"github.com/gin-contrib/cors"
@@ -30,6 +31,10 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 	router.GET("/helloworld", Helloworld)
+	accountGroup := router.Group("account")
+	{
+		accountGroup.GET("/me", auth.Middleware(), account.Me)
+	}
 	authorization := router.Group("auth")
 	{
 		authorization.POST("/join", auth.HandleJoin)
