@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  auth.JoinModel:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.LoginModel:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  user.ModelDto:
+    properties:
+      email:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: 3Dcon
+paths:
+  /account/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ModelDto'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - account
+  /auth/join:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: join
+        in: body
+        name: Join
+        required: true
+        schema:
+          $ref: '#/definitions/auth.JoinModel'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      tags:
+      - auth
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: login
+        in: body
+        name: Login
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginModel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      tags:
+      - auth
+  /helloworld:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      tags:
+      - helloworld
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
