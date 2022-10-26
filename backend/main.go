@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/auth"
 	_ "backend/docs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,11 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.Default())
 	router.GET("/helloworld", Helloworld)
+	authorization := router.Group("auth")
+	{
+		authorization.POST("/join", auth.HandleJoin)
+		authorization.POST("/login", auth.HandleLogin)
+	}
 	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
 	if err := router.Run(":8080"); err != nil {
 		panic(err)
