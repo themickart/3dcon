@@ -1,8 +1,8 @@
-package auth
+package services
 
 import (
-	"backend/context"
-	"backend/user"
+	"api/internal"
+	"api/internal/user"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -10,23 +10,35 @@ import (
 	"time"
 )
 
-type Jwt string
+type JwtUtils struct {
+}
 
-func GenerateJwt(currentUser *user.Model) (Jwt, error) {
+func NewJwtUtils() *JwtUtils {
+	return &JwtUtils{}
+}
+func (jwtUtil *JwtUtils) GenerateJwt(currentUser *user.Model) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS512)
 	claimsCurrent := token.Claims.(jwt.MapClaims)
 	claimsCurrent[user.ExpiresAt] = time.Now().Add(10 * time.Hour).Unix()
 	claimsCurrent[user.Username] = currentUser.Username
 	claimsCurrent[user.RoleClaim] = currentUser.Role
 	claimsCurrent[user.Email] = currentUser.Email
-	tokenString, err := token.SignedString(context.JwtPrivateKey)
+	tokenString, err := token.SignedString(internal.JwtPrivateKey)
 	if err != nil {
 		return "", err
 	}
-	return Jwt(tokenString), nil
+	return tokenString, nil
 }
 
-func ExtractClaims(g *gin.Context) (jwt.MapClaims, error) {
+func (jwtUtil *JwtUtils) ExtractClaims(g *gin.Context) (jwt.MapClaims, error) {
+	token, err := jwtUtil.ExtractToken(g)
+	if err != nil {
+		return nil, err
+	}
+	return token.Claims.(jwt.MapClaims), err
+}
+
+func (jwtUtil *JwtUtils) ExtractToken(g *gin.Context) (*jwt.Token, error) {
 	request := g.Request
 	tokenString := strings.Split(request.Header.Get("Authorization"), " ")[1]
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -35,10 +47,10 @@ func ExtractClaims(g *gin.Context) (jwt.MapClaims, error) {
 		if !ok {
 			return nil, errors.New("") //TODO:
 		}
-		return context.JwtPrivateKey, nil
+		return internal.JwtPrivateKey, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return token.Claims.(jwt.MapClaims), err
+	return token, err
 }

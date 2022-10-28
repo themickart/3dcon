@@ -1,13 +1,18 @@
 package main
 
 import (
-	"backend/account"
-	"backend/auth"
-	_ "backend/docs"
+	_ "api/docs"
+	"api/internal/account"
+	"api/internal/auth"
+	"api/internal/database"
+	"api/internal/services"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
+	"go.uber.org/fx"
+	"golang.org/x/net/context"
 	"net/http"
 )
 
@@ -17,7 +22,7 @@ import (
 // @Produce json
 // @Success 200 {string} Helloworld
 // @Router /helloworld [get]
-func Helloworld(g *gin.Context) {
+func helloworld(g *gin.Context) {
 	g.JSON(http.StatusOK, "helloworld")
 }
 
@@ -27,21 +32,47 @@ func Helloworld(g *gin.Context) {
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
+func newServer(lc fx.Lifecycle) *gin.Engine {
+	r := gin.New()
+	r.Use(cors.Default())
+	r.GET("/helloworld", helloworld)
+	r.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: r,
+	}
+	lc.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error {
+			fmt.Println("Starting HTTP server at", srv.Addr)
+			go func() {
+				_ = srv.ListenAndServe()
+			}()
+			return nil
+		},
+		OnStop: func(ctx context.Context) error {
+			return srv.Shutdown(ctx)
+		},
+	})
+	return r
+}
+
 func main() {
-	router := gin.Default()
-	router.Use(cors.Default())
-	router.GET("/helloworld", Helloworld)
-	accountGroup := router.Group("account")
-	{
-		accountGroup.GET("/me", auth.Middleware(), account.Me)
-	}
-	authorization := router.Group("auth")
-	{
-		authorization.POST("/join", auth.HandleJoin)
-		authorization.POST("/login", auth.HandleLogin)
-	}
-	router.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
-	if err := router.Run(":8080"); err != nil {
-		panic(err)
-	}
+	app := fx.New(
+		fx.Provide(
+			newServer,
+
+			database.NewDatabase,
+
+			services.NewUserManger,
+			services.NewJwtUtils,
+
+			account.NewHandler,
+			auth.NewHandler,
+		),
+		fx.Invoke(
+			auth.Route,
+			account.Route,
+		),
+	)
+	app.Run()
 }

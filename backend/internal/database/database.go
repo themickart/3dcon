@@ -1,8 +1,7 @@
-package context
+package database
 
 import (
-	"backend/user"
-	"database/sql"
+	"api/internal/user"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -10,15 +9,7 @@ import (
 	"time"
 )
 
-var JwtPrivateKey []byte
-var Db *gorm.DB
-
-func init() {
-	initDb()
-	JwtPrivateKey = []byte("TIMEWINDOWSAMD64CONFIG.GO")
-}
-
-func initDb() {
+func NewDatabase() *gorm.DB {
 	connectionString := "host=%s port=5432 dbname=golang user=user password=password sslmode=disable"
 	postgresHost := os.Getenv("POSTGRES_HOST")
 	if postgresHost == "" {
@@ -35,14 +26,5 @@ func initDb() {
 	if err = db.Table("users").AutoMigrate(&user.Model{}); err != nil {
 		panic(err)
 	}
-	fmt.Println("init in db")
-	Db = db
-}
-
-func Connection() (*sql.DB, error) {
-	db, err := Db.DB()
-	if err != nil {
-		return nil, err
-	}
-	return db, err
+	return db
 }
