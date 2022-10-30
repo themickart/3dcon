@@ -1,8 +1,8 @@
 package account
 
 import (
+	"api/internal/domain/user"
 	"api/internal/services"
-	"api/internal/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

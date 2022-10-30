@@ -1,7 +1,7 @@
 package database
 
 import (
-	"api/internal/user"
+	"api/internal/domain/user"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

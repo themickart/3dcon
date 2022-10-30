@@ -1,9 +1,8 @@
 package auth
 
 import (
+	"api/internal/domain/user"
 	"api/internal/services"
-	"api/internal/user"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -29,15 +28,18 @@ func NewHandler(userManager *services.UserManager, jwtUtils *services.JwtUtils) 
 // @Failure 400 {string} error
 // @Router /auth/login [post]
 func (h *Handler) HandleLogin(c *gin.Context) {
-	request := c.Request
 	var loginModel LoginModel
-	if err := json.NewDecoder(request.Body).Decode(&loginModel); err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&loginModel); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	userModel, err := h.userManager.GetUserByUsername(loginModel.Username, loginModel.Password)
+	userModel, err := h.userManager.GetUserByUsername(loginModel.Username)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, "неверный пароль")
+		c.JSON(http.StatusConflict, err.Error())
+		return
+	}
+	if !userModel.CheckPassword(loginModel.Password) {
+		c.JSON(http.StatusUnauthorized, "неверный пароль")
 		return
 	}
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
@@ -53,17 +55,21 @@ func (h *Handler) HandleLogin(c *gin.Context) {
 // @Failure 400 {string} error
 // @Router /auth/join [post]
 func (h *Handler) HandleJoin(c *gin.Context) {
-	request := c.Request
 	var joinModel JoinModel
-	if err := json.NewDecoder(request.Body).Decode(&joinModel); err != nil {
-		c.Status(http.StatusBadRequest)
+	if err := c.BindJSON(&joinModel); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	userModel := user.New(joinModel.Username, joinModel.Email, joinModel.Password, user.User)
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	err = h.userManager.AddUser(userModel)
+	if err != nil {
+		c.JSON(http.StatusConflict, err.Error())
+		return
 	}
 	c.JSON(http.StatusCreated, jwtToken)
-	h.userManager.AddUser(userModel)
 }

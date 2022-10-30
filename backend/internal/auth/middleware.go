@@ -12,9 +12,9 @@ func Middleware(jwtUtil *services.JwtUtils) gin.HandlerFunc {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
 		if _, err := jwtUtil.ExtractToken(c); err != nil {
-			panic(err)
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
 		}
 		c.Next()
 	}

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"api/internal/user"
+	"api/internal/domain/user"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -16,16 +16,23 @@ func NewUserManger(db *gorm.DB) *UserManager {
 	}
 }
 
-func (userManger *UserManager) AddUser(model *user.Model) {
+func (userManger *UserManager) AddUser(model *user.Model) error {
+	_, err := userManger.GetUserByUsername(model.Username)
+	if err == nil {
+		return errors.New("такой пользователь уже существует")
+	}
 	userManger.db.Table("users").Create(&model)
+	return nil
 }
 
-func (userManger *UserManager) GetUserByUsername(username, password string) (*user.Model, error) {
+func (userManger *UserManager) GetUserByUsername(username string) (*user.Model, error) {
 	result := &user.Model{}
-	userManger.db.Table("users").Where("username = ?", username).Take(result) //TODO
-
-	if !result.CheckPassword(password) {
-		return nil, errors.New("") //TODO
+	err := userManger.db.Table("users").Where("username = ?", username).First(result).Error
+	if err == nil {
+		return result, nil
 	}
-	return result, nil
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("пользователь не найден")
+	}
+	return nil, err
 }
