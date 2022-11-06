@@ -8,11 +8,12 @@ import (
 )
 
 type Handler struct {
-	jwtUtils *services.JwtUtils
+	jwtUtils    *services.JwtUtils
+	userManager *services.UserManager
 }
 
-func NewHandler(jwtUtils *services.JwtUtils) *Handler {
-	return &Handler{jwtUtils: jwtUtils}
+func NewHandler(jwtUtils *services.JwtUtils, userManager *services.UserManager) *Handler {
+	return &Handler{jwtUtils: jwtUtils, userManager: userManager}
 }
 
 // Me
@@ -24,10 +25,11 @@ func NewHandler(jwtUtils *services.JwtUtils) *Handler {
 // @Router /account/me [get]
 func (h *Handler) Me(c *gin.Context) {
 	claims, _ := h.jwtUtils.ExtractClaims(c)
-	userDto := user.ModelDto{
-		Username: claims[user.Username].(string),
-		Role:     user.Role(claims[user.RoleClaim].(string)),
-		Email:    claims[user.Email].(string),
+	userModel, err := h.userManager.GetUserByUsername(claims[user.Username].(string))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
 	}
+	userDto := user.NewDto(userModel)
 	c.JSON(http.StatusOK, userDto)
 }

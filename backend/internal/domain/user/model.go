@@ -1,22 +1,38 @@
 package user
 
 import (
+	"api/internal"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
-type Model struct {
+type User struct {
 	gorm.Model
 	Username     string
 	Email        string
 	PasswordHash []byte
 	Role         Role
+	SalesCount   uint
+	AvatarUrl    string
+}
+
+func New(username, email, password string, role Role) *User {
+	return &User{
+		Username:     username,
+		Email:        email,
+		PasswordHash: HashPassword(password),
+		Role:         role,
+		SalesCount:   0,
+		AvatarUrl:    internal.DefaultAvatarRoute,
+	}
 }
 
 type ModelDto struct {
-	Username string
-	Email    string
-	Role     Role
+	Username   string `json:"username"`
+	Email      string `json:"email"` //TODO
+	Role       Role   `json:"role"`
+	SalesCount uint   `json:"sales_count"`
+	AvatarUrl  string `json:"avatar_url"`
 }
 
 func HashPassword(password string) []byte {
@@ -27,13 +43,16 @@ func HashPassword(password string) []byte {
 	return hash
 }
 
-func (model Model) CheckPassword(password string) bool {
+func (model User) CheckPassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(model.PasswordHash, []byte(password)) == nil
 }
 
-func New(username, email, password string, role Role) *Model {
-	return &Model{
-		Username: username, Email: email,
-		PasswordHash: HashPassword(password), Role: role,
+func NewDto(model *User) *ModelDto {
+	return &ModelDto{
+		Username:   model.Username,
+		Email:      model.Email,
+		Role:       model.Role,
+		SalesCount: model.SalesCount,
+		AvatarUrl:  model.AvatarUrl,
 	}
 }

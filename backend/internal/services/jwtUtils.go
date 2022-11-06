@@ -17,7 +17,7 @@ func NewJwtUtils() *JwtUtils {
 	return &JwtUtils{}
 }
 
-func (jwtUtils *JwtUtils) GenerateJwt(currentUser *user.Model) (string, error) {
+func (jwtUtils *JwtUtils) GenerateJwt(currentUser *user.User) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS512)
 	claimsCurrent := token.Claims.(jwt.MapClaims)
 	claimsCurrent[user.ExpiresAt] = time.Now().Add(10 * time.Hour).Unix()
