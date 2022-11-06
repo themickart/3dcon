@@ -118,6 +118,42 @@ const docTemplate = `{
                 }
             }
         },
+        "/filestorage/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "filestorage"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/helloworld": {
             "get": {
                 "consumes": [
@@ -138,11 +174,148 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/products/my": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/product.ModelDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/upload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "operationId": "product.upload",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "cover",
+                        "name": "cover",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "licence",
+                        "name": "licence",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "price",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/product.ModelDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "auth.JoinModel": {
             "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
@@ -157,6 +330,10 @@ const docTemplate = `{
         },
         "auth.LoginModel": {
             "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
             "properties": {
                 "password": {
                     "type": "string"
@@ -166,14 +343,53 @@ const docTemplate = `{
                 }
             }
         },
+        "product.ModelDto": {
+            "type": "object",
+            "properties": {
+                "cover_url": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "licence": {
+                    "type": "string"
+                },
+                "likes_count": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "$ref": "#/definitions/user.ModelDto"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "views_count": {
+                    "type": "integer"
+                }
+            }
+        },
         "user.ModelDto": {
             "type": "object",
             "properties": {
+                "avatar_url": {
+                    "type": "string"
+                },
                 "email": {
+                    "description": "TODO",
                     "type": "string"
                 },
                 "role": {
                     "type": "string"
+                },
+                "sales_count": {
+                    "type": "integer"
                 },
                 "username": {
                     "type": "string"
