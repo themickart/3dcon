@@ -16,8 +16,8 @@ func NewUserManger(db *gorm.DB) *UserManager {
 	}
 }
 
-func (userManger *UserManager) AddUser(model *user.Model) error {
-	_, err := userManger.GetUserByUsername(model.Username)
+func (userManger *UserManager) AddUser(model *user.User) error {
+	_, err := userManger.GetUserByUsername(model.Username) //TODO
 	if err == nil {
 		return errors.New("такой пользователь уже существует")
 	}
@@ -25,14 +25,27 @@ func (userManger *UserManager) AddUser(model *user.Model) error {
 	return nil
 }
 
-func (userManger *UserManager) GetUserByUsername(username string) (*user.Model, error) {
-	result := &user.Model{}
-	err := userManger.db.Table("users").Where("username = ?", username).First(result).Error
-	if err == nil {
-		return result, nil
+func (userManger *UserManager) GetUserByUsername(username string) (*user.User, error) {
+	result := &user.User{}
+	err := userManger.db.Model(result).Where("username = ?", username).First(result).Error
+	if err = userManger.handleError(err); err != nil {
+		return nil, err
 	}
+	return result, nil
+}
+
+func (userManger *UserManager) GetUserById(id uint) (*user.User, error) {
+	result := &user.User{}
+	err := userManger.db.Model(result).Where("id = ?", id).First(result).Error
+	if err = userManger.handleError(err); err != nil {
+		return nil, err
+	}
+	return result, err
+}
+
+func (userManger *UserManager) handleError(err error) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, errors.New("пользователь не найден")
+		return errors.New("пользователь не найден")
 	}
-	return nil, err
+	return err
 }

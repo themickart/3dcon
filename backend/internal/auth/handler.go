@@ -60,7 +60,7 @@ func (h *Handler) HandleJoin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	userModel := user.New(joinModel.Username, joinModel.Email, joinModel.Password, user.User)
+	userModel := user.New(joinModel.Username, joinModel.Email, joinModel.Password, user.UserRole)
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())

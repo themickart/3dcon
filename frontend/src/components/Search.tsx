@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export const Search: React.FC = () => {
   return (
-    <div className="flex-[0_0_373px] ml-[86px] mr-[125px] max-h-[70px]">
+    <div className="flex-[0_0_373px] ml-[86px] mr-[125x] max-h-[70px]">
       <motion.form
         className="bg-white rounded-[35px] h-[70px] flex justify-between items-center pl-[29px] pr-[19px] overflow-hidden"
         whileTap={{ scale: 0.9 }}

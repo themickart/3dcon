@@ -12,7 +12,7 @@ func TestGenerateJwt(t *testing.T) {
 	username := "oliver"
 	email := "f@gmail.com"
 	password := ""
-	tokenString, _ := jwtUtils.GenerateJwt(user.New(username, email, password, user.User))
+	tokenString, _ := jwtUtils.GenerateJwt(user.New(username, email, password, user.UserRole))
 	token, _ := jwtUtils.ExtractTokenFromString(tokenString)
 	mapClaims := token.Claims.(jwt.MapClaims)
 	if mapClaims[user.Username] != username {
@@ -21,7 +21,7 @@ func TestGenerateJwt(t *testing.T) {
 	if mapClaims[user.Email] != email {
 		t.Fatalf("user.Email != %s", email)
 	}
-	if mapClaims[user.RoleClaim] != string(user.User) {
-		t.Fatalf("user.RoleClaim != %s", user.User)
+	if mapClaims[user.RoleClaim] != string(user.UserRole) {
+		t.Fatalf("user.RoleClaim != %s", user.UserRole)
 	}
 }

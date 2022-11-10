@@ -5,6 +5,8 @@ import (
 	"api/internal/account"
 	"api/internal/auth"
 	"api/internal/database"
+	"api/internal/defaultAssets"
+	"api/internal/products"
 	"api/internal/services"
 	"fmt"
 	"github.com/gin-contrib/cors"
@@ -60,18 +62,23 @@ func main() {
 	app := fx.New(
 		fx.Provide(
 			newServer,
-
 			database.NewDatabase,
 
 			services.NewUserManger,
 			services.NewJwtUtils,
+			services.NewProductManager,
+			services.NewFileStorage,
 
 			account.NewHandler,
 			auth.NewHandler,
+			products.NewHandler,
+			defaultAssets.NewHandler,
 		),
 		fx.Invoke(
 			auth.Route,
 			account.Route,
+			products.Route,
+			defaultAssets.Route,
 		),
 	)
 	app.Run()

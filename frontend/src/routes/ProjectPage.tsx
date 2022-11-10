@@ -115,6 +115,7 @@ export const ProjectPage: React.FC = () => {
                 zIndex: 10,
               }}
               whileTap={{ scale: 0.95 }}
+              className="mb-5"
             >
               <ProductCard {...p!} />
             </motion.div>
