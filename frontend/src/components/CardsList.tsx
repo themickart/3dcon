@@ -12,15 +12,7 @@ export const CardsList: React.FC = () => {
       ))();
   }, []);
   return (
-    <div
-      style={{
-        width: 1436,
-        marginTop: 47,
-        display: "grid",
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gridRowGap: 61,
-      }}
-    >
+    <div className="grid grid-cols-3 gap-y-[61px] w-[1436px] mt-[47px]">
       {products.map(({ id, ...product }) => (
         <motion.div
           key={id}

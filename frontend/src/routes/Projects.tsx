@@ -4,7 +4,7 @@ import { CardsList } from "../components/CardsList";
 
 export const Projects: React.FC = () => {
   return (
-    <div style={{ width: 1436, margin: "auto" }}>
+    <div className="w-[1436px] m-auto">
       <Sortbar params={["Цена", "Формат"]} />
       <CardsList />
     </div>

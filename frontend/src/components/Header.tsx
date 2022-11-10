@@ -3,23 +3,15 @@ import { Logo } from "./Logo";
 import { Navbar } from "./Navbar";
 import { Search } from "./Search";
 import { Signbar } from "./Signbar";
+import { Profilebar } from "./Profilebar";
+import { useLocation } from "react-router-dom";
 
 export const Header: React.FC = () => {
+  const { pathname } = useLocation();
+  console.log(pathname);
+
   return (
-    <header
-      className="topbar"
-      style={{
-        fontSize: "26px",
-        height: 125,
-        display: "flex",
-        background: "#4f4f4f",
-        color: "#ccc",
-        alignItems: "center",
-        width: "auto",
-        padding: 0,
-        marginBottom: 27,
-      }}
-    >
+    <header className="topbar text-[26px] h-[125px] flex bg-[#4f4f4f] text-[#ccc] items-center w-auto p-0 mb-[27px]">
       <Logo />
       <Navbar
         menuItems={[
@@ -38,7 +30,7 @@ export const Header: React.FC = () => {
         ]}
       />
       <Search />
-      <Signbar />
+      {pathname === "/profile" ? <Profilebar /> : <Signbar />}
     </header>
   );
 };

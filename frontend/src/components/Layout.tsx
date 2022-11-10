@@ -6,12 +6,7 @@ export const Layout: React.FC = () => {
   return (
     <div>
       <Header />
-      <main
-        style={{
-          // width: 1436,
-          margin: "auto",
-        }}
-      >
+      <main className="m-auto">
         <Outlet />
       </main>
     </div>

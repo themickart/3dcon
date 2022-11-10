@@ -30,51 +30,18 @@ export const ProductCard: React.FC<Product> = ({
   imgUrl,
 }) => {
   return (
-    <Link
-      to={`/${id}`}
-      style={{
-        textDecoration: "none",
-        color: "black",
-        fontSize: 24,
-      }}
-    >
-      <div
-        style={{
-          width: 461,
-          height: 339,
-        }}
-      >
-        <figure
-          style={{
-            display: "flex",
-            flexFlow: "column",
-            margin: "auto",
-          }}
-        >
+    <Link to={`/${id}`} className="text-black text-2xl">
+      <div className="max-w-[461px] max-h-[339px]">
+        <figure className="flex flex-col m-auto">
           <img
             width={461}
             height={256}
             src={process.env.PUBLIC_URL + imgUrl}
             alt={title}
+            className="max-w-[461px] max-h-[256px]"
           />
-          <figcaption
-            style={{
-              display: "flex",
-              alignItems: "center",
-              height: 83,
-              justifyContent: "space-between",
-              backgroundColor: "#D9D9D9",
-              paddingLeft: 11,
-              paddingRight: 37,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexFlow: "column",
-                justifyContent: "space-between",
-              }}
-            >
+          <figcaption className="flex items-center justify-between bg-[#d9d9d9] pl-[11px] pr-[37px] pb-2 pt-[9px] h-[83px]">
+            <div className="flex flex-col justify-between">
               <div>{title}</div>
               <div>{author?.name}</div>
             </div>

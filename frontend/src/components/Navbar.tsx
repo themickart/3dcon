@@ -6,18 +6,11 @@ export const Navbar: React.FC<{
   menuItems: { title: string; path: string }[];
 }> = ({ menuItems }) => {
   return (
-    <nav
-      className="menu"
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        flex: "0 0 573px",
-      }}
-    >
-      {menuItems.map(({ title, path }, index) => (
+    <nav className="menu flex justify-between flex-[0_0_573px]">
+      {menuItems.map(({ title, path }) => (
         <motion.div
           className="menu-item"
-          key={index}
+          key={title}
           whileHover={{ scale: 1.1 }}
           whileTap={{
             backgroundColor: "#ccc",
@@ -25,7 +18,7 @@ export const Navbar: React.FC<{
             scale: 1.2,
           }}
         >
-          <Link style={{ textDecoration: "none", color: "#ccc" }} to={path}>
+          <Link to={path} className="text-[#ccc]">
             {title}
           </Link>
         </motion.div>
