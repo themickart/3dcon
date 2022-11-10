@@ -5,6 +5,7 @@ import { Bests } from "./routes/Bests";
 import { Projects } from "./routes/Projects";
 import { Pictures } from "./routes/Pictures";
 import { ProjectPage } from "./routes/ProjectPage";
+import ProfilePage from "./routes/ProfilePage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path=":productId" element={<ProjectPage />} />
           <Route path="bests" element={<Bests />} />
           <Route path="pictures" element={<Pictures />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </div>

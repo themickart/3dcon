@@ -38,9 +38,12 @@ export const ProjectPage: React.FC = () => {
   const swipeConfidenceThreshold = 10000;
   const swipePower = (offset: number, velocity: number) =>
     Math.abs(offset) * velocity;
+
   const [[slide, direction], setSlide] = useState([0, 0]);
+
   const paginate = (newDirection: number) =>
     setSlide([slide + newDirection, newDirection]);
+
   const variants: Variants = {
     initial: (direction: number) => {
       return {
@@ -466,7 +469,7 @@ export const ProjectPage: React.FC = () => {
                 scale: 1.05,
                 border: "3px solid transparent",
                 zIndex: 10,
-               }}
+              }}
               whileTap={{ scale: 0.95 }}
             >
               <ProductCard {...p!} />
