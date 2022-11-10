@@ -116,16 +116,7 @@ func (h *Handler) Upload(c *gin.Context) {
 	description := c.Request.FormValue("description") //TODO
 	licence := c.Request.FormValue("licence")
 	price, err := strconv.ParseFloat(c.Request.FormValue("price"), 32)
-	file, fileHeader, err := c.Request.FormFile("cover")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-	defer file.Close()
-	data := make([]byte, fileHeader.Size)
-	_, _ = file.Read(data)
-	fileType := http.DetectContentType(data)
-	url, _, err := h.fileStorage.Create(data, fileHeader.Size, fileType)
+	url, _, err := h.uploadFile(c, "cover")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -139,4 +130,20 @@ func (h *Handler) Upload(c *gin.Context) {
 	productModel := product.New(name, url, description, licence, userModel.ID, price)
 	_ = h.productManager.AddProduct(productModel)
 	c.JSON(http.StatusOK, url)
+}
+
+func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name string, err error) {
+	file, fileHeader, err := c.Request.FormFile(key)
+	if err != nil {
+		return "", "", err
+	}
+	defer file.Close()
+	data := make([]byte, fileHeader.Size)
+	_, _ = file.Read(data)
+	fileType := http.DetectContentType(data)
+	url, name, err = h.fileStorage.Create(data, fileHeader.Size, fileType)
+	if err != nil {
+		return "", "", err
+	}
+	return
 }

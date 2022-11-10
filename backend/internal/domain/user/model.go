@@ -28,11 +28,9 @@ func New(username, email, password string, role Role) *User {
 }
 
 type ModelDto struct {
-	Username   string `json:"username"`
-	Email      string `json:"email"` //TODO
-	Role       Role   `json:"role"`
-	SalesCount uint   `json:"sales_count"`
-	AvatarUrl  string `json:"avatar_url"`
+	Username   string `json:"name"`
+	SalesCount uint   `json:"salesCount"`
+	AvatarUrl  string `json:"avatarArl"`
 }
 
 func HashPassword(password string) []byte {
@@ -50,8 +48,6 @@ func (model User) CheckPassword(password string) bool {
 func NewDto(model *User) *ModelDto {
 	return &ModelDto{
 		Username:   model.Username,
-		Email:      model.Email,
-		Role:       model.Role,
 		SalesCount: model.SalesCount,
 		AvatarUrl:  model.AvatarUrl,
 	}

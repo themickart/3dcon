@@ -346,31 +346,49 @@ const docTemplate = `{
         "product.ModelDto": {
             "type": "object",
             "properties": {
-                "cover_url": {
+                "author": {
+                    "$ref": "#/definitions/user.ModelDto"
+                },
+                "coverUrl": {
                     "type": "string"
                 },
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
+                "gallery": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "info": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
                 "licence": {
                     "type": "string"
                 },
-                "likes_count": {
+                "likesCount": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
-                "owner": {
-                    "$ref": "#/definitions/user.ModelDto"
-                },
                 "price": {
                     "type": "number"
                 },
-                "views_count": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "viewsCount": {
                     "type": "integer"
                 }
             }
@@ -378,21 +396,14 @@ const docTemplate = `{
         "user.ModelDto": {
             "type": "object",
             "properties": {
-                "avatar_url": {
+                "avatarArl": {
                     "type": "string"
                 },
-                "email": {
-                    "description": "TODO",
+                "name": {
                     "type": "string"
                 },
-                "role": {
-                    "type": "string"
-                },
-                "sales_count": {
+                "salesCount": {
                     "type": "integer"
-                },
-                "username": {
-                    "type": "string"
                 }
             }
         }

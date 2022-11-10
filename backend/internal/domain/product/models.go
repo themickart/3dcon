@@ -9,7 +9,7 @@ import (
 type Product struct {
 	gorm.Model
 	Name        string
-	OwnerId     uint
+	OwnerId     uint //TODO
 	CoverUrl    string
 	Price       float64
 	LikesCount  uint
@@ -30,27 +30,38 @@ func New(name, coverUrl, description, licence string, ownerId uint, price float6
 }
 
 type ModelDto struct {
-	CreatedAt   time.Time     `json:"created_at"`
-	Name        string        `json:"name"`
-	Owner       user.ModelDto `json:"owner"`
-	CoverUrl    string        `json:"cover_url"`
-	Price       float64       `json:"price"`
-	LikesCount  uint          `json:"likes_count"`
-	ViewsCount  uint          `json:"views_count"`
-	Description string        `json:"description"`
-	Licence     string        `json:"licence"`
+	CreatedAt   time.Time         `json:"createdAt"`
+	Name        string            `json:"name"`
+	Author      user.ModelDto     `json:"author"`
+	CoverUrl    string            `json:"coverUrl"`
+	Price       float64           `json:"price"`
+	LikesCount  uint              `json:"likesCount"`
+	ViewsCount  uint              `json:"viewsCount"`
+	Description string            `json:"description"`
+	Licence     string            `json:"licence"`
+	Gallery     []string          `json:"gallery"`
+	Tags        []string          `json:"tags"`
+	Info        map[string]string `json:"info"`
 }
 
-func NewDto(model *Product, owner *user.ModelDto) *ModelDto {
+func NewDto(model *Product, author *user.ModelDto) *ModelDto {
 	return &ModelDto{
 		Name:        model.Name,
 		CoverUrl:    model.CoverUrl,
-		Owner:       *owner,
+		Author:      *author,
 		CreatedAt:   model.CreatedAt,
 		Description: model.Description,
 		LikesCount:  model.LikesCount,
 		ViewsCount:  model.ViewsCount,
 		Licence:     model.Licence,
 		Price:       model.Price,
+		Gallery:     []string{model.CoverUrl},
+		Tags:        []string{"тег продукта"},
+		Info: map[string]string{
+			"Тип":      "неизвестно",
+			"Полигоны": "неизвестно",
+			"Точки":    "неизвестно",
+			"Текстура": "неизвестно",
+		},
 	}
 }
