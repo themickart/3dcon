@@ -1,0 +1,59 @@
+.container {
+    @apply pt-3;
+    &__topSection {
+        @apply flex justify-between;
+        &__statisticsBlock {
+            @apply flex flex-col border rounded-[15px] w-[950px] h-[505px];
+            &__stonks {
+                @apply text-[32px] font-bold mx-[35px] mt-3
+            }
+            &__statistics {
+                @apply text-xl text-center self-center w-[526px] h-[29px] mt-[188px]
+            }
+        }
+        &__reputationBlock {
+            @apply border rounded-[15px] w-[466px] h-[505px];
+            &__reputationTitle {
+                @apply flex text-[32px] font-bold ml-[29px] mt-3
+            }
+            &__reputationStatistics {
+                @apply flex items-center justify-center rounded-[40px] w-[345px] h-[80px] m-[55px_60px_78px] bg-[#80E0A1] shadow-[0px_4px_4px_rgba(0,0,0,0.25)];
+                &__percent {
+                    @apply text-2xl;
+                }
+            }
+            &__reviews {
+                @apply text-2xl ml-[74px];
+                &__all, &__month {
+                    @apply mb-11
+                }
+                &__week {
+                    @apply mb-14
+                }
+            }
+        }
+    }
+    &__myBlock {
+        @apply w-auto h-[315px] mt-10 mb-[59px];
+        &__myTitle {
+            @apply text-[32px] font-bold mb-5 ml-6
+        }
+        &__my {
+            @apply flex justify-between border border-solid rounded-[15px] h-[250px] pr-20 text-2xl;
+            &__img {
+                @apply mx-[35px] my-[43px]
+            }
+            &__productInfo {
+                @apply flex flex-col py-[67px] justify-between
+            }
+            &__sales, &__views {
+                @apply p-[67px]
+            }
+            &__functions {
+                @apply flex justify-between w-[214px];
+            }
+        }
+    }
+}
+
+

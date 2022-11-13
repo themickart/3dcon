@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import styles from "./ProductCard.module.scss";
 
 export interface Author {
   name: string;
@@ -30,18 +31,18 @@ export const ProductCard: React.FC<Product> = ({
   imgUrl,
 }) => {
   return (
-    <Link to={`/${id}`} className="text-black text-2xl">
-      <div className="max-w-[461px] max-h-[339px]">
-        <figure className="flex flex-col m-auto">
+    <Link to={`/${id}`}>
+      <div className={styles.container}>
+        <figure className={styles.container__card}>
           <img
             width={461}
             height={256}
             src={process.env.PUBLIC_URL + imgUrl}
             alt={title}
-            className="max-w-[461px] max-h-[256px]"
+            className={styles.container__card__image}
           />
-          <figcaption className="flex items-center justify-between bg-[#d9d9d9] pl-[11px] pr-[37px] pb-2 pt-[9px] h-[83px]">
-            <div className="flex flex-col justify-between">
+          <figcaption className={styles.container__card__info}>
+            <div className={styles.container__card__info__left}>
               <div>{title}</div>
               <div>{author?.name}</div>
             </div>

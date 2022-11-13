@@ -1,15 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import styles from "./Navbar.module.scss";
 
 export const Navbar: React.FC<{
   menuItems: { title: string; path: string }[];
 }> = ({ menuItems }) => {
   return (
-    <nav className="menu flex justify-between flex-[0_0_573px]">
+    <nav className={styles.menu}>
       {menuItems.map(({ title, path }) => (
         <motion.div
-          className="menu-item"
           key={title}
           whileHover={{ scale: 1.1 }}
           whileTap={{
@@ -18,9 +18,7 @@ export const Navbar: React.FC<{
             scale: 1.2,
           }}
         >
-          <Link to={path} className="text-[#ccc]">
-            {title}
-          </Link>
+          <Link to={path}>{title}</Link>
         </motion.div>
       ))}
     </nav>
