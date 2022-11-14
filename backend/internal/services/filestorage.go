@@ -7,10 +7,9 @@ import (
 )
 
 type UploadInput struct {
-	File        []byte
-	Name        string
-	Size        int64
-	ContentType string
+	File []byte
+	Name string
+	Size int64
 }
 
 type FileStorage struct {
@@ -20,12 +19,11 @@ func NewFileStorage() *FileStorage {
 	return &FileStorage{}
 }
 
-func (fs *FileStorage) Create(data []byte, size int64, contentType string) (string, string, error) {
+func (fs *FileStorage) Create(data []byte, size int64, filename string) (string, string, error) {
 	input := UploadInput{
-		File:        data,
-		Name:        uuid.New().String(),
-		Size:        size,
-		ContentType: contentType,
+		File: data,
+		Name: uuid.New().String() + "." + filename,
+		Size: size,
 	}
 	_ = os.Mkdir("filestorage", os.ModePerm) //TODO
 	file, err := os.Create("filestorage" + string(os.PathSeparator) + input.Name)

@@ -140,8 +140,7 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 	defer file.Close()
 	data := make([]byte, fileHeader.Size)
 	_, _ = file.Read(data)
-	fileType := http.DetectContentType(data)
-	url, name, err = h.fileStorage.Create(data, fileHeader.Size, fileType)
+	url, name, err = h.fileStorage.Create(data, fileHeader.Size, fileHeader.Filename)
 	if err != nil {
 		return "", "", err
 	}

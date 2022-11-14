@@ -6,5 +6,5 @@ import (
 
 func Route(h *Handler, r *gin.Engine) {
 	account := r.Group("default")
-	account.GET("/avatar", h.Avatar)
+	account.GET("/avatar.svg", h.Avatar)
 }
