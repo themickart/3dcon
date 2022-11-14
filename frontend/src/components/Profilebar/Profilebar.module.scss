@@ -1,0 +1,8 @@
+.container {
+    @apply flex justify-between w-[417px] max-h-[70px] ml-[69px];
+    &__icons {
+        @apply flex justify-between w-[266px]
+    }
+}
+
+

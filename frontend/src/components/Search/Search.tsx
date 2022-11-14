@@ -1,17 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
+import styles from "./Search.module.scss";
 
 export const Search: React.FC = () => {
   return (
-    <div className="flex-[0_0_373px] ml-[86px] mr-[125x] max-h-[70px]">
-      <motion.form
-        className="bg-white rounded-[35px] h-[70px] flex justify-between items-center pl-[29px] pr-[19px] overflow-hidden"
-        whileTap={{ scale: 0.9 }}
-      >
+    <div className={styles.container}>
+      <motion.form className={styles.container__form} whileTap={{ scale: 0.9 }}>
         <motion.input
           type="text"
           placeholder="Поиск"
-          className="text-xl bg-white outline-none"
+          className={styles.container__form__input}
         />
         <div className="flex-[0_0_31px]">
           <img src={process.env.PUBLIC_URL + "/header/search.svg"} alt="" />

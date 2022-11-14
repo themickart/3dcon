@@ -1,11 +1,11 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import { Layout } from "./components/Layout";
+import { Layout } from "./components/Layout/Layout";
 import { Bests } from "./routes/Bests";
 import { Projects } from "./routes/Projects";
 import { Pictures } from "./routes/Pictures";
-import { ProjectPage } from "./routes/ProjectPage";
-import { ProfilePage } from "./routes/ProfilePage";
+import { ProjectPage } from "./routes/ProjectPage/ProjectPage";
+import { ProfilePage } from "./routes/ProfilePage/ProfilePage";
 
 function App() {
   return (

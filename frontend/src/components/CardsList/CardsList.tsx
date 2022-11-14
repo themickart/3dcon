@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Product } from "./ProductCard";
-import { ProductCard } from "./ProductCard";
+import { Product } from "../ProductCard/ProductCard";
+import { ProductCard } from "../ProductCard/ProductCard";
 import { motion } from "framer-motion";
+import styles from "./CardsList.module.scss";
 
 export const CardsList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,11 +13,11 @@ export const CardsList: React.FC = () => {
       ))();
   }, []);
   return (
-    <div className="grid grid-cols-3 gap-y-[61px] w-[1436px] mt-[47px]">
+    <div className={styles.wrapper}>
       {products.map(({ id, ...product }) => (
         <motion.div
           key={id}
-          whileHover={{ scale: 1.05, border: "3px solid transparent" }}
+          whileHover={{ scale: 1.05, marginBottom: 0 }}
           whileTap={{ scale: 0.95 }}
           initial={{ y: "0" }}
           animate={{ y: 20 }}
