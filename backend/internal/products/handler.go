@@ -5,7 +5,6 @@ import (
 	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
-	"io"
 	"net/http"
 	"strconv"
 )
@@ -17,17 +16,17 @@ type Handler struct {
 	fileStorage    *services.FileStorage
 }
 
-func NewHandler(userManager *services.UserManager, jwtUtils *services.JwtUtils,
+func NewHandler(userManager *services.UserManager,
 	productManager *services.ProductManager, fileStorage *services.FileStorage) *Handler {
 	return &Handler{
 		fileStorage:    fileStorage,
 		userManager:    userManager,
-		jwtUtils:       jwtUtils,
+		jwtUtils:       services.NewJwtUtils(),
 		productManager: productManager,
 	}
 }
 
-// Get
+// GetProductsById
 // @Tags product
 // @Accept json
 // @Produce json
@@ -35,7 +34,7 @@ func NewHandler(userManager *services.UserManager, jwtUtils *services.JwtUtils,
 // @Success 200 {object} product.ModelDto
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
-func (h *Handler) Get(c *gin.Context) {
+func (h *Handler) GetProductsById(c *gin.Context) {
 	id := c.Param("id")
 	productModel, err := h.productManager.GetProductById(id)
 	if err != nil {
@@ -46,41 +45,12 @@ func (h *Handler) Get(c *gin.Context) {
 	c.JSON(http.StatusOK, productDto)
 }
 
-// GetFile
-// @Tags filestorage
-// @Accept json
-// @Produce json
-// @Param id path string true "id"
-// @Success 200 {string} string
-// @Failure 400 {string} error
-// @Router /filestorage/{id} [get]
-func (h *Handler) GetFile(c *gin.Context) {
-	id := c.Param("id")
-	file, err := h.fileStorage.Get(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-	}
-	data := make([]byte, 1024)
-	for {
-		n, err := file.Read(data)
-		if err == io.EOF {
-			break
-		}
-		_, _ = c.Writer.Write(data[:n])
-	}
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-	c.Status(http.StatusOK)
-}
-
 // GetMyProducts
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} product.ModelDto
+// @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
 // @Router /products/my [get]
 func (h *Handler) GetMyProducts(c *gin.Context) {
@@ -145,4 +115,30 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 		return "", "", err
 	}
 	return
+}
+
+// GetProducts
+// @Tags product
+// @Accept json
+// @Produce json
+// @Success 200 {object} product.ModelDto[]
+// @Failure 400 {string} error
+// @Router /products/ [get]
+func (h *Handler) GetProducts(c *gin.Context) {
+	offset := 0
+	count := 20
+	products, err := h.productManager.GetProducts(count, offset)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	productsDto := make([]*product.ModelDto, len(products))
+	for i := range products {
+		userModel, err := h.userManager.GetUserById(products[i].OwnerId) //TODO
+		if err != nil {
+			continue
+		}
+		productsDto[i] = product.NewDto(products[i], user.NewDto(userModel))
+	}
+	c.JSON(http.StatusOK, productsDto)
 }

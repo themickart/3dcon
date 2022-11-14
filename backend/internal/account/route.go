@@ -2,11 +2,10 @@ package account
 
 import (
 	"api/internal/auth"
-	"api/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
-func Route(h *Handler, jwtUtils *services.JwtUtils, r *gin.Engine) {
+func Route(h *Handler, r *gin.Engine) {
 	account := r.Group("account")
-	account.GET("/me", auth.Middleware(jwtUtils), h.Me)
+	account.GET("/me", auth.Middleware(), h.Me)
 }

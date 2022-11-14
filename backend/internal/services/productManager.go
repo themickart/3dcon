@@ -16,31 +16,40 @@ func NewProductManager(db *gorm.DB) *ProductManager {
 	}
 }
 
-func (productManager *ProductManager) AddProduct(model *product.Product) error {
-	return productManager.db.Create(model).Error
+func (pm *ProductManager) AddProduct(model *product.Product) error {
+	return pm.db.Create(model).Error
 }
 
-func (productManager *ProductManager) GetProductById(id string) (*product.Product, error) {
+func (pm *ProductManager) GetProductById(id string) (*product.Product, error) {
 	result := &product.Product{}
-	err := productManager.db.Model(product.Product{}).Where("id = ?", id).First(result).Error
-	if err = productManager.handleError(err); err != nil {
+	err := pm.db.Model(product.Product{}).Where("id = ?", id).First(result).Error
+	if err = pm.handleError(err); err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (productManager *ProductManager) GetAllProductsByOwnerId(id uint) ([]*product.Product, error) {
+func (pm *ProductManager) GetAllProductsByOwnerId(id uint) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
-	err := productManager.db.Model(product.Product{}).Where("owner_id = ?", id).Find(&products).Error
-	if err = productManager.handleError(err); err != nil {
+	err := pm.db.Model(product.Product{}).Where("owner_id = ?", id).Find(&products).Error
+	if err = pm.handleError(err); err != nil {
 		return nil, err
 	}
 	return products, nil
 }
 
-func (productManager *ProductManager) handleError(err error) error {
+func (pm *ProductManager) handleError(err error) error {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New("не найдено")
 	}
 	return err
+}
+
+func (pm *ProductManager) GetProducts(count int, offset int) ([]*product.Product, error) {
+	products := make([]*product.Product, 0)
+	err := pm.db.Model(product.Product{}).Offset(offset).Limit(count).Find(&products).Error
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
 }

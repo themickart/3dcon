@@ -25,6 +25,10 @@ func (fs *FileStorage) Create(data []byte, size int64, filename string) (string,
 		Name: uuid.New().String() + "." + filename,
 		Size: size,
 	}
+	return fs.CreateFromInput(input)
+}
+
+func (fs *FileStorage) CreateFromInput(input UploadInput) (string, string, error) {
 	_ = os.Mkdir("filestorage", os.ModePerm) //TODO
 	file, err := os.Create("filestorage" + string(os.PathSeparator) + input.Name)
 	if err != nil {

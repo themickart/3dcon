@@ -12,10 +12,10 @@ type Handler struct {
 	jwtUtils    *services.JwtUtils
 }
 
-func NewHandler(userManager *services.UserManager, jwtUtils *services.JwtUtils) *Handler {
+func NewHandler(userManager *services.UserManager) *Handler {
 	return &Handler{
 		userManager: userManager,
-		jwtUtils:    jwtUtils,
+		jwtUtils:    services.NewJwtUtils(),
 	}
 }
 

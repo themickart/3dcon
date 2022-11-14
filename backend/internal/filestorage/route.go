@@ -1,0 +1,9 @@
+package filestorage
+
+import (
+	"github.com/gin-gonic/gin"
+)
+
+func Route(h *Handler, r *gin.Engine) {
+	r.GET("filestorage/:id", h.GetFile)
+}

@@ -6,14 +6,15 @@ import (
 	"net/http"
 )
 
-func Middleware(jwtUtil *services.JwtUtils) gin.HandlerFunc {
+func Middleware() gin.HandlerFunc {
+	jwtUtils := services.NewJwtUtils()
 	return func(c *gin.Context) {
 		if c.GetHeader("Authorization") == "" {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		if _, err := jwtUtil.ExtractToken(c); err != nil {
-			c.JSON(http.StatusBadRequest, err.Error())
+		if _, err := jwtUtils.ExtractToken(c); err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
 			return
 		}
 		c.Next()
