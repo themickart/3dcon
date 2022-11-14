@@ -1,0 +1,11 @@
+.container {
+    @apply flex-[0_0_373px] ml-[86px] mr-[125x] max-h-[70px];
+    &__form {
+        @apply bg-white rounded-[35px] h-[70px] flex justify-between items-center pl-[29px] pr-[19px] overflow-hidden;
+        &__input {
+            @apply text-xl bg-white outline-none
+        }
+    }
+}
+
+

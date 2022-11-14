@@ -1,0 +1,8 @@
+.logo {
+    @apply h-[67px] text-[55px] flex-[0_0_171px] m-[15px_100px_35px_50px];
+    a {
+        span {
+            @apply first:text-[#ECDA39] even:text-[#AA78FC];
+        }
+    }
+}

@@ -1,0 +1,17 @@
+.container {
+    @apply max-w-[461px];
+    &__card {
+        @apply flex flex-col m-auto;
+        &__image {
+            @apply max-w-[461px] max-h-[256px]
+        }
+        &__info {
+            @apply flex items-center justify-between bg-[#d9d9d9] pl-[11px] pr-[37px] pb-2 pt-[9px] h-[83px] text-black text-2xl;
+            &__left {
+                @apply flex flex-col justify-between
+            }
+        }
+    }
+}
+
+

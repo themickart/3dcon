@@ -1,17 +1,16 @@
 import React from "react";
-import { Logo } from "./Logo";
-import { Navbar } from "./Navbar";
-import { Search } from "./Search";
-import { Signbar } from "./Signbar";
-import { Profilebar } from "./Profilebar";
+import { Logo } from "../Logo/Logo";
+import { Navbar } from "../Navbar/Navbar";
+import { Search } from "../Search/Search";
+import { Signbar } from "../Signbar/Signbar";
+import { Profilebar } from "../Profilebar/Profilebar";
 import { useLocation } from "react-router-dom";
+import styles from "./Header.module.scss";
 
 export const Header: React.FC = () => {
   const { pathname } = useLocation();
-  console.log(pathname);
-
   return (
-    <header className="topbar text-[26px] h-[125px] flex bg-[#4f4f4f] text-[#ccc] items-center w-auto p-0 mb-[27px]">
+    <header className={styles.topbar}>
       <Logo />
       <Navbar
         menuItems={[
@@ -30,7 +29,11 @@ export const Header: React.FC = () => {
         ]}
       />
       <Search />
-      {pathname === "/profile" ? <Profilebar /> : <Signbar />}
+      {pathname === "/profile" || pathname === "/profile/" ? (
+        <Profilebar />
+      ) : (
+        <Signbar />
+      )}
     </header>
   );
 };
