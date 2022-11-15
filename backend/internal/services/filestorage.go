@@ -6,31 +6,37 @@ import (
 	"os"
 )
 
+const storageName = "filestorage"
+
 type UploadInput struct {
-	File []byte
-	Name string
-	Size int64
+	File   []byte
+	Name   string
+	Size   int64
+	Bucket string
 }
 
 type FileStorage struct {
 }
 
 func NewFileStorage() *FileStorage {
+	_ = os.Mkdir(storageName, os.ModePerm)
 	return &FileStorage{}
 }
 
 func (fs *FileStorage) Create(data []byte, size int64, filename string) (string, string, error) {
 	input := UploadInput{
-		File: data,
-		Name: uuid.New().String() + "." + filename,
-		Size: size,
+		File:   data,
+		Bucket: uuid.New().String(),
+		Name:   filename,
+		Size:   size,
 	}
 	return fs.CreateFromInput(input)
 }
 
 func (fs *FileStorage) CreateFromInput(input UploadInput) (string, string, error) {
-	_ = os.Mkdir("filestorage", os.ModePerm) //TODO
-	file, err := os.Create("filestorage" + string(os.PathSeparator) + input.Name)
+	_ = os.Mkdir(storageName+string(os.PathSeparator)+input.Bucket, os.ModePerm)
+	file, err := os.Create(storageName + string(os.PathSeparator) +
+		input.Bucket + string(os.PathSeparator) + input.Name)
 	if err != nil {
 		return "", "", err
 	}
@@ -39,17 +45,17 @@ func (fs *FileStorage) CreateFromInput(input UploadInput) (string, string, error
 	if n == 0 && err != nil {
 		return "", "", err
 	}
-	return fs.generateFileURL(input.Name), input.Name, nil
+	return fs.generateFileURL(input.Bucket, input.Name), input.Name, nil
 }
 
-func (fs *FileStorage) Get(id string) (*os.File, error) {
-	file, err := os.Open("filestorage" + string(os.PathSeparator) + id)
+func (fs *FileStorage) Get(bucket, filename string) (*os.File, error) {
+	file, err := os.Open(storageName + string(os.PathSeparator) + bucket + string(os.PathSeparator) + filename)
 	if err != nil {
 		return nil, nil
 	}
 	return file, nil
 }
 
-func (fs *FileStorage) generateFileURL(fileName string) string {
-	return fmt.Sprintf("http://localhost:8080/filestorage/%s", fileName)
+func (fs *FileStorage) generateFileURL(bucket, fileName string) string {
+	return fmt.Sprintf("http://localhost:8080/filestorage/%s/%s", bucket, fileName)
 }

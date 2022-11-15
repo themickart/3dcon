@@ -98,7 +98,11 @@ func (h *Handler) Upload(c *gin.Context) {
 	}
 	userModel, err := h.userManager.GetUserByUsername(claims[user.Username].(string))
 	productModel := product.New(name, url, description, licence, userModel.ID, price)
-	_ = h.productManager.AddProduct(productModel)
+	err = h.productManager.CreateProduct(productModel)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
 	c.JSON(http.StatusOK, url)
 }
 

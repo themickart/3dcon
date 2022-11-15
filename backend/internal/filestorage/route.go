@@ -5,5 +5,5 @@ import (
 )
 
 func Route(h *Handler, r *gin.Engine) {
-	r.GET("filestorage/:id", h.GetFile)
+	r.GET("filestorage/:bucket/:filename", h.GetFile)
 }

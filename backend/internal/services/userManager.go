@@ -16,7 +16,7 @@ func NewUserManger(db *gorm.DB) *UserManager {
 	}
 }
 
-func (userManger *UserManager) AddUser(model *user.User) error {
+func (userManger *UserManager) CreateUser(model *user.User) error {
 	_, err := userManger.GetUserByUsername(model.Username) //TODO
 	if err == nil {
 		return errors.New("такой пользователь уже существует")

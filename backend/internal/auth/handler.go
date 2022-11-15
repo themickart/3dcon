@@ -66,7 +66,7 @@ func (h *Handler) HandleJoin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	err = h.userManager.AddUser(userModel)
+	err = h.userManager.CreateUser(userModel)
 	if err != nil {
 		c.JSON(http.StatusConflict, err.Error())
 		return

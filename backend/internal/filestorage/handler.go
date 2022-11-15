@@ -27,8 +27,9 @@ func NewHandler(fileStorage *services.FileStorage) *Handler {
 // @Failure 400 {string} error
 // @Router /filestorage/{id} [get]
 func (h *Handler) GetFile(c *gin.Context) {
-	id := c.Param("id")
-	file, err := h.fileStorage.Get(id)
+	filename := c.Param("filename")
+	bucket := c.Param("bucket")
+	file, err := h.fileStorage.Get(bucket, filename)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

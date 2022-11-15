@@ -16,7 +16,7 @@ func NewProductManager(db *gorm.DB) *ProductManager {
 	}
 }
 
-func (pm *ProductManager) AddProduct(model *product.Product) error {
+func (pm *ProductManager) CreateProduct(model *product.Product) error {
 	return pm.db.Create(model).Error
 }
 
