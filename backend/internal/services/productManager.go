@@ -7,12 +7,14 @@ import (
 )
 
 type ProductManager struct {
-	db *gorm.DB
+	db          *gorm.DB
+	likeManager *LikeManager
 }
 
 func NewProductManager(db *gorm.DB) *ProductManager {
 	return &ProductManager{
-		db: db,
+		db:          db,
+		likeManager: NewLikeManager(db),
 	}
 }
 

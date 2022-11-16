@@ -1,6 +1,7 @@
 package database
 
 import (
+	"api/internal/domain/interactions"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
 	"fmt"
@@ -24,10 +25,8 @@ func NewDatabase() *gorm.DB {
 		fmt.Println(err)
 		time.Sleep(time.Second * 4) //TODO
 	}
-	if err = db.AutoMigrate(&user.User{}); err != nil {
-		panic(err)
-	}
-	if err = db.AutoMigrate(&product.Product{}); err != nil {
+	err = db.AutoMigrate(&user.User{}, &product.Product{}, &interactions.View{}, &interactions.Like{})
+	if err != nil {
 		panic(err)
 	}
 	return db

@@ -7,6 +7,7 @@ import (
 	"api/internal/database"
 	"api/internal/defaultAssets"
 	"api/internal/filestorage"
+	"api/internal/interactions"
 	"api/internal/products"
 	"api/internal/services"
 	"fmt"
@@ -67,13 +68,13 @@ func main() {
 
 			services.NewUserManger,
 			services.NewProductManager,
-			services.NewFileStorage,
 
 			account.NewHandler,
 			auth.NewHandler,
 			products.NewHandler,
 			filestorage.NewHandler,
 			defaultAssets.NewHandler,
+			interactions.NewHandler,
 		),
 		fx.Invoke(
 			auth.Route,
@@ -81,6 +82,7 @@ func main() {
 			products.Route,
 			filestorage.Route,
 			defaultAssets.Route,
+			interactions.Route,
 		),
 	)
 	app.Run()

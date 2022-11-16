@@ -56,6 +56,6 @@ func (fs *FileStorage) Get(bucket, filename string) (*os.File, error) {
 	return file, nil
 }
 
-func (fs *FileStorage) generateFileURL(bucket, fileName string) string {
-	return fmt.Sprintf("http://localhost:8080/filestorage/%s/%s", bucket, fileName)
+func (fs *FileStorage) generateFileURL(bucket, filename string) string {
+	return fmt.Sprintf("http://localhost:8080/filestorage/%s/%s", bucket, filename)
 }

@@ -11,9 +11,9 @@ type Handler struct {
 	fileUtils   *services.FileUtils
 }
 
-func NewHandler(fileStorage *services.FileStorage) *Handler {
+func NewHandler() *Handler {
 	return &Handler{
-		fileStorage: fileStorage,
+		fileStorage: services.NewFileStorage(),
 		fileUtils:   services.NewFileUtils(),
 	}
 }
@@ -22,10 +22,11 @@ func NewHandler(fileStorage *services.FileStorage) *Handler {
 // @Tags filestorage
 // @Accept json
 // @Produce json
-// @Param id path string true "id"
+// @Param bucket path string true "bucket"
+// @Param filename path string true "filename"
 // @Success 200 {string} string
 // @Failure 400 {string} error
-// @Router /filestorage/{id} [get]
+// @Router /filestorage/{bucket}/{filename} [get]
 func (h *Handler) GetFile(c *gin.Context) {
 	filename := c.Param("filename")
 	bucket := c.Param("bucket")

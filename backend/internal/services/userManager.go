@@ -3,16 +3,19 @@ package services
 import (
 	"api/internal/domain/user"
 	"errors"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type UserManager struct {
-	db *gorm.DB
+	db       *gorm.DB
+	jwtUtils *JwtUtils
 }
 
 func NewUserManger(db *gorm.DB) *UserManager {
 	return &UserManager{
-		db: db,
+		db:       db,
+		jwtUtils: NewJwtUtils(),
 	}
 }
 
@@ -41,6 +44,19 @@ func (userManger *UserManager) GetUserById(id uint) (*user.User, error) {
 		return nil, err
 	}
 	return result, err
+}
+
+func (userManger *UserManager) ExtractUser(g *gin.Context) (*user.User, error) {
+	claims, err := userManger.jwtUtils.ExtractClaims(g)
+	if err != nil {
+		return nil, err
+	}
+	username := claims[user.Username].(string)
+	userModel, err := userManger.GetUserByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	return userModel, err
 }
 
 func (userManger *UserManager) handleError(err error) error {

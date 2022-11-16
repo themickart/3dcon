@@ -2,6 +2,7 @@ package services
 
 import (
 	"api/internal/domain/interactions"
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -16,13 +17,29 @@ func NewLikeManager(db *gorm.DB) *LikeManager {
 }
 
 func (lm *LikeManager) Create(like *interactions.Like) error {
-	panic("")
+	liked, err := lm.Liked(like)
+	if err != nil {
+		return err
+	} else if liked {
+		return errors.New("уже лайкнуто")
+	}
+	return lm.db.Create(like).Error
 }
 
 func (lm *LikeManager) Delete(like *interactions.Like) error {
-	panic("")
+	var count int64
+	err := lm.db.Where(like).Count(&count).Delete(like).Error
+	if count == 0 {
+		return errors.New("такого лайка нет")
+	}
+	return err
 }
 
-func (lm *LikeManager) Liked(userId, productId uint) (bool, error) {
-	panic("")
+func (lm *LikeManager) Liked(like *interactions.Like) (bool, error) {
+	var count int64
+	err := lm.db.Model(like).Where(like).Count(&count).Error //TODO
+	if err != nil {
+		return false, err
+	}
+	return count == 1, nil
 }

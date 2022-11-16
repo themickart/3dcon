@@ -5,6 +5,7 @@ import (
 	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
@@ -16,13 +17,12 @@ type Handler struct {
 	fileStorage    *services.FileStorage
 }
 
-func NewHandler(userManager *services.UserManager,
-	productManager *services.ProductManager, fileStorage *services.FileStorage) *Handler {
+func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
-		fileStorage:    fileStorage,
-		userManager:    userManager,
+		fileStorage:    services.NewFileStorage(),
+		userManager:    services.NewUserManger(db),
 		jwtUtils:       services.NewJwtUtils(),
-		productManager: productManager,
+		productManager: services.NewProductManager(db),
 	}
 }
 
@@ -91,12 +91,11 @@ func (h *Handler) Upload(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	claims, err := h.jwtUtils.ExtractClaims(c)
+	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	userModel, err := h.userManager.GetUserByUsername(claims[user.Username].(string))
 	productModel := product.New(name, url, description, licence, userModel.ID, price)
 	err = h.productManager.CreateProduct(productModel)
 	if err != nil {
