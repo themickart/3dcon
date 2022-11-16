@@ -133,14 +133,19 @@ paths:
             type: string
       tags:
       - auth
-  /filestorage/{id}:
+  /filestorage/{bucket}/{filename}:
     get:
       consumes:
       - application/json
       parameters:
-      - description: id
+      - description: bucket
         in: path
-        name: id
+        name: bucket
+        required: true
+        type: string
+      - description: filename
+        in: path
+        name: filename
         required: true
         type: string
       produces:
@@ -209,6 +214,31 @@ paths:
             type: string
       tags:
       - product
+  /products/like/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - interactions
   /products/my:
     get:
       consumes:
@@ -228,6 +258,31 @@ paths:
       - ApiKeyAuth: []
       tags:
       - product
+  /products/remove_like/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - interactions
   /products/upload:
     post:
       consumes:
