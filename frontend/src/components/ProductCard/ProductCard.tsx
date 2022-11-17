@@ -9,11 +9,11 @@ export interface Author {
 }
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   imgUrl: string;
   gallery: string[];
-  price: number;
+  price: string;
   author: Author;
   description: string;
   likesCount: number;

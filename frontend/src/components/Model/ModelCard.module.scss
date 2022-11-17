@@ -1,0 +1,21 @@
+.model {
+    @apply flex justify-between border border-solid rounded-[15px] h-[250px] pr-[93px] mb-6 text-xl;
+    &__infoImg {
+        @apply w-[300px] rounded-[20px]
+    }
+    &__img {
+        @apply mx-[35px] my-[43px] rounded-[20px] w-[292px] h-[164px] cursor-pointer;
+    }
+    &__productInfo {
+        @apply flex flex-col justify-between
+    }
+    &__sales, &__views {
+        @apply py-[67px]
+    }
+    &__functions {
+        @apply flex justify-between items-center w-[214px];
+        &__button {
+            @apply w-[50px] h-[50px];
+        }
+    }
+}
