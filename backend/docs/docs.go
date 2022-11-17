@@ -480,6 +480,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "info": {
                     "type": "object",
                     "additionalProperties": {
@@ -518,8 +521,28 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "reputation": {
+                    "$ref": "#/definitions/user.Reputation"
+                },
                 "salesCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "user.Reputation": {
+            "type": "object",
+            "properties": {
+                "reviews": {
+                    "type": "integer"
+                },
+                "reviewsThisMonth": {
+                    "type": "integer"
+                },
+                "reviewsThisWeek": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "number"
                 }
             }
         }

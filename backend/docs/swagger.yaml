@@ -37,6 +37,8 @@ definitions:
         items:
           type: string
         type: array
+      id:
+        type: integer
       info:
         additionalProperties:
           type: string
@@ -62,8 +64,21 @@ definitions:
         type: string
       name:
         type: string
+      reputation:
+        $ref: '#/definitions/user.Reputation'
       salesCount:
         type: integer
+    type: object
+  user.Reputation:
+    properties:
+      reviews:
+        type: integer
+      reviewsThisMonth:
+        type: integer
+      reviewsThisWeek:
+        type: integer
+      total:
+        type: number
     type: object
 host: localhost:8080
 info:

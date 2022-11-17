@@ -30,6 +30,7 @@ func New(name, coverUrl, description, licence string, ownerId uint, price float6
 }
 
 type ModelDto struct {
+	Id          uint              `json:"id"`
 	CreatedAt   time.Time         `json:"createdAt"`
 	Name        string            `json:"name"`
 	Author      user.ModelDto     `json:"author"`
@@ -46,6 +47,7 @@ type ModelDto struct {
 
 func NewDto(model *Product, author *user.ModelDto) *ModelDto {
 	return &ModelDto{
+		Id:          model.ID,
 		Name:        model.Name,
 		CoverUrl:    model.CoverUrl,
 		Author:      *author,
