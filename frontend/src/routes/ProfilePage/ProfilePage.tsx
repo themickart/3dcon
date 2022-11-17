@@ -1,7 +1,18 @@
+import { useEffect } from "react";
 import styles from "./ProfilePage.module.scss";
+import { fetchModels } from "../../store/actionCreators";
+import { ModelCard } from "../../components/Model/ModelCard";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { motion } from "framer-motion";
 
 export const ProfilePage = () => {
-  const basePath = process.env.PUBLIC_URL + "/profile/";
+  const { list, error, loading } = useAppSelector(
+    (state) => state.modelReducer
+  );
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchModels());
+  }, [dispatch]);
   return (
     <div className={styles.container}>
       <div className={styles.container__topSection}>
@@ -65,32 +76,24 @@ export const ProfilePage = () => {
           </div>
         </div>
       </div>
-      <div className={styles.container__myBlock}>
-        <p className={styles.container__myBlock__myTitle}>Мои модели</p>
-        <div className={styles.container__myBlock__my}>
-          <img
-            className={styles.container__myBlock__my__img}
-            src={basePath + "example_model.png"}
-            alt=""
-          />
-          <div className={styles.container__myBlock__my__productInfo}>
-            <p>Название</p>
-            <p>Категория</p>
-            <p>Цена</p>
-          </div>
-          <p className={styles.container__myBlock__my__sales}>Продажи</p>
-          <p className={styles.container__myBlock__my__views}>Просмотры</p>
-          <div className={styles.container__myBlock__my__functions}>
-            <button>
-              <img src={basePath + "edit.svg"} alt="" />
-            </button>
-            <button>
-              <img src={basePath + "hide.svg"} alt="" />
-            </button>
-            <button>
-              <img src={basePath + "delete.svg"} alt="" />
-            </button>
-          </div>
+      <div className={styles.container__my}>
+        <p className={styles.container__my__title}>Мои модели</p>
+        <div className={styles.container__my__models}>
+          {error
+            ? error
+            : loading
+            ? "Загрузка..."
+            : list?.length
+            ? list?.map((model) => (
+                <motion.div
+                  key={model.id}
+                  initial={{ scale: 0.9 }}
+                  whileInView={{ scale: 1 }}
+                >
+                  <ModelCard {...model} />
+                </motion.div>
+              ))
+            : "У вас пока нет собственных продуктов"}
         </div>
       </div>
     </div>

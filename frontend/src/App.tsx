@@ -1,7 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout/Layout";
-import { Bests } from "./routes/Bests";
+import { Populars } from "./routes/Populars";
 import { Projects } from "./routes/Projects";
 import { Pictures } from "./routes/Pictures";
 import { ProjectPage } from "./routes/ProjectPage/ProjectPage";
@@ -14,7 +14,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Projects />} />
           <Route path=":productId" element={<ProjectPage />} />
-          <Route path="bests" element={<Bests />} />
+          <Route path="populars" element={<Populars />} />
           <Route path="pictures" element={<Pictures />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
