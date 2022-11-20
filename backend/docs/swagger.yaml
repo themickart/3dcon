@@ -43,6 +43,10 @@ definitions:
         additionalProperties:
           type: string
         type: object
+      isLiked:
+        type: boolean
+      isViewed:
+        type: boolean
       licence:
         type: string
       likesCount:

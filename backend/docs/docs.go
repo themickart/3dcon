@@ -530,6 +530,12 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "isLiked": {
+                    "type": "boolean"
+                },
+                "isViewed": {
+                    "type": "boolean"
+                },
                 "licence": {
                     "type": "string"
                 },
