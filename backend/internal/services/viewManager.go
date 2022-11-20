@@ -35,3 +35,8 @@ func (vm *ViewManager) Viewed(view *interactions.View) (bool, error) {
 	}
 	return count == 1, nil
 }
+
+func (vm *ViewManager) ViewedByIds(userId, productId uint) (bool, error) {
+	view := interactions.NewView(userId, productId)
+	return vm.Viewed(view)
+}

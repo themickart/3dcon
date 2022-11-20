@@ -9,7 +9,6 @@ import (
 	"api/internal/filestorage"
 	"api/internal/interactions"
 	"api/internal/products"
-	"api/internal/services"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -65,16 +64,6 @@ func main() {
 		fx.Provide(
 			newServer,
 			database.NewDatabase,
-
-			services.NewUserManger,
-			services.NewProductManager,
-
-			account.NewHandler,
-			auth.NewHandler,
-			products.NewHandler,
-			filestorage.NewHandler,
-			defaultAssets.NewHandler,
-			interactions.NewHandler,
 		),
 		fx.Invoke(
 			auth.Route,

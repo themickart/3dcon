@@ -44,3 +44,8 @@ func (lm *LikeManager) Liked(like *interactions.Like) (bool, error) {
 	}
 	return count == 1, nil
 }
+
+func (lm *LikeManager) LikedByIds(userId, productId uint) (bool, error) {
+	like := interactions.NewLike(userId, productId)
+	return lm.Liked(like)
+}

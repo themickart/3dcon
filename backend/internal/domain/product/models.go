@@ -37,7 +37,9 @@ type ModelDto struct {
 	CoverUrl    string            `json:"coverUrl"`
 	Price       float64           `json:"price"`
 	LikesCount  uint              `json:"likesCount"`
+	IsLiked     bool              `json:"isLiked"`
 	ViewsCount  uint              `json:"viewsCount"`
+	IsViewed    bool              `json:"isViewed"`
 	Description string            `json:"description"`
 	Licence     string            `json:"licence"`
 	Gallery     []string          `json:"gallery"`
@@ -66,4 +68,17 @@ func NewDto(model *Product, author *user.ModelDto) *ModelDto {
 			"Текстура": "неизвестно",
 		},
 	}
+}
+
+func NewViewedAndLikedDto(model *Product, author *user.ModelDto, isViewed, isLiked bool) *ModelDto {
+	dto := NewDto(model, author)
+	dto.IsViewed = isViewed
+	dto.IsLiked = isLiked
+	return dto
+}
+
+func NewViewedAndLikedDtoFromDto(dto ModelDto, isViewed, isLiked bool) *ModelDto {
+	dto.IsViewed = isViewed
+	dto.IsLiked = isLiked
+	return &dto
 }

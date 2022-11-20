@@ -15,6 +15,8 @@ type Handler struct {
 	jwtUtils       *services.JwtUtils
 	productManager *services.ProductManager
 	fileStorage    *services.FileStorage
+	likeManager    *services.LikeManager
+	viewManager    *services.ViewManager
 }
 
 func NewHandler(db *gorm.DB) *Handler {
@@ -23,6 +25,8 @@ func NewHandler(db *gorm.DB) *Handler {
 		userManager:    services.NewUserManger(db),
 		jwtUtils:       services.NewJwtUtils(),
 		productManager: services.NewProductManager(db),
+		likeManager:    services.NewLikeManager(db),
+		viewManager:    services.NewViewManager(db),
 	}
 }
 
@@ -45,8 +49,13 @@ func (h *Handler) GetProductsById(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, productModel)
 	}
+	currentUserModel, _ := h.userManager.ExtractUser(c)
 	userModel, _ := h.userManager.GetUserById(productModel.OwnerId)
 	productDto := product.NewDto(productModel, user.NewDto(userModel))
+	newProductDto, err := h.AddViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
+	if err != nil {
+		c.JSON(http.StatusOK, newProductDto)
+	}
 	c.JSON(http.StatusOK, productDto)
 }
 
@@ -67,8 +76,13 @@ func (h *Handler) GetMyProducts(c *gin.Context) {
 		return
 	}
 	productsDto := make([]*product.ModelDto, len(products))
-	for i := range products {
-		productsDto[i] = product.NewDto(products[i], user.NewDto(userModel))
+	for i, productModel := range products {
+		productModelDto := product.NewDto(productModel, user.NewDto(userModel))
+		productModelDto, err = h.AddViewedAndLiked(userModel.ID, productModel.ID, productModelDto)
+		if err != nil {
+			continue
+		}
+		productsDto[i] = productModelDto
 	}
 	c.JSON(http.StatusOK, productsDto)
 }
@@ -136,17 +150,39 @@ func (h *Handler) GetProducts(c *gin.Context) {
 	offset := 0
 	count := 20
 	products, err := h.productManager.GetProducts(count, offset)
+	currentUserModel, _ := h.userManager.ExtractUser(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	productsDto := make([]*product.ModelDto, len(products))
-	for i := range products {
-		userModel, err := h.userManager.GetUserById(products[i].OwnerId) //TODO
+	for i, productModel := range products {
+		userModel, err := h.userManager.GetUserById(productModel.OwnerId) //TODO
 		if err != nil {
 			continue
 		}
-		productsDto[i] = product.NewDto(products[i], user.NewDto(userModel))
+		productDto := product.NewDto(productModel, user.NewDto(userModel))
+		if currentUserModel == nil {
+			productsDto[i] = productDto
+			continue
+		}
+		productDto, err = h.AddViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
+		if err != nil {
+			continue
+		}
+		productsDto[i] = productDto
 	}
 	c.JSON(http.StatusOK, productsDto)
+}
+
+func (h *Handler) AddViewedAndLiked(userId, productId uint, productDto *product.ModelDto) (*product.ModelDto, error) {
+	isLiked, err := h.likeManager.LikedByIds(userId, productId)
+	if err != nil {
+		return nil, err
+	}
+	isViewed, err := h.viewManager.ViewedByIds(userId, productId)
+	if err != nil {
+		return nil, err
+	}
+	return product.NewViewedAndLikedDtoFromDto(*productDto, isViewed, isLiked), nil
 }

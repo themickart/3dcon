@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Route(h *Handler, r *gin.Engine) {
+func Route(r *gin.Engine) {
+	h := NewHandler()
 	r.GET("filestorage/:bucket/:filename", h.GetFile)
 }

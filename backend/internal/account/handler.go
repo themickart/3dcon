@@ -4,6 +4,7 @@ import (
 	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -12,10 +13,11 @@ type Handler struct {
 	userManager *services.UserManager
 }
 
-func NewHandler(userManager *services.UserManager) *Handler {
+func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
 		jwtUtils:    services.NewJwtUtils(),
-		userManager: userManager}
+		userManager: services.NewUserManger(db),
+	}
 }
 
 // Me
