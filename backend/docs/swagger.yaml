@@ -340,6 +340,31 @@ paths:
       - ApiKeyAuth: []
       tags:
       - product
+  /products/view/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - interactions
 securityDefinitions:
   ApiKeyAuth:
     in: header
