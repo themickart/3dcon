@@ -22,7 +22,7 @@ func (pm *ProductManager) CreateProduct(model *product.Product) error {
 	return pm.db.Create(model).Error
 }
 
-func (pm *ProductManager) GetProductById(id string) (*product.Product, error) {
+func (pm *ProductManager) GetProductById(id uint) (*product.Product, error) {
 	result := &product.Product{}
 	err := pm.db.Model(product.Product{}).Where("id = ?", id).First(result).Error
 	if err = pm.handleError(err); err != nil {

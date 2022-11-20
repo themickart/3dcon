@@ -20,7 +20,8 @@ func (lm *LikeManager) Create(like *interactions.Like) error {
 	liked, err := lm.Liked(like)
 	if err != nil {
 		return err
-	} else if liked {
+	}
+	if liked {
 		return errors.New("уже лайкнуто")
 	}
 	return lm.db.Create(like).Error
@@ -28,7 +29,7 @@ func (lm *LikeManager) Create(like *interactions.Like) error {
 
 func (lm *LikeManager) Delete(like *interactions.Like) error {
 	var count int64
-	err := lm.db.Where(like).Count(&count).Delete(like).Error
+	err := lm.db.Model(like).Where(like).Count(&count).Delete(like).Error
 	if count == 0 {
 		return errors.New("такого лайка нет")
 	}

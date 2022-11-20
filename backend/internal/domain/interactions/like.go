@@ -5,10 +5,10 @@ import "gorm.io/gorm"
 type Like struct {
 	gorm.Model
 	UserId    uint
-	ProductId string
+	ProductId uint
 }
 
-func NewLike(userId uint, productId string) *Like {
+func NewLike(userId, productId uint) *Like {
 	return &Like{
 		UserId:    userId,
 		ProductId: productId,

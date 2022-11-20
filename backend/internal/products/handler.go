@@ -36,7 +36,12 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Router /products/{id} [get]
 func (h *Handler) GetProductsById(c *gin.Context) {
 	id := c.Param("id")
-	productModel, err := h.productManager.GetProductById(id)
+	productId, err := strconv.ParseUint(id, 10, 8)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	productModel, err := h.productManager.GetProductById(uint(productId))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, productModel)
 	}
