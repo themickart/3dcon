@@ -180,19 +180,6 @@ paths:
             type: string
       tags:
       - filestorage
-  /helloworld:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      tags:
-      - helloworld
   /products/:
     get:
       consumes:

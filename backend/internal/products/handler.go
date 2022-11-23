@@ -2,7 +2,6 @@ package products
 
 import (
 	"api/internal/domain/product"
-	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -12,7 +11,6 @@ import (
 
 type Handler struct {
 	userManager    *services.UserManager
-	jwtUtils       *services.JwtUtils
 	productManager *services.ProductManager
 	fileStorage    *services.FileStorage
 	likeManager    *services.LikeManager
@@ -23,7 +21,6 @@ func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
 		fileStorage:    services.NewFileStorage(),
 		userManager:    services.NewUserManger(db),
-		jwtUtils:       services.NewJwtUtils(),
 		productManager: services.NewProductManager(db),
 		likeManager:    services.NewLikeManager(db),
 		viewManager:    services.NewViewManager(db),
@@ -67,8 +64,7 @@ func (h *Handler) GetProductsById(c *gin.Context) {
 // @Failure 400 {string} error
 // @Router /products/my [get]
 func (h *Handler) GetMyProducts(c *gin.Context) {
-	claims, _ := h.jwtUtils.ExtractClaims(c)
-	userModel, err := h.userManager.GetUserByUsername(claims[user.Username].(string))
+	userModel, err := h.userManager.ExtractUser(c)
 	products, err := h.productManager.GetAllProductsByUserId(userModel.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())

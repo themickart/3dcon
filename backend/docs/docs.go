@@ -161,27 +161,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/helloworld": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helloworld"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/products/": {
             "get": {
                 "consumes": [
