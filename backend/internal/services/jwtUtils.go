@@ -41,12 +41,12 @@ func (jwtUtils *JwtUtils) ExtractClaims(g *gin.Context) (jwt.MapClaims, error) {
 
 func (jwtUtils *JwtUtils) ExtractToken(g *gin.Context) (*jwt.Token, error) {
 	request := g.Request
-	tokenString := strings.Split(request.Header.Get("Authorization"), " ")[1]
-	token, err := jwtUtils.ExtractTokenFromString(tokenString)
-	if err != nil {
-		return nil, err
+	split := strings.Split(request.Header.Get("Authorization"), " ")
+	if len(split) != 2 {
+		return nil, errors.New("нет jwt")
 	}
-	return token, err
+	tokenString := split[1]
+	return jwtUtils.ExtractTokenFromString(tokenString)
 }
 
 func (jwtUtils *JwtUtils) ExtractTokenFromString(tokenString string) (*jwt.Token, error) {

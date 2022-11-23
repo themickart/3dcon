@@ -50,9 +50,8 @@ func (h *Handler) GetProductsById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, productModel)
 	}
 	currentUserModel, _ := h.userManager.ExtractUser(c)
-	userModel, _ := h.userManager.GetUserById(productModel.OwnerId)
-	productDto := product.NewDto(productModel, user.NewDto(userModel))
-	newProductDto, err := h.AddViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
+	productDto := product.NewDto(productModel)
+	newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
 	if err != nil {
 		c.JSON(http.StatusOK, newProductDto)
 	}
@@ -70,15 +69,15 @@ func (h *Handler) GetProductsById(c *gin.Context) {
 func (h *Handler) GetMyProducts(c *gin.Context) {
 	claims, _ := h.jwtUtils.ExtractClaims(c)
 	userModel, err := h.userManager.GetUserByUsername(claims[user.Username].(string))
-	products, err := h.productManager.GetAllProductsByOwnerId(userModel.ID)
+	products, err := h.productManager.GetAllProductsByUserId(userModel.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	productsDto := make([]*product.ModelDto, len(products))
 	for i, productModel := range products {
-		productModelDto := product.NewDto(productModel, user.NewDto(userModel))
-		productModelDto, err = h.AddViewedAndLiked(userModel.ID, productModel.ID, productModelDto)
+		productModelDto := product.NewDto(productModel)
+		productModelDto, err = h.addViewedAndLiked(userModel.ID, productModel.ID, productModelDto)
 		if err != nil {
 			continue
 		}
@@ -157,16 +156,15 @@ func (h *Handler) GetProducts(c *gin.Context) {
 	}
 	productsDto := make([]*product.ModelDto, len(products))
 	for i, productModel := range products {
-		userModel, err := h.userManager.GetUserById(productModel.OwnerId) //TODO
 		if err != nil {
 			continue
 		}
-		productDto := product.NewDto(productModel, user.NewDto(userModel))
+		productDto := product.NewDto(productModel)
 		if currentUserModel == nil {
 			productsDto[i] = productDto
 			continue
 		}
-		productDto, err = h.AddViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
+		productDto, err = h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
 		if err != nil {
 			continue
 		}
@@ -175,7 +173,7 @@ func (h *Handler) GetProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, productsDto)
 }
 
-func (h *Handler) AddViewedAndLiked(userId, productId uint, productDto *product.ModelDto) (*product.ModelDto, error) {
+func (h *Handler) addViewedAndLiked(userId, productId uint, productDto *product.ModelDto) (*product.ModelDto, error) {
 	isLiked, err := h.likeManager.LikedByIds(userId, productId)
 	if err != nil {
 		return nil, err

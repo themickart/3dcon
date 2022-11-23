@@ -9,7 +9,8 @@ import (
 type Product struct {
 	gorm.Model
 	Name        string
-	OwnerId     uint //TODO
+	AuthorId    uint
+	Author      user.User
 	CoverUrl    string
 	Price       float64
 	LikesCount  uint
@@ -18,11 +19,11 @@ type Product struct {
 	Licence     string //TODO
 }
 
-func New(name, coverUrl, description, licence string, ownerId uint, price float64) *Product {
+func New(name, coverUrl, description, licence string, authorId uint, price float64) *Product {
 	return &Product{
 		Name:        name,
 		CoverUrl:    coverUrl,
-		OwnerId:     ownerId,
+		AuthorId:    authorId,
 		Description: description,
 		Price:       price,
 		Licence:     licence,
@@ -47,12 +48,12 @@ type ModelDto struct {
 	Info        map[string]string `json:"info"`
 }
 
-func NewDto(model *Product, author *user.ModelDto) *ModelDto {
+func NewDto(model *Product) *ModelDto {
 	return &ModelDto{
 		Id:          model.ID,
 		Name:        model.Name,
 		CoverUrl:    model.CoverUrl,
-		Author:      *author,
+		Author:      *user.NewDto(&model.Author),
 		CreatedAt:   model.CreatedAt,
 		Description: model.Description,
 		LikesCount:  model.LikesCount,
@@ -68,13 +69,6 @@ func NewDto(model *Product, author *user.ModelDto) *ModelDto {
 			"Текстура": "неизвестно",
 		},
 	}
-}
-
-func NewViewedAndLikedDto(model *Product, author *user.ModelDto, isViewed, isLiked bool) *ModelDto {
-	dto := NewDto(model, author)
-	dto.IsViewed = isViewed
-	dto.IsLiked = isLiked
-	return dto
 }
 
 func NewViewedAndLikedDtoFromDto(dto ModelDto, isViewed, isLiked bool) *ModelDto {
