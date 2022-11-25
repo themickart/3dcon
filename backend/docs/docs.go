@@ -161,7 +161,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/products/": {
+        "/products": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -284,6 +284,49 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/update": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "parameters": [
+                    {
+                        "description": "Update",
+                        "name": "Update",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/product.UpdateInfo"
+                        }
                     }
                 ],
                 "responses": {
@@ -485,6 +528,10 @@ const docTemplate = `{
                 "author": {
                     "$ref": "#/definitions/user.ModelDto"
                 },
+                "category": {
+                    "description": "TODO",
+                    "type": "string"
+                },
                 "coverUrl": {
                     "type": "string"
                 },
@@ -534,6 +581,29 @@ const docTemplate = `{
                     }
                 },
                 "viewsCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "product.UpdateInfo": {
+            "type": "object",
+            "required": [
+                "category",
+                "name",
+                "price",
+                "productId"
+            ],
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "productId": {
                     "type": "integer"
                 }
             }

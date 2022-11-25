@@ -27,6 +27,9 @@ definitions:
     properties:
       author:
         $ref: '#/definitions/user.ModelDto'
+      category:
+        description: TODO
+        type: string
       coverUrl:
         type: string
       createdAt:
@@ -61,6 +64,22 @@ definitions:
         type: array
       viewsCount:
         type: integer
+    type: object
+  product.UpdateInfo:
+    properties:
+      category:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      productId:
+        type: integer
+    required:
+    - category
+    - name
+    - price
+    - productId
     type: object
   user.ModelDto:
     properties:
@@ -180,7 +199,7 @@ paths:
             type: string
       tags:
       - filestorage
-  /products/:
+  /products:
     get:
       consumes:
       - application/json
@@ -289,6 +308,32 @@ paths:
       - ApiKeyAuth: []
       tags:
       - interactions
+  /products/update:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Update
+        in: body
+        name: Update
+        required: true
+        schema:
+          $ref: '#/definitions/product.UpdateInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - product
   /products/upload:
     post:
       consumes:
