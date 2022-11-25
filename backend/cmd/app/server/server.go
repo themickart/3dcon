@@ -14,7 +14,10 @@ import (
 
 func Run(lc fx.Lifecycle) *gin.Engine {
 	r := gin.New()
-	r.Use(cors.Default())
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AddAllowHeaders("Authorization")
+	corsConfig.AllowAllOrigins = true
+	r.Use(cors.New(corsConfig))
 	r.GET("/swagger/*any", swagger.WrapHandler(swaggerFiles.Handler))
 	srv := &http.Server{
 		Addr:    ":8080",
