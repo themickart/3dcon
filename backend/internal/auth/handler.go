@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"api/internal/domain/auth"
 	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
@@ -29,7 +30,7 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Failure 400 {string} error
 // @Router /auth/login [post]
 func (h *Handler) HandleLogin(c *gin.Context) {
-	var loginModel LoginModel
+	var loginModel auth.LoginModel
 	if err := c.BindJSON(&loginModel); err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -56,7 +57,7 @@ func (h *Handler) HandleLogin(c *gin.Context) {
 // @Failure 400 {string} error
 // @Router /auth/join [post]
 func (h *Handler) HandleJoin(c *gin.Context) {
-	var joinModel JoinModel
+	var joinModel auth.JoinModel
 	if err := c.BindJSON(&joinModel); err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

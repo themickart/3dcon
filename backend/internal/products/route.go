@@ -12,5 +12,6 @@ func Route(db *gorm.DB, r *gin.Engine) {
 	products.POST("/upload", auth.Middleware(), h.Upload)
 	products.GET("/my", auth.Middleware(), h.GetMyProducts)
 	products.GET("/:id", h.GetProductsById)
-	products.GET("/", h.GetProducts)
+	products.GET("", h.GetProducts)
+	products.PATCH("/update", auth.Middleware(), h.Update)
 }

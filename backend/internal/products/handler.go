@@ -110,7 +110,7 @@ func (h *Handler) Upload(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	productModel := product.New(name, url, description, licence, userModel.ID, price)
+	productModel := product.New(name, url, description, licence, "не реализовано", userModel.ID, price)
 	err = h.productManager.CreateProduct(productModel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
@@ -140,7 +140,7 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 // @Produce json
 // @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
-// @Router /products/ [get]
+// @Router /products [get]
 func (h *Handler) GetProducts(c *gin.Context) {
 	offset := 0
 	count := 20
@@ -179,4 +179,31 @@ func (h *Handler) addViewedAndLiked(userId, productId uint, productDto *product.
 		return nil, err
 	}
 	return product.NewViewedAndLikedDtoFromDto(*productDto, isViewed, isLiked), nil
+}
+
+// Update
+// @Tags product
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param Update body product.UpdateInfo true "Update"
+// @Success 200 {string} ok
+// @Failure 400 {string} error
+// @Router /products/update [patch]
+func (h *Handler) Update(c *gin.Context) {
+	var updateIndo product.UpdateInfo
+	if err := c.BindJSON(&updateIndo); err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	userModel, err := h.userManager.ExtractUser(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil {
+		c.JSON(http.StatusForbidden, err.Error())
+		return
+	}
+	c.Status(http.StatusOK)
 }

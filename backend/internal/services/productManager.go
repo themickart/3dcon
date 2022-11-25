@@ -55,3 +55,22 @@ func (pm *ProductManager) GetProducts(count int, offset int) ([]*product.Product
 	}
 	return products, nil
 }
+
+func (pm *ProductManager) Update(updaterId uint, updateIndo *product.UpdateInfo) error {
+	products, err := pm.GetAllProductsByUserId(updaterId)
+	if err != nil {
+		return err
+	}
+	var productToUpdate *product.Product
+	for _, productModel := range products {
+		if productModel.ID == updateIndo.ProductId {
+			productToUpdate = productModel
+			break
+		}
+	}
+	if productToUpdate == nil {
+		return errors.New("продукт может менять лишь его владелец")
+	}
+	updatedProduct := product.Update(*productToUpdate, updateIndo)
+	return pm.db.Save(updatedProduct).Error
+}
