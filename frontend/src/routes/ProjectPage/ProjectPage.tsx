@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Product, ProductCard } from "../../components/ProductCard/ProductCard";
+import {
+  IProduct,
+  ProductCard,
+} from "../../components/ProductCard/ProductCard";
 import { SliderGroup } from "../../components/SliderGroup/SliderGroup";
 import { motion } from "framer-motion";
 import styles from "./ProjectPage.module.scss";
@@ -10,8 +13,8 @@ import {
   fetchProductsWithoutOne,
 } from "../../store/actionCreators";
 
-function getRandomProducts(products: Product[]): Product[] {
-  const res = [] as Product[];
+function getRandomProducts(products: IProduct[]): IProduct[] {
+  const res = [] as IProduct[];
   while (res.length < 3) {
     const randProduct = products[Math.trunc(Math.random() * products.length)];
     if (res.length && res?.some(({ id }) => id === randProduct?.id)) continue;
@@ -32,7 +35,7 @@ export const ProjectPage: React.FC = () => {
       likesCount,
       price,
       tags,
-      title,
+      name,
       viewsCount,
       gallery,
     },
@@ -45,8 +48,8 @@ export const ProjectPage: React.FC = () => {
     error: productsError,
   } = useAppSelector((state) => state.productReducer);
   useEffect(() => {
-    dispatch(fetchProduct(productId!));
-    dispatch(fetchProductsWithoutOne(productId!));
+    dispatch(fetchProduct(+productId!));
+    dispatch(fetchProductsWithoutOne(+productId!));
   }, [dispatch, productId]);
   return (
     <div>
@@ -56,7 +59,7 @@ export const ProjectPage: React.FC = () => {
         "Загрузка..."
       ) : (
         <>
-          <h1 className={styles.title}>{title}</h1>
+          <h1 className={styles.title}>{name}</h1>
           <div className={styles.topSection}>
             <SliderGroup gallery={gallery} />
             <div>
@@ -75,7 +78,7 @@ export const ProjectPage: React.FC = () => {
                     className={styles.topSection__authorTags__author__avatar}
                   >
                     <img
-                      src={process.env.PUBLIC_URL + author?.avatar}
+                      src={process.env.PUBLIC_URL + author?.avatarUrl}
                       alt="ава"
                     />
                   </div>
@@ -144,9 +147,9 @@ export const ProjectPage: React.FC = () => {
               <h2 className={styles.bottomSection__infoBlock__infoTitle}>
                 Информация о 3д модели
               </h2>
-              {info?.map((i) => (
+              {Object.entries(info).map(([f, s], i) => (
                 <p className={styles.bottomSection__infoBlock__content} key={i}>
-                  {i}
+                  {f}: {s}
                 </p>
               ))}
             </div>
@@ -158,7 +161,8 @@ export const ProjectPage: React.FC = () => {
                 ? productsError
                 : productsLoading
                 ? "Загрузка..."
-                : list?.length && getRandomProducts(list)?.map((p) => (
+                : list?.length &&
+                  getRandomProducts(list)?.map((p) => (
                     <motion.div
                       key={p?.id}
                       whileHover={{

@@ -15,22 +15,25 @@ export const CardsList: React.FC = () => {
   }, [dispatch]);
   return (
     <div className={styles.wrapper}>
-      {error
-        ? error
-        : loading
-        ? "Загрузка..."
-        : list?.length &&
-          list.map(({ id, ...product }) => (
-            <motion.div
-              key={id}
-              whileHover={{ scale: 1.05, marginBottom: 0 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ y: "0" }}
-              animate={{ y: 20 }}
-            >
-              <ProductCard id={id} {...product} />
-            </motion.div>
-          ))}
+      {error ? (
+        error
+      ) : loading ? (
+        "Загрузка..."
+      ) : list?.length ? (
+        list.map(({ id, ...product }) => (
+          <motion.div
+            key={id}
+            whileHover={{ scale: 1.05, marginBottom: 0 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ y: "0" }}
+            animate={{ y: 20 }}
+          >
+            <ProductCard id={id} {...product} />
+          </motion.div>
+        ))
+      ) : (
+        <>Пока здесь ничего нет 😢</>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
-import { Product } from "../../components/ProductCard/ProductCard";
+import { IProduct } from "../../components/ProductCard/ProductCard";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface IProductState {
-  list: Product[];
+  list: IProduct[];
   loading: boolean;
   error: string | null;
 }
@@ -22,7 +22,7 @@ const productSlice = createSlice({
     },
     productsFetchingSuccess(
       state,
-      { payload: { products } }: PayloadAction<{ products: Product[] }>
+      { payload: { products } }: PayloadAction<{ products: IProduct[] }>
     ) {
       state.list = products;
       state.error = null;
@@ -40,7 +40,7 @@ const productSlice = createSlice({
     },
     productsFetchingWithoutOneSuccess(
       state,
-      { payload: { products } }: PayloadAction<{ products: Product[] }>
+      { payload: { products } }: PayloadAction<{ products: IProduct[] }>
     ) {
       state.list = products;
       state.loading = false;

@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Product } from "../../components/ProductCard/ProductCard";
+import { IProduct } from "../../components/ProductCard/ProductCard";
 
 interface IProductDetailState {
-  product: Product;
+  product: IProduct;
   error: string | null;
   loading: boolean;
 }
 
 const initialState: IProductDetailState = {
-  product: {} as Product,
+  product: {} as IProduct,
   error: null,
   loading: false,
 };
@@ -22,7 +22,7 @@ const productDetailSlice = createSlice({
     },
     productFetchingSuccess(
       state,
-      { payload: { product } }: PayloadAction<{ product: Product }>
+      { payload: { product } }: PayloadAction<{ product: IProduct }>
     ) {
       state.product = product;
       state.loading = false;

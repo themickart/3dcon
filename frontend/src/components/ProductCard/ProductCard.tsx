@@ -2,33 +2,49 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./ProductCard.module.scss";
 
-export interface Author {
-  name: string;
-  avatar: string;
-  salesCount: number;
+export interface IInfo {
+  [key: string]: string;
 }
 
-export interface Product {
-  id: string;
-  title: string;
-  imgUrl: string;
+export interface IReputations {
+  reviews: number;
+  reviewsThisMonth: number;
+  reviewsThisWeek: number;
+  total: number;
+}
+
+export interface IAuthor {
+  name: string;
+  avatarUrl: string;
+  salesCount: number;
+  reputations: IReputations;
+}
+
+export interface IProduct {
+  id: number;
+  category: string;
+  name: string;
+  coverUrl: string;
   gallery: string[];
-  price: string;
-  author: Author;
+  price: number;
+  author: IAuthor;
   description: string;
   likesCount: number;
   viewsCount: number;
   tags: string[];
-  info: string[];
+  info: IInfo;
   license: string;
+  createdAt: string;
+  isLiked: boolean;
+  isViewed: boolean;
 }
 
-export const ProductCard: React.FC<Product> = ({
-  title,
+export const ProductCard: React.FC<IProduct> = ({
+  name,
   author,
   id,
   price,
-  imgUrl,
+  coverUrl,
 }) => {
   return (
     <Link to={`/${id}`}>
@@ -37,13 +53,13 @@ export const ProductCard: React.FC<Product> = ({
           <img
             width={461}
             height={256}
-            src={process.env.PUBLIC_URL + imgUrl}
-            alt={title}
+            src={process.env.PUBLIC_URL + coverUrl}
+            alt={name}
             className={styles.container__card__image}
           />
           <figcaption className={styles.container__card__info}>
             <div className={styles.container__card__info__left}>
-              <div>{title}</div>
+              <div>{name}</div>
               <div>{author?.name}</div>
             </div>
             <div>{price}</div>

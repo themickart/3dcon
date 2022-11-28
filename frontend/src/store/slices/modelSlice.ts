@@ -1,17 +1,8 @@
+import { IProduct } from "./../../components/ProductCard/ProductCard";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface Model {
-  id: string;
-  title: string;
-  imgUrl: string;
-  category: string;
-  price: string;
-  sales: string;
-  views: string;
-}
-
 interface IModelState {
-  list: Model[];
+  list: IProduct[];
   loading: boolean;
   error: string | null;
 }
@@ -31,7 +22,7 @@ const modelSlice = createSlice({
     },
     modelsFetchingSuccess(
       state,
-      { payload: { models } }: PayloadAction<{ models: Model[] }>
+      { payload: { models } }: PayloadAction<{ models: IProduct[] }>
     ) {
       state.error = null;
       state.list = models;
@@ -43,7 +34,7 @@ const modelSlice = createSlice({
     },
     modelAddingSuccess(
       state,
-      { payload: { model } }: PayloadAction<{ model: Model }>
+      { payload: { model } }: PayloadAction<{ model: IProduct }>
     ) {
       state.list.push(model);
     },
@@ -53,7 +44,7 @@ const modelSlice = createSlice({
     },
     modelDeletingSuccess(
       state,
-      { payload: { payloadId } }: PayloadAction<{ payloadId: string }>
+      { payload: { payloadId } }: PayloadAction<{ payloadId: number }>
     ) {
       state.list = state.list.filter(({ id }) => id !== payloadId);
       state.error = null;
@@ -65,18 +56,18 @@ const modelSlice = createSlice({
     modelEditingSuccess(
       state,
       {
-        payload: { category, price, title, payloadId },
+        payload: { category, price, name, payloadId },
       }: PayloadAction<{
-        title: string;
+        name: string;
         category: string;
-        price: string;
-        payloadId: string;
+        price: number;
+        payloadId: number;
       }>
     ) {
-      const model = state.list.find(({ id }) => id === payloadId) as Model;
+      const model = state.list.find(({ id }) => id === payloadId) as IProduct;
       model.category = category;
       model.price = price;
-      model.title = title;
+      model.name = name;
     },
     modelEditingError(state, { payload: { message } }: PayloadAction<Error>) {
       state.error = message;
