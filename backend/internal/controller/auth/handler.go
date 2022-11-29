@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"api/internal/controller/appError"
 	"api/internal/domain/auth"
 	"api/internal/domain/user"
 	"api/internal/services"
@@ -29,23 +30,21 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 200 {string} token
 // @Failure 400 {string} error
 // @Router /auth/login [post]
-func (h *Handler) HandleLogin(c *gin.Context) {
+func (h *Handler) HandleLogin(c *gin.Context) *appError.AppError {
 	var loginModel auth.LoginModel
 	if err := c.BindJSON(&loginModel); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.GetUserByUsername(loginModel.Username)
 	if err != nil {
-		c.JSON(http.StatusConflict, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusConflict)
 	}
 	if !userModel.CheckPassword(loginModel.Password) {
-		c.JSON(http.StatusUnauthorized, "неверный пароль")
-		return
+		return appError.New(err, "неверный пароль", http.StatusUnauthorized)
 	}
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	c.JSON(http.StatusOK, jwtToken)
+	return nil
 }
 
 // HandleJoin
@@ -56,22 +55,20 @@ func (h *Handler) HandleLogin(c *gin.Context) {
 // @Success 201 {string} token
 // @Failure 400 {string} error
 // @Router /auth/join [post]
-func (h *Handler) HandleJoin(c *gin.Context) {
+func (h *Handler) HandleJoin(c *gin.Context) *appError.AppError {
 	var joinModel auth.JoinModel
 	if err := c.BindJSON(&joinModel); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel := user.New(joinModel.Username, joinModel.Email, joinModel.Password, user.UserRole)
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	err = h.userManager.CreateUser(userModel)
 	if err != nil {
-		c.JSON(http.StatusConflict, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusConflict)
 	}
 	c.JSON(http.StatusCreated, jwtToken)
+	return nil
 }

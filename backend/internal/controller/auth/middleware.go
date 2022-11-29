@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Middleware() gin.HandlerFunc {
+func Required() gin.HandlerFunc {
 	jwtUtils := services.NewJwtUtils()
 	return func(c *gin.Context) {
 		if c.GetHeader("Authorization") == "" {

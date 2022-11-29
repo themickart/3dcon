@@ -1,6 +1,7 @@
 package interactions
 
 import (
+	"api/internal/controller/appError"
 	"api/internal/domain/interactions"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
@@ -32,24 +33,22 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 201 {string} created
 // @Failure 400 {string} error
 // @Router /products/like/{id} [patch]
-func (h *Handler) Like(c *gin.Context) {
+func (h *Handler) Like(c *gin.Context) *appError.AppError {
 	id := c.Param("id")
 	productId, err := strconv.ParseUint(id, 10, 8)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	like := interactions.NewLike(userModel.ID, uint(productId))
 	if err = h.interactionManager.Like(like); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusCreated)
+	return nil
 }
 
 // RemoveLike
@@ -61,24 +60,22 @@ func (h *Handler) Like(c *gin.Context) {
 // @Success 200 {string} ok
 // @Failure 400 {string} error
 // @Router /products/remove_like/{id} [patch]
-func (h *Handler) RemoveLike(c *gin.Context) {
+func (h *Handler) RemoveLike(c *gin.Context) *appError.AppError {
 	id := c.Param("id")
 	productId, err := strconv.ParseUint(id, 10, 8)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	like := interactions.NewLike(userModel.ID, uint(productId))
 	if err = h.interactionManager.RemoveLike(like); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
+	return nil
 }
 
 // View
@@ -90,22 +87,21 @@ func (h *Handler) RemoveLike(c *gin.Context) {
 // @Success 200 {string} ok
 // @Failure 400 {string} error
 // @Router /products/view/{id} [patch]
-func (h *Handler) View(c *gin.Context) {
+func (h *Handler) View(c *gin.Context) *appError.AppError {
 	id := c.Param("id")
 	productId, err := strconv.ParseUint(id, 10, 8)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+
 	}
 	view := interactions.NewView(userModel.ID, uint(productId))
 	if err = h.interactionManager.View(view); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
+	return nil
 }

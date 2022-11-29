@@ -1,6 +1,7 @@
 package products
 
 import (
+	"api/internal/controller/appError"
 	"api/internal/domain/product"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
@@ -35,24 +36,25 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 200 {object} product.ModelDto
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
-func (h *Handler) GetProductsById(c *gin.Context) {
+func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
 	id := c.Param("id")
 	productId, err := strconv.ParseUint(id, 10, 8)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel, err := h.productManager.GetProductById(uint(productId))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, productModel)
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	currentUserModel, _ := h.userManager.ExtractUser(c)
 	productDto := product.NewDto(productModel)
 	newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
 	if err != nil {
 		c.JSON(http.StatusOK, newProductDto)
+		return nil
 	}
 	c.JSON(http.StatusOK, productDto)
+	return nil
 }
 
 // GetMyProducts
@@ -63,12 +65,11 @@ func (h *Handler) GetProductsById(c *gin.Context) {
 // @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
 // @Router /products/my [get]
-func (h *Handler) GetMyProducts(c *gin.Context) {
+func (h *Handler) GetMyProducts(c *gin.Context) *appError.AppError {
 	userModel, err := h.userManager.ExtractUser(c)
 	products, err := h.productManager.GetAllProductsByUserId(userModel.ID)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	productsDto := make([]*product.ModelDto, len(products))
 	for i, productModel := range products {
@@ -80,6 +81,7 @@ func (h *Handler) GetMyProducts(c *gin.Context) {
 		productsDto[i] = productModelDto
 	}
 	c.JSON(http.StatusOK, productsDto)
+	return nil
 }
 
 // Upload
@@ -95,28 +97,26 @@ func (h *Handler) GetMyProducts(c *gin.Context) {
 // @Param        price formData  number          true  "price"
 // @Success      200   {string}  string        "ok"
 // @Router       /products/upload [post]
-func (h *Handler) Upload(c *gin.Context) {
+func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 	name := c.Request.FormValue("name")
 	description := c.Request.FormValue("description") //TODO
 	licence := c.Request.FormValue("licence")
 	price, err := strconv.ParseFloat(c.Request.FormValue("price"), 32)
 	url, _, err := h.uploadFile(c, "cover")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel := product.New(name, url, description, licence, "не реализовано", userModel.ID, price)
 	err = h.productManager.CreateProduct(productModel)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
 	c.JSON(http.StatusOK, url)
+	return nil
 }
 
 func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name string, err error) {
@@ -141,14 +141,13 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 // @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
 // @Router /products [get]
-func (h *Handler) GetProducts(c *gin.Context) {
+func (h *Handler) GetProducts(c *gin.Context) *appError.AppError {
 	offset := 0
 	count := 20
 	products, err := h.productManager.GetProducts(count, offset)
 	currentUserModel, _ := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	productsDto := make([]*product.ModelDto, len(products))
 	for i, productModel := range products {
@@ -167,6 +166,7 @@ func (h *Handler) GetProducts(c *gin.Context) {
 		productsDto[i] = productDto
 	}
 	c.JSON(http.StatusOK, productsDto)
+	return nil
 }
 
 func (h *Handler) addViewedAndLiked(userId, productId uint, productDto *product.ModelDto) (*product.ModelDto, error) {
@@ -190,20 +190,18 @@ func (h *Handler) addViewedAndLiked(userId, productId uint, productDto *product.
 // @Success 200 {string} ok
 // @Failure 400 {string} error
 // @Router /products/update [patch]
-func (h *Handler) Update(c *gin.Context) {
+func (h *Handler) Update(c *gin.Context) *appError.AppError {
 	var updateIndo product.UpdateInfo
 	if err := c.BindJSON(&updateIndo); err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.ExtractUser(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil {
-		c.JSON(http.StatusForbidden, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusForbidden)
 	}
 	c.Status(http.StatusOK)
+	return nil
 }

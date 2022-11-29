@@ -2,13 +2,13 @@ package app
 
 import (
 	"api/cmd/app/server"
-	"api/internal/account"
-	"api/internal/auth"
+	"api/internal/controller/account"
+	"api/internal/controller/auth"
+	"api/internal/controller/default"
+	"api/internal/controller/filestorage"
+	"api/internal/controller/interactions"
+	"api/internal/controller/products"
 	"api/internal/database"
-	"api/internal/defaultAssets"
-	"api/internal/filestorage"
-	"api/internal/interactions"
-	"api/internal/products"
 	"go.uber.org/fx"
 )
 
@@ -23,7 +23,7 @@ func Run() {
 			account.Route,
 			products.Route,
 			filestorage.Route,
-			defaultAssets.Route,
+			_default.Route,
 			interactions.Route,
 		),
 	)
