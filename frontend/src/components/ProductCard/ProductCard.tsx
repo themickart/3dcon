@@ -21,21 +21,21 @@ export interface IAuthor {
 }
 
 export interface IProduct {
-  id: number;
-  category: string;
-  name: string;
-  coverUrl: string;
-  gallery: string[];
-  price: number;
-  author: IAuthor;
-  description: string;
-  likesCount: number;
-  viewsCount: number;
-  tags: string[];
-  info: IInfo;
-  license: string;
-  createdAt: string;
-  isLiked: boolean;
+  id?: number;
+  category?: string;
+  name?: string;
+  coverUrl?: string;
+  gallery?: string[];
+  price?: number;
+  author?: IAuthor;
+  description?: string;
+  likesCount?: number;
+  viewsCount?: number;
+  tags?: string[];
+  info?: IInfo;
+  license?: string;
+  createdAt?: string;
+  isLiked?: boolean;
   isViewed: boolean;
 }
 

@@ -15,12 +15,14 @@ export const LoginPage = () => {
   const dispatch = useAppDispatch();
   const { register, handleSubmit } = useForm<ILoginData>();
   const onSubmit: SubmitHandler<ILoginData> = (data) => dispatch(login(data));
+
   useEffect(() => {
     if (isAuth) {
       dispatch(fetchUser(token));
       navigate("/profile");
     }
   }, [isAuth, navigate, token, dispatch]);
+  
   return (
     <>
       {!isAuth && (

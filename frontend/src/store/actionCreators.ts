@@ -29,7 +29,7 @@ import {
 import { IProduct } from "../components/ProductCard/ProductCard";
 import { loginSuccess } from "./slices/authSlice";
 import axios from "../axios";
-import { IUserState, userFetchingSuccess } from "./slices/userSlice";
+import { IUserState as IUserResponse, userFetchingSuccess } from "./slices/userSlice";
 
 export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
   try {
@@ -51,6 +51,7 @@ export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
 export const addModel =
   (model: IProduct, token: string) => async (dispatch: AppDispatch) => {
     try {
+      console.log('1')
       dispatch(modelAddingSuccess({ model }));
       await axios.post("products/upload", model, {
         headers: { Authorization: `Bearer ${token}` },
@@ -142,8 +143,6 @@ export const login = (data: ILoginData) => async (dispatch: AppDispatch) => {
     console.log((e as Error).message);
   }
 };
-
-interface IUserResponse extends IUserState {}
 
 export const fetchUser = (token: string) => async (dispatch: AppDispatch) => {
   try {

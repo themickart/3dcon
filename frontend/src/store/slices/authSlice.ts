@@ -6,6 +6,11 @@ interface AuthState {
   token: string;
 }
 
+interface PayloadUser {
+  username: string
+  token: string
+}
+
 const initialState: AuthState = {
   isAuth: !!localStorage.getItem("token"),
   username: localStorage.getItem("username") ?? "",
@@ -27,7 +32,7 @@ const authSlice = createSlice({
       state,
       {
         payload: { token, username },
-      }: PayloadAction<{ token: string; username: string }>
+      }: PayloadAction<PayloadUser>
     ) {
       state.isAuth = !!token;
       state.token = token;
