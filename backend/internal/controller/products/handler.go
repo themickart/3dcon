@@ -46,12 +46,13 @@ func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	currentUserModel, _ := h.userManager.ExtractUser(c)
+	currentUserModel, err := h.userManager.ExtractUser(c)
 	productDto := product.NewDto(productModel)
-	newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
-	if err != nil {
-		c.JSON(http.StatusOK, newProductDto)
-		return nil
+	if err == nil {
+		newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
+		if err == nil {
+			productDto = newProductDto
+		}
 	}
 	c.JSON(http.StatusOK, productDto)
 	return nil
