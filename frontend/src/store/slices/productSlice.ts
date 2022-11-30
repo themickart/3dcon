@@ -1,5 +1,6 @@
-import { IProduct } from "../../components/ProductCard/ProductCard";
+
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IProduct } from "../../types/types";
 
 interface IProductState {
   list: IProduct[];

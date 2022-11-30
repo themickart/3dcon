@@ -3,28 +3,13 @@ import React, { useState } from "react";
 import styles from "./ModelCard.module.scss";
 // import { useAppDispatch } from "../../hooks/reduxHooks";
 // import { deleteModel } from "../../store/actionCreators";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import useOutside from "../../hooks/outside";
-import { IProduct } from "../ProductCard/ProductCard";
+import { IProduct } from "../../types/types";
 
-// export interface ModelProps {
-//   id: string;
-//   title: string;
-//   imgUrl: string;
-//   category: string;
-//   price: string;
-//   sales: string;
-//   views: string;
-// }
 
-// interface InputType {
-//   id: number;
-//   title: string;
-//   category: string;
-//   price: string;
-// }
-
-export const ModelCard: React.FC<IProduct> = ({
+export const ModelCard: React.FC<IProduct> =
+	({
   id,
   category,
   coverUrl,
@@ -61,7 +46,8 @@ export const ModelCard: React.FC<IProduct> = ({
           {isShow ? (
             <div
               ref={ref}
-              className="absolute z-10 pb-5 bg-[#80e0a1] cursor-pointer w-[300px] flex flex-col justify-between items-center rounded-[40px] my-10 ml-8 mr-20"
+              className="absolute z-10 pb-5 bg-[#80e0a1] cursor-pointer
+              w-[300px] flex flex-col justify-between items-center rounded-[40px] my-10 ml-8 mr-20"
             >
               <img
                 className={styles.model__infoImg}

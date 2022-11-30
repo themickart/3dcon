@@ -3,11 +3,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { fetchUser, login } from "../store/actionCreators";
+import { ILoginData } from "../types/types";
 
-export interface ILoginData {
-  username: string;
-  password: string;
-}
 
 export const LoginPage = () => {
   const { isAuth, token } = useAppSelector((state) => state.authReducer);
