@@ -6,7 +6,7 @@ export interface IInfo {
   [key: string]: string;
 }
 
-export interface IReputations {
+export interface IReputation {
   reviews: number;
   reviewsThisMonth: number;
   reviewsThisWeek: number;
@@ -15,27 +15,27 @@ export interface IReputations {
 
 export interface IAuthor {
   name: string;
-  avatarUrl: string;
+  avatarArl: string;
   salesCount: number;
-  reputations: IReputations;
+  reputation: IReputation;
 }
 
 export interface IProduct {
   id?: number;
-  category?: string;
-  name?: string;
-  coverUrl?: string;
-  gallery?: string[];
-  price?: number;
-  author?: IAuthor;
-  description?: string;
-  likesCount?: number;
-  viewsCount?: number;
-  tags?: string[];
-  info?: IInfo;
-  license?: string;
-  createdAt?: string;
-  isLiked?: boolean;
+  category: string;
+  name: string;
+  coverUrl: string;
+  gallery: string[];
+  price: number;
+  author: IAuthor;
+  description: string;
+  likesCount: number;
+  viewsCount: number;
+  tags: string[];
+  info: IInfo;
+  license: string;
+  createdAt: string;
+  isLiked: boolean;
   isViewed: boolean;
 }
 

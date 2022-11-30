@@ -6,11 +6,11 @@ import ModalForm from './Modal/ModalForm';
 
 const ModalItem: FC = () => {
   return (
-    <Context.Provider value={useState(true)}>
-        <Header></Header>
-        <ModalForm></ModalForm>
+    <Context.Provider value={useState(false)}>
+      <Header />
+      <ModalForm />
     </Context.Provider>
-  )
+  );
 }
 
 export default ModalItem

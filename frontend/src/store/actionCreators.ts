@@ -1,3 +1,4 @@
+import { IModelInput } from "./../components/Modal/ModalForm";
 import { IRegisterData } from "./../routes/RegisterPage";
 import { ILoginData } from "./../routes/LoginPage";
 import {
@@ -29,7 +30,10 @@ import {
 import { IProduct } from "../components/ProductCard/ProductCard";
 import { loginSuccess } from "./slices/authSlice";
 import axios from "../axios";
-import { IUserState as IUserResponse, userFetchingSuccess } from "./slices/userSlice";
+import {
+  IUserState as IUserResponse,
+  userFetchingSuccess,
+} from "./slices/userSlice";
 
 export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
   try {
@@ -49,12 +53,16 @@ export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
 };
 
 export const addModel =
-  (model: IProduct, token: string) => async (dispatch: AppDispatch) => {
+  (model: IProduct, data: IModelInput, token: string) =>
+  async (dispatch: AppDispatch) => {
     try {
-      console.log('1')
+      console.log("1");
       dispatch(modelAddingSuccess({ model }));
-      await axios.post("products/upload", model, {
-        headers: { Authorization: `Bearer ${token}` },
+      await axios.post("products/upload", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
       });
     } catch (error) {
       dispatch(modelAddingError(error as Error));

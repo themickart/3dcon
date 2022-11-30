@@ -25,12 +25,12 @@ import { IProduct } from "../ProductCard/ProductCard";
 // }
 
 export const ModelCard: React.FC<IProduct> = ({
-  id,
   category,
   coverUrl,
   price,
   name,
   viewsCount,
+  description,
 }) => {
   // const dispatch = useAppDispatch();
   const basePath = process.env.PUBLIC_URL;
@@ -63,28 +63,18 @@ export const ModelCard: React.FC<IProduct> = ({
               ref={ref}
               className="absolute z-10 pb-5 bg-[#80e0a1] cursor-pointer w-[300px] flex flex-col justify-between items-center rounded-[40px] my-10 ml-8 mr-20"
             >
-              <img
-                className={styles.model__infoImg}
-                src={basePath + coverUrl}
-                alt=""
-              />
+              <img className={styles.model__infoImg} src={coverUrl} alt="" />
               <div className="px-4">
-                  <h4 className="text-xl my-6">Информация:</h4>
-                  <p className="text-xl mb-14">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Doloremque aspernatur mollitia consectetur accusamus
-                    voluptate eum dicta temporibus hic? Illo odio libero in
-                    corporis architecto ullam, maiores iure eaque provident
-                    ducimus.
-                  </p>
+                <h4 className="text-xl my-6">Информация:</h4>
+                <p className="text-xl mb-14">{description}</p>
               </div>
             </div>
           ) : (
-            <img className={styles.model__img} src={basePath + coverUrl} alt="" />
+            <img className={styles.model__img} src={coverUrl} alt="" />
           )}
         </div>
         <div
-          className={`w-[546px] h-[132px] mt-[67px] flex justify-between   ${
+          className={`w-[546px] h-[132px] mt-[67px] flex justify-between ${
             isShow && "ml-[362px]"
           }`}
         >
@@ -159,9 +149,11 @@ export const ModelCard: React.FC<IProduct> = ({
           <button>
             <img src={basePath + "/profile/hide.svg"} alt="" />
           </button>
-          <button onClick={() => {
-            // dispatch(deleteModel(id))
-            }}>
+          <button
+            onClick={() => {
+              // dispatch(deleteModel(id))
+            }}
+          >
             <img src={basePath + "/profile/delete.svg"} alt="" />
           </button>
         </div>

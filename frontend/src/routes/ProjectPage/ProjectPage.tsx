@@ -78,7 +78,7 @@ export const ProjectPage: React.FC = () => {
                     className={styles.topSection__authorTags__author__avatar}
                   >
                     <img
-                      src={process.env.PUBLIC_URL + author?.avatarUrl}
+                      src={process.env.PUBLIC_URL + author?.avatarArl}
                       alt="ава"
                     />
                   </div>

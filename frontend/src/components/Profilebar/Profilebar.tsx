@@ -11,10 +11,12 @@ export const Profilebar: FC<{ name: string; avatar: string }> = ({
   const dispatch = useAppDispatch();
   return (
     <div className={styles.container}>
-      <div
-        dangerouslySetInnerHTML={{ __html: avatar }}
-        className="max-w-[50px] max-h-[50px]"
-      ></div>
+      <img
+        width={50}
+        height={50}
+        src={`data:image/svg+xml;utf8,${avatar}`}
+        alt=""
+      />
       <p className={styles.container__account}>
         <Link to={"/profile"}>{name}</Link>
       </p>

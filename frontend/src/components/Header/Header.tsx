@@ -8,12 +8,12 @@ import styles from "./Header.module.scss";
 import { useAppSelector } from "../../hooks/reduxHooks";
 import context from '../../Context/ModalContext';
 import axios from "axios";
-import { Button } from "@mui/material";
+import { motion } from "framer-motion";
 
 export const Header: FC = () => {
   const { isAuth, username } = useAppSelector((state) => state.authReducer);
   const { avatarArl } = useAppSelector((state) => state.userReducer);
-  const [avatar, setAvatar] = useState<string>();
+  const [avatar, setAvatar] = useState<string>("");
   const [isShow, setIsShow] = useContext(context);
 
   useEffect(() => {
@@ -40,12 +40,14 @@ export const Header: FC = () => {
         ]}
       />
       {isAuth && (
-        <Button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ backgroundColor: "#83a8b5" }}
           className="text-[22.5px] bg-[#80e0a1] text-[#4f4f4f] w-[200px] h-[45px] rounded-[20px] ml-[53px]"
           onClick={() => setIsShow(true)}
         >
           Загрузить
-        </Button>
+        </motion.button>
       )}
       <Search />
       {isAuth ? <Profilebar name={username} avatar={avatar!} /> : <Signbar />}
