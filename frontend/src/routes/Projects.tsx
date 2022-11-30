@@ -1,12 +1,12 @@
-import React from "react";
-import { Sortbar } from "../components/Sortbar/Sortbar";
-import { CardsList } from "../components/CardsList/CardsList";
+import React from 'react';
+import { Sortbar } from '../components/Sortbar/Sortbar';
+import { CardsList } from '../components/CardsList/CardsList';
 
 export const Projects: React.FC = () => {
-  return (
-    <div>
-      <Sortbar params={["Цена", "Формат"]} />
-      <CardsList />
-    </div>
-  );
+    return (
+        <div>
+            <Sortbar params={['Цена', 'Формат']} />
+            <CardsList />
+        </div>
+    );
 };

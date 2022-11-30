@@ -1,5 +1,5 @@
-import React from "react";
+import React from 'react';
 
 export const Pictures: React.FC = () => {
-  return <div>Pictures</div>;
+    return <div>Pictures</div>;
 };

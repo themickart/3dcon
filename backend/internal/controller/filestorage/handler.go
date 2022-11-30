@@ -1,6 +1,7 @@
 package filestorage
 
 import (
+	"api/internal/controller/appError"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -27,18 +28,17 @@ func NewHandler() *Handler {
 // @Success 200 {string} string
 // @Failure 400 {string} error
 // @Router /filestorage/{bucket}/{filename} [get]
-func (h *Handler) GetFile(c *gin.Context) {
+func (h *Handler) GetFile(c *gin.Context) *appError.AppError {
 	filename := c.Param("filename")
 	bucket := c.Param("bucket")
 	file, err := h.fileStorage.Get(bucket, filename)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	err = h.fileUtils.WriteFile(c.Writer, file)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
+	return nil
 }
