@@ -3,12 +3,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { fetchUser, register as registerAction } from "../store/actionCreators";
+import { IRegisterData } from "../types/types";
 
-export interface IRegisterData {
-  email: string;
-  username: string;
-  password: string;
-}
 
 export const Register = () => {
   const navigate = useNavigate();

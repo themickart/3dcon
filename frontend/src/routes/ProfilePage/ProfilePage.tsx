@@ -14,12 +14,14 @@ export const ProfilePage = () => {
     (state) => state.modelReducer
   );
   const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (isAuth) {
       dispatch(fetchUser(token));
       dispatch(fetchModels(token));
     } else navigate("/login");
   }, [dispatch, isAuth, token, navigate]);
+
   return (
     <>
       {isAuth && (
