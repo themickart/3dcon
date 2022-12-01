@@ -1,17 +1,17 @@
 import { useEffect } from 'react';
 import styles from './ProfilePage.module.scss';
 import { fetchModels, fetchUser } from '../../store/actionCreators';
-import { ModelCard } from '../../components/Model/ModelCard';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { ModelItem } from '../../components/Model/ModelItem';
 
 export const ProfilePage = () => {
     const navigate = useNavigate();
-    const { isAuth, token } = useAppSelector((state) => state.authReducer);
-    const { reputation } = useAppSelector((state) => state.userReducer);
+    const { isAuth, token } = useAppSelector(state => state.authReducer);
+    const { reputation } = useAppSelector(state => state.userReducer);
     const { list, error, loading } = useAppSelector(
-        (state) => state.modelReducer
+        state => state.modelReducer
     );
     const dispatch = useAppDispatch();
 
@@ -113,13 +113,13 @@ export const ProfilePage = () => {
                                 : loading
                                 ? 'Загрузка...'
                                 : list?.length
-                                ? list?.map((model) => (
+                                ? list?.map(model => (
                                       <motion.div
                                           key={model.id}
                                           initial={{ scale: 0.9 }}
                                           whileInView={{ scale: 1 }}
                                       >
-                                          <ModelCard {...model} />
+                                          <ModelItem {...model} />
                                       </motion.div>
                                   ))
                                 : 'У вас пока нет собственных продуктов'}

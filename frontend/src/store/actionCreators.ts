@@ -1,19 +1,18 @@
-import { IModelInput } from './../components/Modal/ModalForm';
+import { IModelInput } from '../components/ModelAdd/ModelAddForm';
 import {
     modelAddingError,
     modelAddingSuccess,
     modelsFetching,
     modelsFetchingError,
     modelsFetchingSuccess,
+    modelEditingError,
+    modelEditingSuccess,
 } from './slices/modelSlice';
 import { AppDispatch } from './index';
 import {
     productsFetching,
     productsFetchingError,
     productsFetchingSuccess,
-    productsFetchingWithoutOne,
-    productsFetchingWithoutOneError,
-    productsFetchingWithoutOneSuccess,
 } from './slices/productSlice';
 import {
     productFetching,
@@ -27,17 +26,19 @@ import {
     userFetchingSuccess,
 } from './slices/userSlice';
 import { ILoginData, IProduct, IRegisterData } from '../types/types';
+import { InputType } from '../components/Model/ModelCard';
 
 export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(modelsFetching());
+        const models = (
+            await axios.get<IProduct[]>('products/my', {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+        ).data;
         dispatch(
             modelsFetchingSuccess({
-                models: (
-                    await axios.get<IProduct[]>('products/my', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
-                ).data,
+                models,
             })
         );
     } catch (error) {
@@ -49,16 +50,34 @@ export const addModel =
     (model: IProduct, data: IModelInput, token: string) =>
     async (dispatch: AppDispatch) => {
         try {
-            console.log('1');
             dispatch(modelAddingSuccess({ model }));
-            await axios.post('products/upload', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            console.log(
+                (
+                    await axios.post('products/upload', data, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    })
+                ).data
+            );
         } catch (error) {
             dispatch(modelAddingError(error as Error));
+        }
+    };
+
+export const editModel =
+    ({ id: payloadId, ...data }: InputType, token: string) =>
+    async (dispatch: AppDispatch) => {
+        try {
+            dispatch(modelEditingSuccess({ payloadId, ...data }));
+            await axios.patch(
+                `products/update`,
+                { productId: payloadId, ...data },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+        } catch (error) {
+            dispatch(modelEditingError(error as Error));
         }
     };
 
@@ -67,17 +86,6 @@ export const addModel =
 //     try {
 //       dispatch(modelDeletingSuccess({ payloadId }));
 //       await axios.delete(`http://localhost:8080/products/${payloadId}`);
-//     } catch (error) {
-//       dispatch(modelDeletingError(error as Error));
-//     }
-//   };
-
-// export const editModel =
-//   (category: string, price: number, name: string, payloadId: number) =>
-//   async (dispatch: AppDispatch) => {
-//     try {
-//       dispatch(modelEditingSuccess({ category, payloadId, price, name }));
-//       await axios.patch(`models/${payloadId}`, { category, name, price });
 //     } catch (error) {
 //       dispatch(modelDeletingError(error as Error));
 //     }
@@ -95,24 +103,6 @@ export const fetchProducts = () => async (dispatch: AppDispatch) => {
         dispatch(productsFetchingError(error as Error));
     }
 };
-
-export const fetchProductsWithoutOne =
-    (payloadId: number) => async (dispatch: AppDispatch) => {
-        try {
-            dispatch(productsFetchingWithoutOne());
-            dispatch(
-                productsFetchingWithoutOneSuccess({
-                    products: (
-                        await axios.get<IProduct[]>(
-                            `products/?id_ne=${payloadId}`
-                        )
-                    ).data,
-                })
-            );
-        } catch (error) {
-            dispatch(productsFetchingWithoutOneError(error as Error));
-        }
-    };
 
 export const fetchProduct =
     (payloadId: number) => async (dispatch: AppDispatch) => {

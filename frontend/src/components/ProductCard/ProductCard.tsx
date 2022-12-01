@@ -8,7 +8,7 @@ export const ProductCard: React.FC<IProduct> = ({
     author,
     id,
     price,
-    coverArl,
+    coverUrl,
 }) => {
     return (
         <Link to={`/${id}`}>
@@ -17,7 +17,7 @@ export const ProductCard: React.FC<IProduct> = ({
                     <img
                         width={461}
                         height={256}
-                        src={process.env.PUBLIC_URL + coverArl}
+                        src={coverUrl}
                         alt={name}
                         className={styles.container__card__image}
                     />

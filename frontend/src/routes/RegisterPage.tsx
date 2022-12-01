@@ -7,10 +7,10 @@ import { IRegisterData } from '../types/types';
 
 export const Register = () => {
     const navigate = useNavigate();
-    const { isAuth, token } = useAppSelector((state) => state.authReducer);
+    const { isAuth, token } = useAppSelector(state => state.authReducer);
     const dispatch = useAppDispatch();
     const { register, handleSubmit } = useForm<IRegisterData>();
-    const onSubmit: SubmitHandler<IRegisterData> = (data) =>
+    const onSubmit: SubmitHandler<IRegisterData> = data =>
         dispatch(registerAction(data));
     useEffect(() => {
         if (isAuth) {

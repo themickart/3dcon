@@ -5,10 +5,7 @@ import { SliderGroup } from '../../components/SliderGroup/SliderGroup';
 import { motion } from 'framer-motion';
 import styles from './ProjectPage.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import {
-    fetchProduct,
-    fetchProductsWithoutOne,
-} from '../../store/actionCreators';
+import { fetchProduct } from '../../store/actionCreators';
 import { IProduct } from '../../types/types';
 
 function getRandomProducts(products: IProduct[]): IProduct[] {
@@ -42,15 +39,14 @@ export const ProjectPage: React.FC = () => {
         },
         error,
         loading,
-    } = useAppSelector((state) => state.productDetailReducer);
+    } = useAppSelector(state => state.productDetailReducer);
     const {
         list,
         loading: productsLoading,
         error: productsError,
-    } = useAppSelector((state) => state.productReducer);
+    } = useAppSelector(state => state.productReducer);
     useEffect(() => {
         dispatch(fetchProduct(+productId!));
-        dispatch(fetchProductsWithoutOne(+productId!));
     }, [dispatch, productId]);
     return (
         <div>
@@ -139,7 +135,7 @@ export const ProjectPage: React.FC = () => {
                                     }
                                 />
                                 <div>
-                                    {tags?.map((tag) => (
+                                    {tags?.map(tag => (
                                         <div
                                             className={
                                                 styles.topSection__authorTags__tags__tag
@@ -243,26 +239,33 @@ export const ProjectPage: React.FC = () => {
                             Похожие товары
                         </h1>
                         <div className={styles.similars__products}>
-                            {productsError
-                                ? productsError
-                                : productsLoading
-                                ? 'Загрузка...'
-                                : list?.length &&
-                                  getRandomProducts(list)?.map((p) => (
-                                      <motion.div
-                                          key={p?.id}
-                                          whileHover={{
-                                              scale: 1.05,
-                                              margin: 0,
-                                          }}
-                                          whileTap={{ scale: 0.95 }}
-                                          className={
-                                              styles.similars__products__product
-                                          }
-                                      >
-                                          <ProductCard {...p!} />
-                                      </motion.div>
-                                  ))}
+                            {productsError ? (
+                                productsError
+                            ) : productsLoading ? (
+                                'Загрузка...'
+                            ) : list?.length > 2 ? (
+                                getRandomProducts(
+                                    list.filter(({ id }) => id !== +productId!)
+                                )?.map(p => (
+                                    <motion.div
+                                        key={p?.id}
+                                        whileHover={{
+                                            scale: 1.05,
+                                            margin: 0,
+                                        }}
+                                        whileTap={{ scale: 0.95 }}
+                                        className={
+                                            styles.similars__products__product
+                                        }
+                                    >
+                                        <ProductCard {...p!} />
+                                    </motion.div>
+                                ))
+                            ) : (
+                                <div className="mb-10">
+                                    Похожие товары не найдены
+                                </div>
+                            )}
                         </div>
                     </div>
                 </>

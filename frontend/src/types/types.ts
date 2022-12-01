@@ -31,7 +31,7 @@ export interface IProduct {
     id?: number;
     category: string;
     name: string;
-    coverArl: string;
+    coverUrl: string;
     gallery: string[];
     price: number;
     author: IAuthor;

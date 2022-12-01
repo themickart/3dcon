@@ -1,42 +1,35 @@
-import React, { useState } from 'react';
-// import { useForm, SubmitHandler } from "react-hook-form";
+import { FC, useContext } from 'react';
 import styles from './ModelCard.module.scss';
-// import { useAppDispatch } from "../../hooks/reduxHooks";
-// import { deleteModel } from "../../store/actionCreators";
 import { AnimatePresence, motion } from 'framer-motion';
 import useOutside from '../../hooks/outside';
 import { IProduct } from '../../types/types';
+import { ModelInfoEdit } from './ModelInfoEdit';
+import ModelContext from './ModelContext';
 
-// interface InputType {
-//   id: number;
-//   title: string;
-//   category: string;
-//   price: string;
-// }
+export interface InputType {
+    id: number;
+    name: string;
+    category: string;
+    price: number;
+}
 
-export const ModelCard: React.FC<IProduct> = ({
-    category,
-    coverArl,
-    price,
-    name,
-    viewsCount,
-    description,
-}) => {
-    // const dispatch = useAppDispatch();
+export const ModelCard: FC<
+    Omit<
+        IProduct,
+        | 'createdAt'
+        | 'isViewed'
+        | 'isLiked'
+        | 'tags'
+        | 'license'
+        | 'likesCount'
+        | 'author'
+        | 'gallery'
+        | 'info'
+    >
+> = ({ id, category, coverUrl, price, name, viewsCount, description }) => {
+    const setIsVisibleForm = useContext(ModelContext)[1];
     const basePath = process.env.PUBLIC_URL;
-    const [isVisibleForm, setIsVisibleForm] = useState(false);
-    // const { register, handleSubmit, setValue } = useForm<InputType>();
     const { ref, isShow, setIsShow } = useOutside(false);
-
-    // const onSubmit: SubmitHandler<InputType> = ({
-    //   id,
-    //   category,
-    //   price,
-    //   title,
-    // }) => {
-    //   setIsVisibleForm(false);
-    //   dispatch(editModel(category, price, title, id));
-    // };
 
     return (
         <AnimatePresence mode="popLayout">
@@ -47,16 +40,15 @@ export const ModelCard: React.FC<IProduct> = ({
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ type: 'tween' }}
             >
-                <div onClick={() => setIsShow((prev) => !prev)}>
+                <div onClick={() => setIsShow(prev => !prev)}>
                     {isShow ? (
                         <div
                             ref={ref}
-                            className="absolute z-10 pb-5 bg-[#80e0a1] cursor-pointer
-              w-[300px] flex flex-col justify-between items-center rounded-[40px] my-10 ml-8 mr-20"
+                            className="absolute z-10 pb-5 bg-[#80e0a1] cursor-pointer w-[300px] flex flex-col justify-between items-center rounded-[40px] my-10 ml-8 mr-20"
                         >
                             <img
                                 className={styles.model__infoImg}
-                                src={coverArl}
+                                src={coverUrl}
                                 alt=""
                             />
                             <div className="px-4">
@@ -67,7 +59,7 @@ export const ModelCard: React.FC<IProduct> = ({
                     ) : (
                         <img
                             className={styles.model__img}
-                            src={coverArl}
+                            src={coverUrl}
                             alt=""
                         />
                     )}
@@ -77,59 +69,26 @@ export const ModelCard: React.FC<IProduct> = ({
                         isShow && 'ml-[362px]'
                     }`}
                 >
-                    {isVisibleForm ? (
-                        // <form
-                        //   className="h-[100%] w-[45%] flex flex-col justify-around border"
-                        //   onSubmit={handleSubmit(onSubmit)}
-                        // >
-                        //   <input
-                        //     className="border rounded-xl mx-3 text-center"
-                        //     type="text"
-                        //     placeholder="Название"
-                        //     defaultValue={title}
-                        //     {...register("title", { required: true })}
-                        //   />
-                        //   <input
-                        //     className="border rounded-xl mx-3 text-center"
-                        //     type="text"
-                        //     placeholder="Категория"
-                        //     defaultValue={category}
-                        //     {...register("category", { required: true })}
-                        //   />
-                        //   <input
-                        //     className="border rounded-xl mx-3 text-center"
-                        //     type="text"
-                        //     placeholder="Цена"
-                        //     defaultValue={price}
-                        //     {...register("price", { required: true })}
-                        //   />
-                        //   <button
-                        //     type="submit"
-                        //     className="border rounded-xl mx-3 hover:bg-[#469fda]"
-                        //     onClick={() => setValue("id", id)}
-                        //   >
-                        //     Сохранить
-                        //   </button>
-                        // </form>
-                        <></>
-                    ) : (
-                        <div
-                            className={'flex flex-col justify-between w-[50%]'}
-                        >
-                            <p>
-                                <span className="opacity-30">Название:</span>{' '}
-                                <span className="opacity-50">{name}</span>
-                            </p>
-                            <p>
-                                <span className="opacity-30">Категория:</span>{' '}
-                                <span className="opacity-50">{category}</span>
-                            </p>
-                            <p>
-                                <span className="opacity-30">Цена:</span>{' '}
-                                <span className="opacity-50">{price}</span>
-                            </p>
-                        </div>
-                    )}
+                    <ModelInfoEdit
+                        category={category}
+                        id={id!}
+                        name={name}
+                        price={price}
+                    />
+                    <div className={'flex flex-col justify-between w-[50%]'}>
+                        <p>
+                            <span className="opacity-30">Название:</span>{' '}
+                            <span className="opacity-50">{name}</span>
+                        </p>
+                        <p>
+                            <span className="opacity-30">Категория:</span>{' '}
+                            <span className="opacity-50">{category}</span>
+                        </p>
+                        <p>
+                            <span className="opacity-30">Цена:</span>{' '}
+                            <span className="opacity-50">{price}</span>
+                        </p>
+                    </div>
                     <div className="flex flex-col w-[50%]">
                         <p className={'mb-6'}>
                             {' '}
@@ -144,7 +103,7 @@ export const ModelCard: React.FC<IProduct> = ({
                 </div>
 
                 <div className={styles.model__functions}>
-                    <button onClick={() => setIsVisibleForm((prev) => !prev)}>
+                    <button onClick={() => setIsVisibleForm(true)}>
                         <img src={basePath + '/profile/edit.svg'} alt="" />
                     </button>
                     <button>

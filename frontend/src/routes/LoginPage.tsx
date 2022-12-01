@@ -6,11 +6,11 @@ import { fetchUser, login } from '../store/actionCreators';
 import { ILoginData } from '../types/types';
 
 export const LoginPage = () => {
-    const { isAuth, token } = useAppSelector((state) => state.authReducer);
+    const { isAuth, token } = useAppSelector(state => state.authReducer);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { register, handleSubmit } = useForm<ILoginData>();
-    const onSubmit: SubmitHandler<ILoginData> = (data) => dispatch(login(data));
+    const onSubmit: SubmitHandler<ILoginData> = data => dispatch(login(data));
 
     useEffect(() => {
         if (isAuth) {

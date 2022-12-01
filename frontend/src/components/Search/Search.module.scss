@@ -3,9 +3,7 @@
     &__form {
         @apply bg-white rounded-[35px] h-[45px] flex justify-between items-center pl-[61px] pr-[19px] overflow-hidden;
         &__input {
-            @apply text-xl bg-white outline-none opacity-100
+            @apply text-xl bg-white outline-none opacity-100;
         }
     }
 }
-
-

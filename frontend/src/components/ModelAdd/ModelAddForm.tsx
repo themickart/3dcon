@@ -1,6 +1,6 @@
 import { useContext, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import context from '../../Context/ModalContext';
+import context from './ModelAddContext';
 import { IProduct } from '../../types/types';
 import { addModel } from '../../store/actionCreators';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
@@ -14,15 +14,15 @@ export interface IModelInput {
     price: number;
 }
 
-const ModalForm = () => {
+const ModelAddForm = () => {
     const { register, handleSubmit, reset, setValue } = useForm<IModelInput>();
     const [isShow, setIsShow] = useContext(context);
-    const token = useAppSelector((state) => state.authReducer.token);
+    const token = useAppSelector(state => state.authReducer.token);
     const pickCoverUrlRef = useRef<HTMLInputElement>(null);
     const { avatarArl, reputation, salesCount } = useAppSelector(
-        (state) => state.userReducer
+        state => state.userReducer
     );
-    const { username } = useAppSelector((state) => state.authReducer);
+    const { username } = useAppSelector(state => state.authReducer);
     const dispatch = useAppDispatch();
     const onSubmit: SubmitHandler<IModelInput> = ({
         cover,
@@ -41,14 +41,15 @@ const ModalForm = () => {
             likesCount: 0,
             viewsCount: 0,
             info: {},
-            category: '-',
+            category: '',
             name,
-            coverArl: cover.name,
+            coverUrl: cover.name,
             description,
             license,
             price,
         };
         const data: IModelInput = { name, cover, description, license, price };
+        console.log(cover);
         console.log(product);
         dispatch(addModel(product, data, token));
         reset();
@@ -115,6 +116,6 @@ const ModalForm = () => {
     );
 };
 
-export default ModalForm;
+export default ModelAddForm;
 
 // БАГ! - при переходе /profile вылезает модальное окно

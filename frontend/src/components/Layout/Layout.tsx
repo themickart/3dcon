@@ -1,16 +1,15 @@
-import React from "react";
-import { Header } from "../Header/Header";
-import { Outlet } from "react-router-dom";
-import styles from "./Layout.module.scss";
-import ModalItem from "../ModalItem";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import styles from './Layout.module.scss';
+import ModelAddItem from '../ModelAdd/ModelAddItem';
 
 export const Layout: React.FC = () => {
-  return (
-    <div>
-      <ModalItem></ModalItem>
-      <main className={styles.container}>
-        <Outlet />
-      </main>
-    </div>
-  );
+    return (
+        <div>
+            <ModelAddItem />
+            <main className={styles.container}>
+                <Outlet />
+            </main>
+        </div>
+    );
 };

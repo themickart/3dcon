@@ -1,11 +1,9 @@
 .container {
     @apply flex items-center w-[192px] max-h-[70px] ml-[69px];
     &__account {
-        @apply ml-[21px]
+        @apply ml-[21px];
     }
     &__icons {
-        @apply flex justify-between w-[266px]
+        @apply flex justify-between w-[266px];
     }
 }
-
-
