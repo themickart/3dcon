@@ -1,7 +1,6 @@
 .wrapper {
     @apply w-[1436px] text-[26px] border-t border-solid border-black border-b h-[108px] flex items-center justify-between pl-[35px] pr-[50px];
     &__options {
-        @apply w-[220px] flex justify-between
+        @apply w-[220px] flex justify-between;
     }
 }
-

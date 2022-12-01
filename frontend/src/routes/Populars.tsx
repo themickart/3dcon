@@ -1,5 +1,5 @@
-import React from "react";
+import React from 'react';
 
 export const Populars: React.FC = () => {
-  return <div>Populars</div>;
+    return <div>Populars</div>;
 };
