@@ -4,9 +4,7 @@ import (
 	"api/internal"
 	"fmt"
 	"github.com/google/uuid"
-	"io/fs"
 	"os"
-	"syscall"
 )
 
 const storageName = internal.Filestorage
@@ -22,15 +20,7 @@ type FileStorage struct {
 }
 
 func NewFileStorage() *FileStorage {
-	err := os.Mkdir(storageName, os.ModePerm)
-	if err == nil {
-		return &FileStorage{}
-	}
-	pathError, ok := err.(*fs.PathError)
-	if !ok || (ok && pathError.Err != syscall.ERROR_ALREADY_EXISTS) {
-		fmt.Print("!!!! " + err.Error())
-		os.Exit(0)
-	}
+	_ = os.Mkdir(storageName, os.ModePerm)
 	return &FileStorage{}
 }
 
