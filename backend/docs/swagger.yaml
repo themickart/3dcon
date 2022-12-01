@@ -108,6 +108,21 @@ info:
   contact: {}
   title: 3Dcon
 paths:
+  /account/delete:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.ModelDto'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - account
   /account/me:
     get:
       consumes:
@@ -237,6 +252,31 @@ paths:
           description: Bad Request
           schema:
             type: string
+      tags:
+      - product
+  /products/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
       tags:
       - product
   /products/like/{id}:
