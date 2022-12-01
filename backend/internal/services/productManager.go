@@ -18,11 +18,11 @@ func NewProductManager(db *gorm.DB) *ProductManager {
 	}
 }
 
-func (pm *ProductManager) CreateProduct(model *product.Product) error {
+func (pm *ProductManager) Create(model *product.Product) error {
 	return pm.db.Create(model).Error
 }
 
-func (pm *ProductManager) GetProductById(id uint) (*product.Product, error) {
+func (pm *ProductManager) GetById(id uint64) (*product.Product, error) {
 	result := &product.Product{}
 	err := pm.db.Preload("Author").Where("id = ?", id).First(result).Error
 	if err = pm.handleError(err); err != nil {
@@ -31,7 +31,7 @@ func (pm *ProductManager) GetProductById(id uint) (*product.Product, error) {
 	return result, nil
 }
 
-func (pm *ProductManager) GetAllProductsByUserId(id uint) ([]*product.Product, error) {
+func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	err := pm.db.Preload("Author").Where("author_id = ?", id).Find(&products).Error
 	if err = pm.handleError(err); err != nil {
@@ -40,14 +40,7 @@ func (pm *ProductManager) GetAllProductsByUserId(id uint) ([]*product.Product, e
 	return products, nil
 }
 
-func (pm *ProductManager) handleError(err error) error {
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return errors.New("не найдено")
-	}
-	return err
-}
-
-func (pm *ProductManager) GetProducts(count int, offset int) ([]*product.Product, error) {
+func (pm *ProductManager) GetCount(count int, offset int) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	err := pm.db.Preload("Author").Offset(offset).Limit(count).Find(&products).Error
 	if err != nil {
@@ -57,7 +50,7 @@ func (pm *ProductManager) GetProducts(count int, offset int) ([]*product.Product
 }
 
 func (pm *ProductManager) Update(updaterId uint, updateIndo *product.UpdateInfo) error {
-	products, err := pm.GetAllProductsByUserId(updaterId)
+	products, err := pm.GetAllByUserId(updaterId)
 	if err != nil {
 		return err
 	}
@@ -73,4 +66,19 @@ func (pm *ProductManager) Update(updaterId uint, updateIndo *product.UpdateInfo)
 	}
 	updatedProduct := product.Update(*productToUpdate, updateIndo)
 	return pm.db.Save(updatedProduct).Error
+}
+
+func (pm *ProductManager) Delete(model *product.Product) error {
+	err := pm.db.Unscoped().Delete(model).Error
+	if err = pm.handleError(err); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (pm *ProductManager) handleError(err error) error {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return errors.New("не найдено")
+	}
+	return err
 }

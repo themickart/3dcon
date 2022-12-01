@@ -39,7 +39,7 @@ func (h *Handler) Like(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.ExtractUser(c)
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -66,7 +66,7 @@ func (h *Handler) RemoveLike(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.ExtractUser(c)
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -93,7 +93,7 @@ func (h *Handler) View(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.ExtractUser(c)
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 

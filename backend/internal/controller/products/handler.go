@@ -3,6 +3,7 @@ package products
 import (
 	"api/internal/controller/appError"
 	"api/internal/domain/product"
+	"api/internal/domain/user"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -16,6 +17,7 @@ type Handler struct {
 	fileStorage    *services.FileStorage
 	likeManager    *services.LikeManager
 	viewManager    *services.ViewManager
+	jwtUtils       *services.JwtUtils
 }
 
 func NewHandler(db *gorm.DB) *Handler {
@@ -25,6 +27,7 @@ func NewHandler(db *gorm.DB) *Handler {
 		productManager: services.NewProductManager(db),
 		likeManager:    services.NewLikeManager(db),
 		viewManager:    services.NewViewManager(db),
+		jwtUtils:       services.NewJwtUtils(),
 	}
 }
 
@@ -37,16 +40,15 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
 func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
-	id := c.Param("id")
-	productId, err := strconv.ParseUint(id, 10, 8)
+	productId, err := strconv.ParseUint(c.Param("id"), 10, 8)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	productModel, err := h.productManager.GetProductById(uint(productId))
+	productModel, err := h.productManager.GetById(productId)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	currentUserModel, err := h.userManager.ExtractUser(c)
+	currentUserModel, err := h.userManager.Extract(c)
 	productDto := product.NewDto(productModel)
 	if err == nil {
 		newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
@@ -67,8 +69,8 @@ func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
 // @Failure 400 {string} error
 // @Router /products/my [get]
 func (h *Handler) GetMyProducts(c *gin.Context) *appError.AppError {
-	userModel, err := h.userManager.ExtractUser(c)
-	products, err := h.productManager.GetAllProductsByUserId(userModel.ID)
+	userModel, err := h.userManager.Extract(c)
+	products, err := h.productManager.GetAllByUserId(userModel.ID)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -107,12 +109,12 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.ExtractUser(c)
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel := product.New(name, url, description, licence, "не реализовано", userModel.ID, price)
-	err = h.productManager.CreateProduct(productModel)
+	err = h.productManager.Create(productModel)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
@@ -145,8 +147,8 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 func (h *Handler) GetProducts(c *gin.Context) *appError.AppError {
 	offset := 0
 	count := 20
-	products, err := h.productManager.GetProducts(count, offset)
-	currentUserModel, _ := h.userManager.ExtractUser(c)
+	products, err := h.productManager.GetCount(count, offset)
+	currentUserModel, _ := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -196,12 +198,44 @@ func (h *Handler) Update(c *gin.Context) *appError.AppError {
 	if err := c.BindJSON(&updateIndo); err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.ExtractUser(c)
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil {
 		return appError.New(err, err.Error(), http.StatusForbidden)
+	}
+	c.Status(http.StatusOK)
+	return nil
+}
+
+// Delete
+// @Tags product
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param id path int true "id"
+// @Success 200 {string} ok
+// @Failure 400 {string} error
+// @Router /products/delete/{id} [delete]
+func (h *Handler) Delete(c *gin.Context) *appError.AppError {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 8)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	claims, err := h.jwtUtils.ExtractClaims(c)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	productModel, err := h.productManager.GetById(id)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	if productModel.Author.Username != claims[user.Username].(string) {
+		return appError.New(err, "можно удалять только свои продукты", http.StatusForbidden)
+	}
+	if err = h.productManager.Delete(productModel); err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
 	return nil

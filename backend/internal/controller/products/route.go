@@ -15,4 +15,5 @@ func Route(db *gorm.DB, r *gin.Engine) {
 	products.GET("/:id", controller.AppHandler(h.GetProductsById).ServeHTTP)
 	products.GET("", controller.AppHandler(h.GetProducts).ServeHTTP)
 	products.PATCH("/update", auth.Required(), controller.AppHandler(h.Update).ServeHTTP)
+	products.DELETE("/delete/:id", auth.Required(), controller.AppHandler(h.Delete).ServeHTTP)
 }

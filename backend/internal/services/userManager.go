@@ -19,16 +19,15 @@ func NewUserManger(db *gorm.DB) *UserManager {
 	}
 }
 
-func (userManger *UserManager) CreateUser(model *user.User) error {
-	_, err := userManger.GetUserByUsername(model.Username) //TODO
+func (userManger *UserManager) Create(model *user.User) error {
+	_, err := userManger.GetByUsername(model.Username) //TODO
 	if err == nil {
 		return errors.New("такой пользователь уже существует")
 	}
-	userManger.db.Table("users").Create(&model)
-	return nil
+	return userManger.db.Table("users").Create(&model).Error
 }
 
-func (userManger *UserManager) GetUserByUsername(username string) (*user.User, error) {
+func (userManger *UserManager) GetByUsername(username string) (*user.User, error) {
 	result := &user.User{}
 	err := userManger.db.Model(result).Where("username = ?", username).First(result).Error
 	if err = userManger.handleError(err); err != nil {
@@ -37,7 +36,7 @@ func (userManger *UserManager) GetUserByUsername(username string) (*user.User, e
 	return result, nil
 }
 
-func (userManger *UserManager) GetUserById(id uint) (*user.User, error) {
+func (userManger *UserManager) GetById(id uint) (*user.User, error) {
 	result := &user.User{}
 	err := userManger.db.Model(result).Where("id = ?", id).First(result).Error
 	if err = userManger.handleError(err); err != nil {
@@ -46,13 +45,21 @@ func (userManger *UserManager) GetUserById(id uint) (*user.User, error) {
 	return result, err
 }
 
-func (userManger *UserManager) ExtractUser(g *gin.Context) (*user.User, error) {
+func (userManger *UserManager) Delete(user *user.User) error {
+	err := userManger.db.Unscoped().Delete(user).Error
+	if err = userManger.handleError(err); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (userManger *UserManager) Extract(g *gin.Context) (*user.User, error) {
 	claims, err := userManger.jwtUtils.ExtractClaims(g)
 	if err != nil {
 		return nil, err
 	}
 	username := claims[user.Username].(string)
-	userModel, err := userManger.GetUserByUsername(username)
+	userModel, err := userManger.GetByUsername(username)
 	if err != nil {
 		return nil, err
 	}

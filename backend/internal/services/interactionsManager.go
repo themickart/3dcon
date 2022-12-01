@@ -31,7 +31,7 @@ func (im *InteractionManager) RemoveLike(like *interactions.Like) error {
 	}
 	im.removeLikeMutex.Lock()
 	defer im.removeLikeMutex.Unlock()
-	productModel, err := im.productManager.GetProductById(like.ProductId)
+	productModel, err := im.productManager.GetById(uint64(like.ProductId))
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (im *InteractionManager) Like(like *interactions.Like) error {
 	}
 	im.likeMutex.Lock() //TODO
 	defer im.likeMutex.Unlock()
-	productModel, err := im.productManager.GetProductById(like.ProductId)
+	productModel, err := im.productManager.GetById(uint64(like.ProductId))
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (im *InteractionManager) View(view *interactions.View) error {
 	}
 	im.viewMutex.Lock()
 	defer im.viewMutex.Unlock()
-	productModel, err := im.productManager.GetProductById(view.ProductId)
+	productModel, err := im.productManager.GetById(uint64(view.ProductId))
 	if err != nil {
 		return err
 	}

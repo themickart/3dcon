@@ -9,8 +9,8 @@ type Product struct {
 	gorm.Model
 	Name        string
 	AuthorId    uint
-	Category    string //TODO
-	Author      user.User
+	Category    string    //TODO
+	Author      user.User `gorm:"constraint:OnDelete:CASCADE"`
 	CoverUrl    string
 	Price       float64
 	LikesCount  uint

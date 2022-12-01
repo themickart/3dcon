@@ -2,6 +2,7 @@ version: '3.9'
 
 services:
   backend:
+    container_name: backend
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,7 +15,8 @@ services:
       - backend:/data/backend
     depends_on:
       - postgres
-  postgres: 
+  postgres:
+    container_name: postgres
     image: postgres:latest
     environment:
       - POSTGRES_DB=golang

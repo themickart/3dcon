@@ -35,7 +35,7 @@ func (h *Handler) HandleLogin(c *gin.Context) *appError.AppError {
 	if err := c.BindJSON(&loginModel); err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	userModel, err := h.userManager.GetUserByUsername(loginModel.Username)
+	userModel, err := h.userManager.GetByUsername(loginModel.Username)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusConflict)
 	}
@@ -65,7 +65,7 @@ func (h *Handler) HandleJoin(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	err = h.userManager.CreateUser(userModel)
+	err = h.userManager.Create(userModel)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusConflict)
 	}

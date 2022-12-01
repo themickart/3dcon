@@ -1,12 +1,15 @@
 package services
 
 import (
+	"api/internal"
 	"fmt"
 	"github.com/google/uuid"
+	"io/fs"
 	"os"
+	"syscall"
 )
 
-const storageName = "filestorage"
+const storageName = internal.Filestorage
 
 type UploadInput struct {
 	File   []byte
@@ -19,7 +22,15 @@ type FileStorage struct {
 }
 
 func NewFileStorage() *FileStorage {
-	_ = os.Mkdir(storageName, os.ModePerm)
+	err := os.Mkdir(storageName, os.ModePerm)
+	if err == nil {
+		return &FileStorage{}
+	}
+	pathError, ok := err.(*fs.PathError)
+	if !ok || (ok && pathError.Err != syscall.ERROR_ALREADY_EXISTS) {
+		fmt.Print("!!!! " + err.Error())
+		os.Exit(0)
+	}
 	return &FileStorage{}
 }
 
