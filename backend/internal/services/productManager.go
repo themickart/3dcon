@@ -40,7 +40,7 @@ func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	return products, nil
 }
 
-func (pm *ProductManager) GetCount(count int, offset int) ([]*product.Product, error) {
+func (pm *ProductManager) Get(count int, offset int) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	err := pm.db.Preload("Author").Offset(offset).Limit(count).Find(&products).Error
 	if err != nil {

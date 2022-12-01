@@ -19,7 +19,7 @@ func NewHandler() *Handler {
 	}
 }
 
-// GetFile
+// Get
 // @Tags filestorage
 // @Accept json
 // @Produce json
@@ -28,14 +28,14 @@ func NewHandler() *Handler {
 // @Success 200 {string} string
 // @Failure 400 {string} error
 // @Router /filestorage/{bucket}/{filename} [get]
-func (h *Handler) GetFile(c *gin.Context) *appError.AppError {
+func (h *Handler) Get(c *gin.Context) *appError.AppError {
 	filename := c.Param("filename")
 	bucket := c.Param("bucket")
 	file, err := h.fileStorage.Get(bucket, filename)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	err = h.fileUtils.WriteFile(c.Writer, file)
+	err = h.fileUtils.Write(c.Writer, file)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}

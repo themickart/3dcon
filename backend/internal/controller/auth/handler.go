@@ -22,7 +22,7 @@ func NewHandler(db *gorm.DB) *Handler {
 	}
 }
 
-// HandleLogin
+// Login
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -30,7 +30,7 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 200 {string} token
 // @Failure 400 {string} error
 // @Router /auth/login [post]
-func (h *Handler) HandleLogin(c *gin.Context) *appError.AppError {
+func (h *Handler) Login(c *gin.Context) *appError.AppError {
 	var loginModel auth.LoginModel
 	if err := c.BindJSON(&loginModel); err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
@@ -47,7 +47,7 @@ func (h *Handler) HandleLogin(c *gin.Context) *appError.AppError {
 	return nil
 }
 
-// HandleJoin
+// Join
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -55,7 +55,7 @@ func (h *Handler) HandleLogin(c *gin.Context) *appError.AppError {
 // @Success 201 {string} token
 // @Failure 400 {string} error
 // @Router /auth/join [post]
-func (h *Handler) HandleJoin(c *gin.Context) *appError.AppError {
+func (h *Handler) Join(c *gin.Context) *appError.AppError {
 	var joinModel auth.JoinModel
 	if err := c.BindJSON(&joinModel); err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)

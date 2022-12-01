@@ -21,7 +21,7 @@ func NewHandler() *Handler {
 
 func (h *Handler) Avatar(c *gin.Context) *appError.AppError {
 	file, _ := os.Open(internal.DefaultAvatar)
-	if err := h.fileUtils.WriteFile(c.Writer, file); err != nil {
+	if err := h.fileUtils.Write(c.Writer, file); err != nil {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
 	c.Status(http.StatusOK)

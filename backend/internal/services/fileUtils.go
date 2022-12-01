@@ -12,7 +12,7 @@ func NewFileUtils() *FileUtils {
 	return &FileUtils{}
 }
 
-func (FileUtils) WriteFile(writer io.Writer, file *os.File) error {
+func (FileUtils) Write(writer io.Writer, file *os.File) error {
 	data := make([]byte, 1024)
 	for {
 		n, err := file.Read(data)

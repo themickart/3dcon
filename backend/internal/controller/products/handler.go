@@ -31,7 +31,7 @@ func NewHandler(db *gorm.DB) *Handler {
 	}
 }
 
-// GetProductsById
+// GetById
 // @Tags product
 // @Accept json
 // @Produce json
@@ -39,7 +39,7 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 200 {object} product.ModelDto
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
-func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
+func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 	productId, err := strconv.ParseUint(c.Param("id"), 10, 8)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
@@ -60,7 +60,7 @@ func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
 	return nil
 }
 
-// GetMyProducts
+// GetMy
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
@@ -68,7 +68,7 @@ func (h *Handler) GetProductsById(c *gin.Context) *appError.AppError {
 // @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
 // @Router /products/my [get]
-func (h *Handler) GetMyProducts(c *gin.Context) *appError.AppError {
+func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
 	userModel, err := h.userManager.Extract(c)
 	products, err := h.productManager.GetAllByUserId(userModel.ID)
 	if err != nil {
@@ -137,17 +137,17 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 	return
 }
 
-// GetProducts
+// Get
 // @Tags product
 // @Accept json
 // @Produce json
 // @Success 200 {object} product.ModelDto[]
 // @Failure 400 {string} error
 // @Router /products [get]
-func (h *Handler) GetProducts(c *gin.Context) *appError.AppError {
+func (h *Handler) Get(c *gin.Context) *appError.AppError {
 	offset := 0
 	count := 20
-	products, err := h.productManager.GetCount(count, offset)
+	products, err := h.productManager.Get(count, offset)
 	currentUserModel, _ := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
