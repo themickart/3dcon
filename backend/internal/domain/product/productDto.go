@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type ModelDto struct {
+type Dto struct {
 	Id          uint              `json:"id"`
 	CreatedAt   time.Time         `json:"createdAt"`
 	Name        string            `json:"name"`
@@ -24,8 +24,8 @@ type ModelDto struct {
 	Category    string            `json:"category"` //TODO
 }
 
-func NewDto(model *Product) *ModelDto {
-	return &ModelDto{
+func NewDto(model *Product) *Dto {
+	return &Dto{
 		Id:          model.ID,
 		Name:        model.Name,
 		CoverUrl:    model.CoverUrl,
@@ -48,7 +48,7 @@ func NewDto(model *Product) *ModelDto {
 	}
 }
 
-func NewViewedAndLikedDtoFromDto(dto ModelDto, isViewed, isLiked bool) *ModelDto {
+func NewViewedAndLikedDtoFromDto(dto Dto, isViewed, isLiked bool) *Dto {
 	dto.IsViewed = isViewed
 	dto.IsLiked = isLiked
 	return &dto

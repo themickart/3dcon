@@ -2,7 +2,7 @@ package _default
 
 import (
 	"api/internal"
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"

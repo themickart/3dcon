@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"api/internal/domain/auth"
 	"api/internal/domain/user"
 	"api/internal/services"

@@ -1,7 +1,7 @@
 package interactions
 
 import (
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"api/internal/domain/interactions"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"

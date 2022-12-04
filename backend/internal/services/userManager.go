@@ -29,7 +29,7 @@ func (userManger *UserManager) Create(model *user.User) error {
 
 func (userManger *UserManager) GetByUsername(username string) (*user.User, error) {
 	result := &user.User{}
-	err := userManger.db.Model(result).Where("username = ?", username).First(result).Error
+	err := userManger.db.Where("username = ?", username).First(result).Error
 	if err = userManger.handleError(err); err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (userManger *UserManager) GetByUsername(username string) (*user.User, error
 
 func (userManger *UserManager) GetById(id uint) (*user.User, error) {
 	result := &user.User{}
-	err := userManger.db.Model(result).Where("id = ?", id).First(result).Error
+	err := userManger.db.Where("id = ?", id).First(result).Error
 	if err = userManger.handleError(err); err != nil {
 		return nil, err
 	}

@@ -7,14 +7,12 @@ import (
 )
 
 type ProductManager struct {
-	db          *gorm.DB
-	likeManager *LikeManager
+	db *gorm.DB
 }
 
 func NewProductManager(db *gorm.DB) *ProductManager {
 	return &ProductManager{
-		db:          db,
-		likeManager: NewLikeManager(db),
+		db: db,
 	}
 }
 
@@ -40,9 +38,20 @@ func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	return products, nil
 }
 
-func (pm *ProductManager) Get(count int, offset int) ([]*product.Product, error) {
+func (pm *ProductManager) Get(limit, offset int, orderBy, filter string, isDesc bool) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
-	err := pm.db.Preload("Author").Offset(offset).Limit(count).Find(&products).Error
+	db := pm.db.Preload("Author")
+	if orderBy != "" {
+		desc := ""
+		if isDesc {
+			desc = "desc"
+		}
+		db = db.Order(orderBy + " " + desc)
+	}
+	if filter != "" {
+		db = db.Where("category = ?", filter)
+	}
+	err := db.Offset(offset).Limit(limit).Find(&products).Error
 	if err != nil {
 		return nil, err
 	}
