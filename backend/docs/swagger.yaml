@@ -23,7 +23,7 @@ definitions:
     - password
     - username
     type: object
-  product.ModelDto:
+  product.Dto:
     properties:
       author:
         $ref: '#/definitions/user.ModelDto'
@@ -218,17 +218,42 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: orderBy
+        in: query
+        name: orderBy
+        type: string
+      - description: isDesc
+        in: query
+        name: isDesc
+        type: boolean
+      - description: filter
+        in: query
+        name: filterBy
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.ModelDto'
+            $ref: '#/definitions/product.Dto'
         "400":
           description: Bad Request
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       tags:
       - product
   /products/{id}:
@@ -247,11 +272,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.ModelDto'
+            $ref: '#/definitions/product.Dto'
         "400":
           description: Bad Request
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       tags:
       - product
   /products/delete/{id}:
@@ -314,7 +341,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/product.ModelDto'
+            $ref: '#/definitions/product.Dto'
         "400":
           description: Bad Request
           schema:
@@ -385,6 +412,11 @@ paths:
         name: cover
         required: true
         type: file
+      - description: category
+        in: formData
+        name: category
+        required: true
+        type: string
       - description: name
         in: formData
         name: name

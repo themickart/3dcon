@@ -189,6 +189,11 @@ const docTemplate = `{
         },
         "/products": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -198,11 +203,45 @@ const docTemplate = `{
                 "tags": [
                     "product"
                 ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "orderBy",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "isDesc",
+                        "name": "isDesc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "filter",
+                        "name": "filterBy",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.ModelDto"
+                            "$ref": "#/definitions/product.Dto"
                         }
                     },
                     "400": {
@@ -316,7 +355,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.ModelDto"
+                            "$ref": "#/definitions/product.Dto"
                         }
                     },
                     "400": {
@@ -439,6 +478,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "category",
+                        "name": "category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "name",
                         "name": "name",
                         "in": "formData",
@@ -519,6 +565,11 @@ const docTemplate = `{
         },
         "/products/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -541,7 +592,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/product.ModelDto"
+                            "$ref": "#/definitions/product.Dto"
                         }
                     },
                     "400": {
@@ -589,7 +640,7 @@ const docTemplate = `{
                 }
             }
         },
-        "product.ModelDto": {
+        "product.Dto": {
             "type": "object",
             "properties": {
                 "author": {
