@@ -1,7 +1,7 @@
 package filestorage
 
 import (
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"net/http"

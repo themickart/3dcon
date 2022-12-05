@@ -1,9 +1,10 @@
 package products
 
 import (
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
+	"api/internal/mappers"
 	"api/internal/services"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -15,9 +16,8 @@ type Handler struct {
 	userManager    *services.UserManager
 	productManager *services.ProductManager
 	fileStorage    *services.FileStorage
-	likeManager    *services.LikeManager
-	viewManager    *services.ViewManager
 	jwtUtils       *services.JwtUtils
+	productMapper  *mappers.Product
 }
 
 func NewHandler(db *gorm.DB) *Handler {
@@ -25,18 +25,18 @@ func NewHandler(db *gorm.DB) *Handler {
 		fileStorage:    services.NewFileStorage(),
 		userManager:    services.NewUserManger(db),
 		productManager: services.NewProductManager(db),
-		likeManager:    services.NewLikeManager(db),
-		viewManager:    services.NewViewManager(db),
+		productMapper:  mappers.NewProductMapper(db),
 		jwtUtils:       services.NewJwtUtils(),
 	}
 }
 
 // GetById
 // @Tags product
+// @Security ApiKeyAuth
 // @Accept json
 // @Produce json
 // @Param id path int true "id"
-// @Success 200 {object} product.ModelDto
+// @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
 func (h *Handler) GetById(c *gin.Context) *appError.AppError {
@@ -48,14 +48,8 @@ func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	currentUserModel, err := h.userManager.Extract(c)
-	productDto := product.NewDto(productModel)
-	if err == nil {
-		newProductDto, err := h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
-		if err == nil {
-			productDto = newProductDto
-		}
-	}
+	userModel, _ := h.userManager.Extract(c)
+	productDto := h.productMapper.ModelToDto(userModel, productModel)
 	c.JSON(http.StatusOK, productDto)
 	return nil
 }
@@ -65,24 +59,16 @@ func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} product.ModelDto[]
+// @Success 200 {object} product.Dto[]
 // @Failure 400 {string} error
 // @Router /products/my [get]
 func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
-	userModel, err := h.userManager.Extract(c)
+	userModel, _ := h.userManager.Extract(c)
 	products, err := h.productManager.GetAllByUserId(userModel.ID)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	productsDto := make([]*product.ModelDto, len(products))
-	for i, productModel := range products {
-		productModelDto := product.NewDto(productModel)
-		productModelDto, err = h.addViewedAndLiked(userModel.ID, productModel.ID, productModelDto)
-		if err != nil {
-			continue
-		}
-		productsDto[i] = productModelDto
-	}
+	productsDto := h.productMapper.ModelsToDto(products, userModel)
 	c.JSON(http.StatusOK, productsDto)
 	return nil
 }
@@ -94,6 +80,7 @@ func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
 // @Accept       multipart/form-data
 // @Produce      json
 // @Param        cover formData  file          true  "cover"
+// @Param        category formData  string         true  "category"
 // @Param        name formData  string          true  "name"
 // @Param        licence formData  string          true  "licence"
 // @Param        description formData  string          true  "description"
@@ -105,6 +92,7 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 	description := c.Request.FormValue("description") //TODO
 	licence := c.Request.FormValue("licence")
 	price, err := strconv.ParseFloat(c.Request.FormValue("price"), 32)
+	category := c.Request.FormValue("category")
 	url, _, err := h.uploadFile(c, "cover")
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
@@ -113,7 +101,7 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	productModel := product.New(name, url, description, licence, "не реализовано", userModel.ID, price)
+	productModel := product.New(name, url, description, licence, category, userModel.ID, price)
 	err = h.productManager.Create(productModel)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
@@ -139,49 +127,37 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 
 // Get
 // @Tags product
+// @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} product.ModelDto[]
+// @Param offset query int true "offset"
+// @Param limit query int true "limit"
+// @Param orderBy query string false "orderBy"
+// @Param isDesc query boolean false "isDesc"
+// @Param filterBy query string false "filter"
+// @Success 200 {object} product.Dto[]
 // @Failure 400 {string} error
 // @Router /products [get]
 func (h *Handler) Get(c *gin.Context) *appError.AppError {
-	offset := 0
-	count := 20
-	products, err := h.productManager.Get(count, offset)
-	currentUserModel, _ := h.userManager.Extract(c)
+	offset, err := strconv.ParseUint(c.Query("offset"), 9, 10)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	productsDto := make([]*product.ModelDto, len(products))
-	for i, productModel := range products {
-		if err != nil {
-			continue
-		}
-		productDto := product.NewDto(productModel)
-		if currentUserModel == nil {
-			productsDto[i] = productDto
-			continue
-		}
-		productDto, err = h.addViewedAndLiked(currentUserModel.ID, productModel.ID, productDto)
-		if err != nil {
-			continue
-		}
-		productsDto[i] = productDto
+	limit, err := strconv.ParseUint(c.Query("limit"), 9, 10)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
+	orderBy := c.Query("orderBy")
+	filterBy := c.Query("filterBy")
+	isDesc, _ := strconv.ParseBool(c.Query("isDesc"))
+	products, err := h.productManager.Get(int(limit), int(offset), orderBy, filterBy, isDesc)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	userModel, _ := h.userManager.Extract(c)
+	productsDto := h.productMapper.ModelsToDto(products, userModel)
 	c.JSON(http.StatusOK, productsDto)
 	return nil
-}
-
-func (h *Handler) addViewedAndLiked(userId, productId uint, productDto *product.ModelDto) (*product.ModelDto, error) {
-	isLiked, err := h.likeManager.LikedByIds(userId, productId)
-	if err != nil {
-		return nil, err
-	}
-	isViewed, err := h.viewManager.ViewedByIds(userId, productId)
-	if err != nil {
-		return nil, err
-	}
-	return product.NewViewedAndLikedDtoFromDto(*productDto, isViewed, isLiked), nil
 }
 
 // Update

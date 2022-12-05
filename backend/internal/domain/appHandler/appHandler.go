@@ -1,7 +1,7 @@
 package appHandler
 
 import (
-	"api/internal/controller/appError"
+	"api/internal/domain/appError"
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,7 +11,7 @@ func New(f func(c *gin.Context) *appError.AppError) AppHandler {
 	return f
 }
 
-func (fn AppHandler) ServeHTTP(c *gin.Context) {
+func (fn AppHandler) HTTP(c *gin.Context) {
 	if e := fn(c); e != nil {
 		c.JSON(e.Code, e.Message)
 	}
