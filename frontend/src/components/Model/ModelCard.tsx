@@ -1,10 +1,10 @@
-import { FC, useContext } from 'react';
-import styles from './ModelCard.module.scss';
 import { AnimatePresence, motion } from 'framer-motion';
+import { FC, useContext } from 'react';
 import useOutside from '../../hooks/outside';
 import { IProduct } from '../../types/types';
-import { ModelInfoEdit } from './ModelInfoEdit';
+import styles from './ModelCard.module.scss';
 import ModelContext from './ModelContext';
+import { ModelInfoEdit } from './ModelInfoEdit';
 
 export interface InputType {
     id: number;
@@ -30,6 +30,11 @@ export const ModelCard: FC<
     const setIsVisibleForm = useContext(ModelContext)[1];
     const basePath = process.env.PUBLIC_URL;
     const { ref, isShow, setIsShow } = useOutside(false);
+    // const dispatch = useAppDispatch(modelDeletingSuccess());
+
+    const deleteModelHandler = () => {
+        // dispatch(deleteModel(id))
+    }
 
     return (
         <AnimatePresence mode="popLayout">
@@ -65,9 +70,8 @@ export const ModelCard: FC<
                     )}
                 </div>
                 <div
-                    className={`w-[546px] h-[132px] mt-[67px] flex justify-between ${
-                        isShow && 'ml-[362px]'
-                    }`}
+                    className={`w-[546px] h-[132px] mt-[67px] flex justify-between ${isShow && 'ml-[362px]'
+                        }`}
                 >
                     <ModelInfoEdit
                         category={category}
@@ -110,9 +114,7 @@ export const ModelCard: FC<
                         <img src={basePath + '/profile/hide.svg'} alt="" />
                     </button>
                     <button
-                        onClick={() => {
-                            // dispatch(deleteModel(id))
-                        }}
+                        onClick={deleteModelHandler}
                     >
                         <img src={basePath + '/profile/delete.svg'} alt="" />
                     </button>

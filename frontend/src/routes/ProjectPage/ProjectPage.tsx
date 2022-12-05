@@ -5,8 +5,8 @@ import { SliderGroup } from '../../components/SliderGroup/SliderGroup';
 import { motion } from 'framer-motion';
 import styles from './ProjectPage.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { fetchProduct } from '../../store/actionCreators';
 import { IProduct } from '../../types/types';
+import { fetchProduct } from "../../store/actionCreators/actionCreatorsProduct";
 
 function getRandomProducts(products: IProduct[]): IProduct[] {
     const res = [] as IProduct[];

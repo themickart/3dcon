@@ -2,9 +2,10 @@ import { useContext, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import context from './ModelAddContext';
 import { IProduct } from '../../types/types';
-import { addModel } from '../../store/actionCreators';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { Modal } from 'antd';
+import { addModel } from "../../store/actionCreators/actionCreatorsProduct";
 
 export interface IModelInput {
     name: string;
@@ -24,6 +25,7 @@ const ModelAddForm = () => {
     );
     const { username } = useAppSelector(state => state.authReducer);
     const dispatch = useAppDispatch();
+
     const onSubmit: SubmitHandler<IModelInput> = ({
         cover,
         description,
@@ -49,8 +51,6 @@ const ModelAddForm = () => {
             price,
         };
         const data: IModelInput = { name, cover, description, license, price };
-        console.log(cover);
-        console.log(product);
         dispatch(addModel(product, data, token));
         reset();
         setIsShow(false);
@@ -58,7 +58,7 @@ const ModelAddForm = () => {
 
     interface Event<T = EventTarget> {
         target: T;
-    }
+    };
 
     const handleChange = (e: Event<HTMLInputElement>) => {
         setValue('cover', e.target.files?.[0]!);
@@ -118,4 +118,3 @@ const ModelAddForm = () => {
 
 export default ModelAddForm;
 
-// БАГ! - при переходе /profile вылезает модальное окно

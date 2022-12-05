@@ -2,9 +2,10 @@ import { Modal } from 'antd';
 import { FC, useContext } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { editModel } from '../../store/actionCreators';
+
 import { InputType } from './ModelCard';
 import ModelContext from './ModelContext';
+import { editModel } from "../../store/actionCreators/actionCreatorsProduct";
 
 export const ModelInfoEdit: FC<InputType> = ({ category, id, name, price }) => {
     const dispatch = useAppDispatch();
@@ -13,6 +14,7 @@ export const ModelInfoEdit: FC<InputType> = ({ category, id, name, price }) => {
     const { register, handleSubmit } = useForm<InputType>({
         defaultValues: { id, category, name, price },
     });
+
     const onSubmit: SubmitHandler<InputType> = ({ price, ...data }) => {
         // hm, price is string without using '+' and query's ruined, but ts say it's number...
         // if price is zero, also query's ruined

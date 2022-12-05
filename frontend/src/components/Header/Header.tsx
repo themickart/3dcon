@@ -11,51 +11,51 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 export const Header: FC = () => {
-    const { isAuth, username } = useAppSelector(state => state.authReducer);
-    const { avatarArl } = useAppSelector(state => state.userReducer);
-    const [avatar, setAvatar] = useState<string>('');
-    const setIsShow = useContext(ModelAddContext)[1];
-    const { pathname } = useLocation();
+	const {isAuth, username} = useAppSelector(state => state.authReducer);
+	const {avatarArl} = useAppSelector(state => state.userReducer);
+	const [avatar, setAvatar] = useState<string>('');
+	const setIsShow = useContext(ModelAddContext)[1];
+	const {pathname} = useLocation();
 
-    useEffect(() => {
-        (async () => setAvatar((await axios.get<string>(avatarArl)).data))();
-    }, [avatarArl]);
+	useEffect(() => {
+		(async () => setAvatar((await axios.get<string>(avatarArl)).data))();
+	}, [avatarArl]);
 
-    return (
-        <header className={styles.topbar}>
-            <Logo />
-            <Navbar
-                menuItems={[
-                    {
-                        title: 'Популярное',
-                        path: '/populars',
-                    },
-                    {
-                        title: 'Проекты',
-                        path: '/',
-                    },
-                    {
-                        title: 'Изображения',
-                        path: '/pictures',
-                    },
-                ]}
-            />
-            {isAuth && pathname.startsWith('/profile') ? (
-                <button
-                    className="text-[22.5px] bg-[#80e0a1] text-[#4f4f4f] w-[200px] h-[45px] rounded-[20px] ml-[53px]"
-                    onClick={() => setIsShow(true)}
-                >
-                    Загрузить
-                </button>
-            ) : (
-                <div className="w-[253px]"></div>
-            )}
-            <Search />
-            {isAuth ? (
-                <Profilebar name={username} avatar={avatar} />
-            ) : (
-                <Signbar />
-            )}
-        </header>
-    );
+	return (
+		<header className={styles.topbar}>
+			<Logo/>
+			<Navbar
+				menuItems={[
+					{
+						title: 'Популярное',
+						path: '/populars',
+					},
+					{
+						title: 'Проекты',
+						path: '/',
+					},
+					{
+						title: 'Изображения',
+						path: '/pictures',
+					},
+				]}
+			/>
+			{isAuth && pathname.startsWith('/profile') ? (
+				<button
+					className="text-[22.5px] bg-[#80e0a1] text-[#4f4f4f] w-[200px] h-[45px] rounded-[20px] ml-[53px]"
+					onClick={() => setIsShow(true)}
+				>
+					Загрузить
+				</button>
+			) : (
+				<div className="w-[253px]"></div>
+			)}
+			<Search/>
+			{isAuth ? (
+				<Profilebar name={username} avatar={avatar}/>
+			) : (
+				<Signbar/>
+			)}
+		</header>
+	);
 };
