@@ -40,14 +40,17 @@ export const ProjectPage: React.FC = () => {
         error,
         loading,
     } = useAppSelector(state => state.productDetailReducer);
+
     const {
         list,
         loading: productsLoading,
         error: productsError,
     } = useAppSelector(state => state.productReducer);
+
     useEffect(() => {
         dispatch(fetchProduct(+productId!));
     }, [dispatch, productId]);
+
     return (
         <div>
             {error ? (

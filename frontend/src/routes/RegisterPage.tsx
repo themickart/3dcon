@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { IRegisterData } from '../types/types';
 import { fetchUser, register as registerAction } from "../store/actionCreators/actionCreatorsLogin";
-import { Alert, Space } from "antd";
+import Error from "../components/Error/Error";
 
 export const Register = () => {
 	const navigate = useNavigate();
@@ -44,9 +44,7 @@ export const Register = () => {
 									}
 								})}
 						/>
-						{errors.email && (<Space className='text-red-500'>
-							<Alert message={errors.email.message} type='error'/>
-						</Space>)}
+						<Error error={errors.email} errorMessage={errors.email?.message}/>
 						<label htmlFor="username">Имя</label>
 						<input
 							type="text"
@@ -60,9 +58,7 @@ export const Register = () => {
 									}
 								})}
 						/>
-						{errors.username && (<Space className='text-red-500'>
-							<Alert message={errors.username.message} type='error'/>
-						</Space>)}
+						<Error error={errors.username} errorMessage={errors.username?.message}/>
 						<label htmlFor="password">Пароль</label>
 						<input
 							type="password"
@@ -76,9 +72,7 @@ export const Register = () => {
 									}
 								})}
 						/>
-						{errors.password && (<Space className='text-red-500'>
-							<Alert message={errors.password.message} type='error'/>
-						</Space>)}
+						<Error error={errors.password} errorMessage={errors.password?.message}/>
 						<button type="submit">Зарегистрироваться</button>
 						<br/>
 						<div>

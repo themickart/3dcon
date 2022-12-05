@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { ILoginData } from '../types/types';
 import { fetchUser, login } from "../store/actionCreators/actionCreatorsLogin";
-import { Alert, Space } from "antd";
+import Error from "../components/Error/Error";
 
 export const LoginPage = () => {
 	const {isAuth, token} = useAppSelector(state => state.authReducer);
@@ -38,9 +38,7 @@ export const LoginPage = () => {
 									required: "Username обязательное поле"
 								})}
 						/>
-						{errors.username && (<Space className='text-red-500'>
-							<Alert message={errors.username.message} type='error'/>
-						</Space>)}
+						<Error error={errors.username} errorMessage={errors.username?.message}/>
 						<label htmlFor="password">Пароль</label>
 						<input
 							type="password"
@@ -50,9 +48,7 @@ export const LoginPage = () => {
 									required: 'Password обязательное поле',
 								})}
 						/>
-						{errors.password && (<Space className='text-red-500'>
-							<Alert message={errors.password.message} type='error'/>
-						</Space>)}
+						<Error error={errors.password} errorMessage={errors.password?.message}/>
 						<button type="submit">Войти</button>
 						<br/>
 						<div>
