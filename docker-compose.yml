@@ -3,9 +3,9 @@ version: '3.9'
 services:
 
   backend:
-    container_name: backend_api
+    container_name: backend
     build:
-      context: .
+      context: backend
       dockerfile: Dockerfile
     environment:
       - POSTGRES_HOST=postgres
@@ -18,7 +18,7 @@ services:
       - postgres
 
   postgres:
-    container_name: postgres_db
+    container_name: postgres
     image: postgres:latest
     environment:
       - POSTGRES_DB=golang
@@ -30,6 +30,19 @@ services:
     ports:
       - "5432:5432"
     restart: "always"
+
+  frontend:
+    container_name: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:3000"
+    volumes:
+      - ./:/app
+    command: npm start
+    depends_on:
+        - backend
 
 volumes:
   postgres:
