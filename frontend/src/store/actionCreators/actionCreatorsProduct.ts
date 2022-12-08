@@ -5,7 +5,7 @@ import { IProduct } from '../../types/types';
 import { AppDispatch } from '../index';
 import {
 	modelAddingError,
-	modelAddingSuccess, modelEditingError,
+	modelAddingSuccess, modelDeletingError, modelDeletingSuccess, modelEditingError,
 	modelEditingSuccess, modelsFetching,
 	modelsFetchingError,
 	modelsFetchingSuccess
@@ -26,7 +26,7 @@ export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
 		dispatch(modelsFetching());
 		const models = (
 			await axios.get<IProduct[]>('products/my', {
-				headers: {Authorization: `Bearer ${token}`},
+				headers: { Authorization: `Bearer ${token}` },
 			})
 		).data;
 		dispatch(
@@ -43,7 +43,7 @@ export const addModel =
 	(model: IProduct, data: IModelInput, token: string) =>
 		async (dispatch: AppDispatch) => {
 			try {
-				dispatch(modelAddingSuccess({model}));
+				dispatch(modelAddingSuccess({ model }));
 				console.log(
 					(
 						await axios.post('products/upload', data, {
@@ -60,13 +60,13 @@ export const addModel =
 		};
 
 export const editModel =
-	({id: payloadId, ...data}: InputType, token: string) =>
+	({ id: payloadId, ...data }: InputType, token: string) =>
 		async (dispatch: AppDispatch) => {
 			try {
-				dispatch(modelEditingSuccess({payloadId, ...data}));
+				dispatch(modelEditingSuccess({ payloadId, ...data }));
 				await axios.patch(
 					`products/update`,
-					{productId: payloadId, ...data},
+					{ productId: payloadId, ...data },
 					{
 						headers: {
 							Authorization: `Bearer ${token}`
@@ -78,24 +78,29 @@ export const editModel =
 			}
 		};
 
-// export const deleteModel =
-//     (payloadId: number = 0) => async (dispatch: AppDispatch) => {
-//         try {
-//             dispatch(modelDeletingSuccess({ payloadId }));
-//             await axios.delete(`http://localhost:8080/products/${payloadId}`);
-//         } catch (error) {
-//             dispatch(modelDeletingError(error as Error));
-//         }
-//     };
-
-// СДЕЛАТЬ УДАЛЕНИЕ
+export const deleteModelById = // Работает, но только после обновления страницы (если сразу удалять, то будет 400 ошибка)
+	(payloadId: number = 0, token: string) => async (dispatch: AppDispatch) => {
+		try {
+			dispatch(modelDeletingSuccess({ payloadId }));
+			await axios.delete(
+				`products/delete/${payloadId}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`
+					}
+				}
+			);
+		} catch (error) {
+			dispatch(modelDeletingError(error as Error));
+		}
+	};
 
 export const fetchProducts = () => async (dispatch: AppDispatch) => {
 	try {
 		dispatch(productsFetching());
 		dispatch(
 			productsFetchingSuccess({
-				products: (await axios.get<IProduct[]>('products')).data,
+				products: (await axios.get<IProduct[]>('products?offset=0&limit=10')).data,
 			})
 		);
 	} catch (error) {

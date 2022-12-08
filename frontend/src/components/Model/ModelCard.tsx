@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { FC, useContext } from 'react';
 import useOutside from '../../hooks/outside';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { deleteModelById } from '../../store/actionCreators/actionCreatorsProduct';
 import { IProduct } from '../../types/types';
 import styles from './ModelCard.module.scss';
 import ModelContext from './ModelContext';
@@ -30,10 +32,12 @@ export const ModelCard: FC<
     const setIsVisibleForm = useContext(ModelContext)[1];
     const basePath = process.env.PUBLIC_URL;
     const { ref, isShow, setIsShow } = useOutside(false);
-    // const dispatch = useAppDispatch(modelDeletingSuccess());
+    const token = useAppSelector(state => state.authReducer.token);
+    const dispatch = useAppDispatch();
 
     const deleteModelHandler = () => {
-        // dispatch(deleteModel(id))
+        dispatch(deleteModelById(id, token))
+        // console.log(id)
     }
 
     return (
