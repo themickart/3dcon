@@ -4,8 +4,9 @@ import (
 	"api/internal/domain/appError"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
-	"api/internal/mappers"
-	"api/internal/services"
+	"api/internal/mapper"
+	"api/internal/repo"
+	"api/internal/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -13,20 +14,20 @@ import (
 )
 
 type Handler struct {
-	userManager    *services.UserManager
-	productManager *services.ProductManager
-	fileStorage    *services.FileStorage
-	jwtUtils       *services.JwtUtils
-	productMapper  *mappers.Product
+	userManager    *repo.UserManager
+	productManager *repo.ProductManager
+	uploader       *utils.Uploader
+	jwtUtils       *utils.JwtUtils
+	productMapper  *mapper.Product
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
-		fileStorage:    services.NewFileStorage(),
-		userManager:    services.NewUserManger(db),
-		productManager: services.NewProductManager(db),
-		productMapper:  mappers.NewProductMapper(db),
-		jwtUtils:       services.NewJwtUtils(),
+		uploader:       utils.NewUploader(),
+		userManager:    repo.NewUserManger(db),
+		productManager: repo.NewProductManager(db),
+		productMapper:  mapper.NewProductMapper(db),
+		jwtUtils:       utils.NewJwt(),
 	}
 }
 
@@ -59,7 +60,7 @@ func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} product.Dto[]
+// @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products/my [get]
 func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
@@ -88,12 +89,8 @@ func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
 // @Success      200   {string}  string        "ok"
 // @Router       /products/upload [post]
 func (h *Handler) Upload(c *gin.Context) *appError.AppError {
-	name := c.Request.FormValue("name")
-	description := c.Request.FormValue("description") //TODO
-	licence := c.Request.FormValue("licence")
-	price, err := strconv.ParseFloat(c.Request.FormValue("price"), 32)
-	category := c.Request.FormValue("category")
-	url, _, err := h.uploadFile(c, "cover")
+	r, err := requestToUpload(c)
+	url, _, err := h.uploader.UploadFile(r.File, r.FileHeader)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -101,28 +98,13 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	productModel := product.New(name, url, description, licence, category, userModel.ID, price)
+	productModel := product.New(r.Name, url, r.Description, r.Licence, r.Category, userModel.ID, r.Price)
 	err = h.productManager.Create(productModel)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
 	c.JSON(http.StatusOK, url)
 	return nil
-}
-
-func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name string, err error) {
-	file, fileHeader, err := c.Request.FormFile(key)
-	if err != nil {
-		return "", "", err
-	}
-	defer file.Close()
-	data := make([]byte, fileHeader.Size)
-	_, _ = file.Read(data)
-	url, name, err = h.fileStorage.Create(data, fileHeader.Size, fileHeader.Filename)
-	if err != nil {
-		return "", "", err
-	}
-	return
 }
 
 // Get
@@ -135,22 +117,15 @@ func (h *Handler) uploadFile(c *gin.Context, key string) (url string, name strin
 // @Param orderBy query string false "orderBy"
 // @Param isDesc query boolean false "isDesc"
 // @Param filterBy query string false "filter"
-// @Success 200 {object} product.Dto[]
+// @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products [get]
 func (h *Handler) Get(c *gin.Context) *appError.AppError {
-	offset, err := strconv.ParseUint(c.Query("offset"), 9, 10)
+	r, err := requestToGet(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	limit, err := strconv.ParseUint(c.Query("limit"), 9, 10)
-	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
-	}
-	orderBy := c.Query("orderBy")
-	filterBy := c.Query("filterBy")
-	isDesc, _ := strconv.ParseBool(c.Query("isDesc"))
-	products, err := h.productManager.Get(int(limit), int(offset), orderBy, filterBy, isDesc)
+	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.FilterBy, r.IsDest)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -178,7 +153,7 @@ func (h *Handler) Update(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil {
+	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil { //TODO
 		return appError.New(err, err.Error(), http.StatusForbidden)
 	}
 	c.Status(http.StatusOK)
@@ -208,7 +183,7 @@ func (h *Handler) Delete(c *gin.Context) *appError.AppError {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	if productModel.Author.Username != claims[user.Username].(string) {
-		return appError.New(err, "можно удалять только свои продукты", http.StatusForbidden)
+		return appError.New(err, "можно удалять только своё", http.StatusForbidden)
 	}
 	if err = h.productManager.Delete(productModel); err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)

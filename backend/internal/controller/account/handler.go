@@ -3,21 +3,22 @@ package account
 import (
 	"api/internal/domain/appError"
 	"api/internal/domain/user"
-	"api/internal/services"
+	"api/internal/repo"
+	"api/internal/utils"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
 )
 
 type Handler struct {
-	jwtUtils    *services.JwtUtils
-	userManager *services.UserManager
+	jwtUtils    *utils.JwtUtils
+	userManager *repo.UserManager
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
-		jwtUtils:    services.NewJwtUtils(),
-		userManager: services.NewUserManger(db),
+		jwtUtils:    utils.NewJwt(),
+		userManager: repo.NewUserManger(db),
 	}
 }
 

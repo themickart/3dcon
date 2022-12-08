@@ -1,4 +1,4 @@
-package services
+package utils
 
 import (
 	"io"
@@ -8,7 +8,7 @@ import (
 type FileUtils struct {
 }
 
-func NewFileUtils() *FileUtils {
+func NewFile() *FileUtils {
 	return &FileUtils{}
 }
 

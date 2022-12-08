@@ -2,20 +2,20 @@ package filestorage
 
 import (
 	"api/internal/domain/appError"
-	"api/internal/services"
+	"api/internal/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type Handler struct {
-	fileStorage *services.FileStorage
-	fileUtils   *services.FileUtils
+	fileStorage *utils.FileStorage
+	fileUtils   *utils.FileUtils
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		fileStorage: services.NewFileStorage(),
-		fileUtils:   services.NewFileUtils(),
+		fileStorage: utils.NewFileStorage(),
+		fileUtils:   utils.NewFile(),
 	}
 }
 

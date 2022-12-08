@@ -1,4 +1,4 @@
-package services
+package repo
 
 import (
 	"api/internal/domain/product"
@@ -38,7 +38,7 @@ func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	return products, nil
 }
 
-func (pm *ProductManager) Get(limit, offset int, orderBy, filter string, isDesc bool) ([]*product.Product, error) {
+func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, isDesc bool) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	db := pm.db.Preload("Author")
 	if orderBy != "" {
@@ -48,8 +48,8 @@ func (pm *ProductManager) Get(limit, offset int, orderBy, filter string, isDesc 
 		}
 		db = db.Order(orderBy + " " + desc)
 	}
-	if filter != "" {
-		db = db.Where("category = ?", filter)
+	if filterBy != "" {
+		db = db.Where("category = ?", filterBy)
 	}
 	err := db.Offset(offset).Limit(limit).Find(&products).Error
 	if err != nil {

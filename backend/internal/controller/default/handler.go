@@ -3,19 +3,19 @@ package _default
 import (
 	"api/internal"
 	"api/internal/domain/appError"
-	"api/internal/services"
+	"api/internal/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
 )
 
 type Handler struct {
-	fileUtils *services.FileUtils
+	fileUtils *utils.FileUtils
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		fileUtils: services.NewFileUtils(),
+		fileUtils: utils.NewFile(),
 	}
 }
 

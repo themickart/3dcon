@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"api/internal/services"
+	"api/internal/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func Required() gin.HandlerFunc {
-	jwtUtils := services.NewJwtUtils()
+	jwtUtils := utils.NewJwt()
 	return func(c *gin.Context) {
 		if c.GetHeader("Authorization") == "" {
 			c.AbortWithStatus(http.StatusUnauthorized)

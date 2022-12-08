@@ -1,21 +1,21 @@
-package mappers
+package mapper
 
 import (
 	"api/internal/domain/product"
 	"api/internal/domain/user"
-	"api/internal/services"
+	"api/internal/repo"
 	"gorm.io/gorm"
 )
 
 type Product struct {
-	likeManager *services.LikeManager
-	viewManager *services.ViewManager
+	likeManager *repo.LikeManager
+	viewManager *repo.ViewManager
 }
 
 func NewProductMapper(db *gorm.DB) *Product {
 	return &Product{
-		likeManager: services.NewLikeManager(db),
-		viewManager: services.NewViewManager(db),
+		likeManager: repo.NewLikeManager(db),
+		viewManager: repo.NewViewManager(db),
 	}
 }
 

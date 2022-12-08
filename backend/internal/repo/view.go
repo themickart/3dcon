@@ -1,4 +1,4 @@
-package services
+package repo
 
 import (
 	"api/internal/domain/interactions"

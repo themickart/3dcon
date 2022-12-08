@@ -3,7 +3,7 @@ package interactions
 import (
 	"api/internal/domain/appError"
 	"api/internal/domain/interactions"
-	"api/internal/services"
+	"api/internal/repo"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -11,16 +11,16 @@ import (
 )
 
 type Handler struct {
-	userManager        *services.UserManager
-	likeManager        *services.LikeManager
-	interactionManager *services.InteractionManager
+	userManager        *repo.UserManager
+	likeManager        *repo.LikeManager
+	interactionManager *repo.InteractionManager
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
-		likeManager:        services.NewLikeManager(db),
-		userManager:        services.NewUserManger(db),
-		interactionManager: services.NewInteractionManager(db),
+		likeManager:        repo.NewLikeManager(db),
+		userManager:        repo.NewUserManger(db),
+		interactionManager: repo.NewInteractionManager(db),
 	}
 }
 

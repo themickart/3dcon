@@ -1,4 +1,4 @@
-package services
+package utils
 
 import (
 	"api/internal"
@@ -13,7 +13,7 @@ import (
 type JwtUtils struct {
 }
 
-func NewJwtUtils() *JwtUtils {
+func NewJwt() *JwtUtils {
 	return &JwtUtils{}
 }
 

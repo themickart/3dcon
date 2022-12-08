@@ -1,7 +1,8 @@
-package services
+package repo
 
 import (
 	"api/internal/domain/user"
+	"api/internal/utils"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -9,13 +10,13 @@ import (
 
 type UserManager struct {
 	db       *gorm.DB
-	jwtUtils *JwtUtils
+	jwtUtils *utils.JwtUtils
 }
 
 func NewUserManger(db *gorm.DB) *UserManager {
 	return &UserManager{
 		db:       db,
-		jwtUtils: NewJwtUtils(),
+		jwtUtils: utils.NewJwt(),
 	}
 }
 
