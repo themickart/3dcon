@@ -5,7 +5,6 @@ import (
 	"api/internal/app/server"
 	"api/internal/controller/account"
 	"api/internal/controller/auth"
-	_default "api/internal/controller/default"
 	"api/internal/controller/filestorage"
 	"api/internal/controller/interactions"
 	"api/internal/controller/products"
@@ -30,7 +29,6 @@ func Run() {
 			account.Route,
 			products.Route,
 			filestorage.Route,
-			_default.Route,
 			interactions.Route,
 		),
 	)

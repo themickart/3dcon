@@ -23,14 +23,14 @@ func New(username, email, password string, role Role) *User {
 		PasswordHash: HashPassword(password),
 		Role:         role,
 		SalesCount:   0,
-		AvatarUrl:    internal.DefaultAvatarRoute,
+		AvatarUrl:    internal.DefaultAvatar,
 	}
 }
 
 type ModelDto struct {
 	Username   string     `json:"name"`
 	SalesCount uint       `json:"salesCount"`
-	AvatarUrl  string     `json:"avatarArl"`
+	AvatarUrl  string     `json:"avatarUrl"`
 	Reputation Reputation `json:"reputation"`
 }
 
