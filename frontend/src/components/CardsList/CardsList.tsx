@@ -6,15 +6,15 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { fetchProducts } from "../../store/actionCreators/actionCreatorsProduct";
 
 export const CardsList: React.FC = () => {
-	const {list, error, loading} = useAppSelector(
+	const { list, error, loading } = useAppSelector(
 		state => state.productReducer
 	);
 	const dispatch = useAppDispatch();
-	
+
 	useEffect(() => {
 		dispatch(fetchProducts());
 	}, [dispatch]);
-	
+
 	return (
 		<div className={styles.wrapper}>
 			{error ? (
@@ -22,13 +22,13 @@ export const CardsList: React.FC = () => {
 			) : loading ? (
 				'Загрузка...'
 			) : list?.length ? (
-				list.map(({id, ...product}) => (
+				list.map(({ id, ...product }) => (
 					<motion.div
 						key={id}
-						whileHover={{scale: 1.05, marginBottom: 0}}
-						whileTap={{scale: 0.95}}
-						initial={{y: '0'}}
-						animate={{y: 20}}
+						whileHover={{ scale: 1.05, marginBottom: 0 }}
+						whileTap={{ scale: 0.95 }}
+						initial={{ y: '0' }}
+						animate={{ y: 20 }}
 					>
 						<ProductCard id={id} {...product} />
 					</motion.div>

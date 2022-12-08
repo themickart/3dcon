@@ -10,7 +10,7 @@ interface IProductDetailState {
 const initialState: IProductDetailState = {
     product: {} as IProduct,
     error: null,
-    loading: false,
+    loading: false
 };
 
 const productDetailSlice = createSlice({

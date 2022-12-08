@@ -22,6 +22,7 @@ export const ModelItem: FC<Omit<IProduct, 'author' | 'gallery' | 'info'>> = ({
                 name={name}
                 price={price}
                 viewsCount={viewsCount}
+                id={id!}
             />
             <ModelInfoEdit
                 category={category}
