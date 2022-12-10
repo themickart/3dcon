@@ -15,7 +15,7 @@ type ToUpload struct {
 func NewToUpload(name, description, licence, category string, price float64,
 	file multipart.File, fileHeader *multipart.FileHeader) *ToUpload {
 	return &ToUpload{
-		Name: name, Description: description, Category: category, Price: price,
-		File: file, FileHeader: fileHeader,
+		Name: name, Description: description, Licence: licence, Category: category,
+		Price: price, File: file, FileHeader: fileHeader,
 	}
 }

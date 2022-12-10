@@ -13,7 +13,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - backend:/data/backend
+      - filestorage:/filestorage:/data
     depends_on:
       - postgres
 
@@ -38,12 +38,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:3000"
-    volumes:
-      - ./:/app
     command: npm start
     depends_on:
         - backend
 
 volumes:
   postgres:
-  backend:
+    name: postgres
+  filestorage:
+    name: filestorage

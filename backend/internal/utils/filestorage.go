@@ -20,7 +20,10 @@ type FileStorage struct {
 }
 
 func NewFileStorage() *FileStorage {
-	_ = os.Mkdir(storageName, os.ModePerm)
+	err := os.Mkdir(storageName, os.ModePerm)
+	if err != nil {
+		fmt.Println(err)
+	}
 	return &FileStorage{}
 }
 
@@ -35,9 +38,12 @@ func (fs *FileStorage) Create(data []byte, size int64, filename string) (string,
 }
 
 func (fs *FileStorage) CreateFromInput(input UploadInput) (string, string, error) {
-	_ = os.Mkdir(storageName+string(os.PathSeparator)+input.Bucket, os.ModePerm)
-	file, err := os.Create(storageName + string(os.PathSeparator) +
-		input.Bucket + string(os.PathSeparator) + input.Name)
+	bucket := storageName + string(os.PathSeparator) + input.Bucket
+	err := os.Mkdir(bucket, os.ModePerm)
+	if err != nil {
+		return "", "", err
+	}
+	file, err := os.Create(bucket + string(os.PathSeparator) + input.Name)
 	if err != nil {
 		return "", "", err
 	}
@@ -52,7 +58,7 @@ func (fs *FileStorage) CreateFromInput(input UploadInput) (string, string, error
 func (fs *FileStorage) Get(bucket, filename string) (*os.File, error) {
 	file, err := os.Open(storageName + string(os.PathSeparator) + bucket + string(os.PathSeparator) + filename)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	return file, nil
 }

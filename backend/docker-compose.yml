@@ -3,7 +3,7 @@ version: '3.9'
 services:
 
   backend:
-    container_name: backend_api
+    container_name: backend_internal
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,12 +13,12 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - backend:/data/backend
+      - filestorage:/filestorage:/data
     depends_on:
       - postgres
 
   postgres:
-    container_name: postgres_db
+    container_name: postgres_internal
     image: postgres:latest
     environment:
       - POSTGRES_DB=golang
@@ -33,4 +33,6 @@ services:
 
 volumes:
   postgres:
-  backend:
+    name: postgres
+  filestorage:
+    name: filestorage
