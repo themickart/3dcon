@@ -5,3 +5,6 @@
     docker compose up --build
 ```
 когда запустится перейти на **http://localhost:8080/swagger/index.html**
+
+# db
+host=localhost port=5432 dbname=3dcon user=user password=password sslmode=disable
