@@ -83,7 +83,7 @@ definitions:
     type: object
   user.ModelDto:
     properties:
-      avatarArl:
+      avatarUrl:
         type: string
       name:
         type: string
@@ -330,7 +330,7 @@ paths:
       security:
       - ApiKeyAuth: []
       tags:
-      - interactions
+      - interaction
   /products/my:
     get:
       consumes:
@@ -374,7 +374,7 @@ paths:
       security:
       - ApiKeyAuth: []
       tags:
-      - interactions
+      - interaction
   /products/update:
     patch:
       consumes:
@@ -472,7 +472,7 @@ paths:
       security:
       - ApiKeyAuth: []
       tags:
-      - interactions
+      - interaction
 securityDefinitions:
   ApiKeyAuth:
     in: header

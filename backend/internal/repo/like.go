@@ -1,7 +1,8 @@
 package repo
 
 import (
-	"api/internal/domain/interactions"
+	"api/internal/domain/interaction"
+	"api/internal/domain/product"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -16,27 +17,47 @@ func NewLikeManager(db *gorm.DB) *LikeManager {
 	}
 }
 
-func (lm *LikeManager) Create(like *interactions.Like) error {
-	liked, err := lm.Liked(like)
-	if err != nil {
-		return err
-	}
-	if liked {
-		return errors.New("уже лайкнуто")
-	}
-	return lm.db.Create(like).Error
+func (lm *LikeManager) Like(like *interaction.Like) error {
+	return lm.db.Transaction(func(tx *gorm.DB) error {
+		liked, err := lm.Liked(like)
+		if err != nil {
+			return err
+		}
+		if liked {
+			return errors.New("уже лайкнуто")
+		}
+		if err = tx.Create(like).Error; err != nil {
+			return err
+		}
+		err = tx.Model(product.Product{}).
+			Where("id = ?", like.ProductId).
+			Update("likes_count", gorm.Expr("likes_count + 1")).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		return nil
+	})
 }
 
-func (lm *LikeManager) Delete(like *interactions.Like) error {
-	var count int64
-	err := lm.db.Model(like).Where(like).Count(&count).Delete(like).Error
-	if count == 0 {
-		return errors.New("такого лайка нет")
-	}
-	return err
+func (lm *LikeManager) RemoveLike(like *interaction.Like) error {
+	return lm.db.Transaction(func(tx *gorm.DB) error {
+		err := tx.Where("user_id = ? and product_id = ?", like.UserId, like.ProductId).Delete(like).Error
+		if err != nil {
+			return err
+		}
+		err = tx.Model(product.Product{}).
+			Where("id = ?", like.ProductId).
+			Update("likes_count", gorm.Expr("likes_count - 1")).Error
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+		return nil
+	})
 }
 
-func (lm *LikeManager) Liked(like *interactions.Like) (bool, error) {
+func (lm *LikeManager) Liked(like *interaction.Like) (bool, error) {
 	var count int64
 	err := lm.db.Model(like).Where(like).Count(&count).Error //TODO
 	if err != nil {
@@ -46,6 +67,6 @@ func (lm *LikeManager) Liked(like *interactions.Like) (bool, error) {
 }
 
 func (lm *LikeManager) LikedByIds(userId, productId uint) (bool, error) {
-	like := interactions.NewLike(userId, productId)
+	like := interaction.NewLike(userId, productId)
 	return lm.Liked(like)
 }

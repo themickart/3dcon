@@ -308,7 +308,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -381,7 +381,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -536,7 +536,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -729,7 +729,7 @@ const docTemplate = `{
         "user.ModelDto": {
             "type": "object",
             "properties": {
-                "avatarArl": {
+                "avatarUrl": {
                     "type": "string"
                 },
                 "name": {

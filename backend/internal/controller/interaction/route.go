@@ -1,4 +1,4 @@
-package interactions
+package interaction
 
 import (
 	"api/internal/controller/auth"

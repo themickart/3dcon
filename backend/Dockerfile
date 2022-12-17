@@ -2,9 +2,10 @@ FROM golang:1.19 AS build
 
 WORKDIR /app
 
-COPY . ./
+COPY go.mod go.sum ./
 RUN go mod download
 
+COPY . .
 RUN go build -o /backend cmd/app/main.go
 
 

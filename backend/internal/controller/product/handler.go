@@ -1,12 +1,13 @@
-package products
+package product
 
 import (
+	"api/internal/controller/product/request"
 	"api/internal/domain/appError"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
 	"api/internal/mapper"
 	"api/internal/repo"
-	"api/internal/utils"
+	"api/internal/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -16,18 +17,18 @@ import (
 type Handler struct {
 	userManager    *repo.UserManager
 	productManager *repo.ProductManager
-	uploader       *utils.Uploader
-	jwtUtils       *utils.JwtUtils
+	uploader       *util.Uploader
+	jwtUtils       *util.JwtUtils
 	productMapper  *mapper.Product
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
-		uploader:       utils.NewUploader(),
+		uploader:       util.NewUploader(),
 		userManager:    repo.NewUserManger(db),
 		productManager: repo.NewProductManager(db),
 		productMapper:  mapper.NewProductMapper(db),
-		jwtUtils:       utils.NewJwt(),
+		jwtUtils:       util.NewJwt(),
 	}
 }
 
@@ -89,7 +90,7 @@ func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
 // @Success      200   {string}  string        "ok"
 // @Router       /products/upload [post]
 func (h *Handler) Upload(c *gin.Context) *appError.AppError {
-	r, err := requestToUpload(c)
+	r, err := request.NewToUpload(c)
 	url, _, err := h.uploader.UploadFile(r.File, r.FileHeader)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
@@ -121,7 +122,7 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 // @Failure 400 {string} error
 // @Router /products [get]
 func (h *Handler) Get(c *gin.Context) *appError.AppError {
-	r, err := requestToGet(c)
+	r, err := request.NewToGet(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}

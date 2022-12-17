@@ -1,4 +1,4 @@
-package server
+package app
 
 import (
 	_ "api/docs"
@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func Run(lc fx.Lifecycle) *gin.Engine {
+func newServer(lc fx.Lifecycle) *gin.Engine {
 	r := gin.New()
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AddAllowHeaders("Authorization")

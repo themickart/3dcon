@@ -2,13 +2,13 @@ package test
 
 import (
 	"api/internal/domain/user"
-	"api/internal/utils"
+	"api/internal/util"
 	"github.com/golang-jwt/jwt"
 	"testing"
 )
 
 func TestGenerateJwt(t *testing.T) {
-	jwtUtils := utils.JwtUtils{}
+	jwtUtils := util.JwtUtils{}
 	username := "oliver"
 	email := "f@gmail.com"
 	password := ""

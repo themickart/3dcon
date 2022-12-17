@@ -299,7 +299,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -372,7 +372,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -527,7 +527,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "interactions"
+                    "interaction"
                 ],
                 "parameters": [
                     {
@@ -720,7 +720,7 @@
         "user.ModelDto": {
             "type": "object",
             "properties": {
-                "avatarArl": {
+                "avatarUrl": {
                     "type": "string"
                 },
                 "name": {

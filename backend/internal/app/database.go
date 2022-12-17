@@ -1,7 +1,7 @@
-package database
+package app
 
 import (
-	"api/internal/domain/interactions"
+	"api/internal/domain/interaction"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
 	"fmt"
@@ -11,8 +11,8 @@ import (
 	"time"
 )
 
-func NewDatabase() *gorm.DB {
-	connectionString := "host=%s port=5432 dbname=golang user=user password=password sslmode=disable"
+func newDatabase() *gorm.DB {
+	connectionString := "host=%s port=5432 dbname=3dcon user=user password=password sslmode=disable"
 	postgresHost := os.Getenv("POSTGRES_HOST")
 	if postgresHost == "" {
 		postgresHost = "localhost" //TODO:
@@ -21,11 +21,11 @@ func NewDatabase() *gorm.DB {
 	fmt.Println(connectionString)
 	db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	for err != nil {
-		db, err = gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 		fmt.Println(err)
 		time.Sleep(time.Second * 4) //TODO
+		db, err = gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	}
-	err = db.AutoMigrate(&user.User{}, &product.Product{}, &interactions.View{}, &interactions.Like{})
+	err = db.AutoMigrate(&user.User{}, &product.Product{}, &interaction.View{}, &interaction.Like{})
 	if err != nil {
 		panic(err)
 	}

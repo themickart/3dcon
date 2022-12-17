@@ -1,13 +1,11 @@
 package app
 
 import (
-	"api/internal/app/database"
-	"api/internal/app/server"
 	"api/internal/controller/account"
 	"api/internal/controller/auth"
 	"api/internal/controller/filestorage"
-	"api/internal/controller/interactions"
-	"api/internal/controller/products"
+	"api/internal/controller/interaction"
+	"api/internal/controller/product"
 	"go.uber.org/fx"
 )
 
@@ -21,15 +19,15 @@ import (
 func Run() {
 	app := fx.New(
 		fx.Provide(
-			server.Run,
-			database.NewDatabase,
+			newServer,
+			newDatabase,
 		),
 		fx.Invoke(
 			auth.Route,
 			account.Route,
-			products.Route,
+			product.Route,
 			filestorage.Route,
-			interactions.Route,
+			interaction.Route,
 		),
 	)
 	app.Run()

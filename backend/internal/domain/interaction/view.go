@@ -1,4 +1,4 @@
-package interactions
+package interaction
 
 import "gorm.io/gorm"
 
