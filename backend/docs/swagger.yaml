@@ -26,7 +26,7 @@ definitions:
   product.Dto:
     properties:
       author:
-        $ref: '#/definitions/user.ModelDto'
+        $ref: '#/definitions/user.Dto'
       category:
         description: TODO
         type: string
@@ -81,7 +81,7 @@ definitions:
     - price
     - productId
     type: object
-  user.ModelDto:
+  user.Dto:
     properties:
       avatarUrl:
         type: string
@@ -118,7 +118,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.ModelDto'
+            $ref: '#/definitions/user.Dto'
       security:
       - ApiKeyAuth: []
       tags:
@@ -133,7 +133,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.ModelDto'
+            $ref: '#/definitions/user.Dto'
       security:
       - ApiKeyAuth: []
       tags:
@@ -275,6 +275,31 @@ paths:
             $ref: '#/definitions/product.Dto'
         "400":
           description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - product
+  /products/author/{username}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "404":
+          description: Not Found
           schema:
             type: string
       security:
@@ -461,8 +486,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             type: string
         "400":
@@ -473,6 +498,33 @@ paths:
       - ApiKeyAuth: []
       tags:
       - interaction
+  /user/{username}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Dto'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      tags:
+      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header
