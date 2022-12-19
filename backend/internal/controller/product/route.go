@@ -13,6 +13,7 @@ func Route(db *gorm.DB, r *gin.Engine) {
 	products := r.Group("products")
 	products.GET("/:id", appHandler.New(h.GetById).HTTP)
 	products.GET("", appHandler.New(h.Get).HTTP)
+	products.GET("author/:username", appHandler.New(h.GetByAuthor).HTTP)
 
 	productsAuth := r.Group("products")
 	productsAuth.Use(auth.Required())

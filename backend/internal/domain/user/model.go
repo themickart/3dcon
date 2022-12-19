@@ -27,7 +27,7 @@ func New(username, email, password string, role Role) *User {
 	}
 }
 
-type ModelDto struct {
+type Dto struct {
 	Username   string     `json:"name"`
 	SalesCount uint       `json:"salesCount"`
 	AvatarUrl  string     `json:"avatarUrl"`
@@ -46,8 +46,8 @@ func (model User) CheckPassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(model.PasswordHash, []byte(password)) == nil
 }
 
-func NewDto(model *User) *ModelDto {
-	return &ModelDto{
+func NewDto(model *User) *Dto {
+	return &Dto{
 		Reputation: *NewReputation(),
 		Username:   model.Username,
 		SalesCount: model.SalesCount,

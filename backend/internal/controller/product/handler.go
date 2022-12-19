@@ -192,3 +192,28 @@ func (h *Handler) Delete(c *gin.Context) *appError.AppError {
 	c.Status(http.StatusOK)
 	return nil
 }
+
+// GetByAuthor
+// @Tags product
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param username path string true "username"
+// @Success 200 {string} ok
+// @Failure 404 {string} error
+// @Router /products/author/{username} [get]
+func (h *Handler) GetByAuthor(c *gin.Context) *appError.AppError {
+	username := c.Param("username")
+	userModel, err := h.userManager.GetByUsername(username)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusNotFound)
+	}
+	products, err := h.productManager.GetAllByUserId(userModel.ID)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusNotFound)
+	}
+	userModel, err = h.userManager.Extract(c)
+	productsDto := h.productMapper.ModelsToDto(products, userModel)
+	c.JSON(http.StatusOK, productsDto)
+	return nil
+}

@@ -9,7 +9,7 @@ type Dto struct {
 	Id          uint              `json:"id"`
 	CreatedAt   time.Time         `json:"createdAt"`
 	Name        string            `json:"name"`
-	Author      user.ModelDto     `json:"author"`
+	Author      user.Dto          `json:"author"`
 	CoverUrl    string            `json:"coverUrl"`
 	Price       float64           `json:"price"`
 	LikesCount  uint              `json:"likesCount"`

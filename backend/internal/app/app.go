@@ -6,6 +6,7 @@ import (
 	"api/internal/controller/filestorage"
 	"api/internal/controller/interaction"
 	"api/internal/controller/product"
+	"api/internal/controller/user"
 	"go.uber.org/fx"
 )
 
@@ -28,6 +29,7 @@ func Run() {
 			product.Route,
 			filestorage.Route,
 			interaction.Route,
+			user.Route,
 		),
 	)
 	app.Run()

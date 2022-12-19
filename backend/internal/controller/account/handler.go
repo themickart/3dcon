@@ -27,11 +27,10 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} user.ModelDto
+// @Success 200 {object} user.Dto
 // @Router /account/me [get]
 func (h *Handler) Me(c *gin.Context) *appError.AppError {
-	claims, _ := h.jwtUtils.ExtractClaims(c)
-	userModel, err := h.userManager.GetByUsername(claims[user.Username].(string))
+	userModel, err := h.userManager.Extract(c)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
@@ -45,7 +44,7 @@ func (h *Handler) Me(c *gin.Context) *appError.AppError {
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} user.ModelDto
+// @Success 200 {object} user.Dto
 // @Router /account/delete [delete]
 func (h *Handler) Delete(c *gin.Context) *appError.AppError {
 	claims, _ := h.jwtUtils.ExtractClaims(c)
