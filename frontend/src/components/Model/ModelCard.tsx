@@ -36,9 +36,8 @@ export const ModelCard: FC<
     const dispatch = useAppDispatch();
 
     const deleteModelHandler = () => {
-        dispatch(deleteModelById(id, token))
-        // console.log(id)
-    }
+        dispatch(deleteModelById(id!, token));
+    };
 
     return (
         <AnimatePresence mode="popLayout">
@@ -74,8 +73,9 @@ export const ModelCard: FC<
                     )}
                 </div>
                 <div
-                    className={`w-[546px] h-[132px] mt-[67px] flex justify-between ${isShow && 'ml-[362px]'
-                        }`}
+                    className={`w-[546px] h-[132px] mt-[67px] flex justify-between ${
+                        isShow && 'ml-[362px]'
+                    }`}
                 >
                     <ModelInfoEdit
                         category={category}
@@ -117,9 +117,7 @@ export const ModelCard: FC<
                     <button>
                         <img src={basePath + '/profile/hide.svg'} alt="" />
                     </button>
-                    <button
-                        onClick={deleteModelHandler}
-                    >
+                    <button onClick={deleteModelHandler}>
                         <img src={basePath + '/profile/delete.svg'} alt="" />
                     </button>
                 </div>

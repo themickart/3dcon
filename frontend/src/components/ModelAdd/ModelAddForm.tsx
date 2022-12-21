@@ -5,7 +5,7 @@ import context from './ModelAddContext';
 
 import { Modal } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { addModel } from "../../store/actionCreators/actionCreatorsProduct";
+import { addModel } from '../../store/actionCreators/actionCreatorsProduct';
 
 export interface IModelInput {
     name: string;
@@ -13,28 +13,29 @@ export interface IModelInput {
     cover: File;
     license: string;
     price: number;
+    category: string;
 }
 
 const ModelAddForm = () => {
     const { register, handleSubmit, reset, setValue } = useForm<IModelInput>();
     const [isShow, setIsShow] = useContext(context);
-    const token = useAppSelector(state => state.authReducer.token);
     const pickCoverUrlRef = useRef<HTMLInputElement>(null);
-    const { avatarArl, reputation, salesCount } = useAppSelector(
-        state => state.userReducer
-    );
-    const { username } = useAppSelector(state => state.authReducer);
+    const user = useAppSelector(state => state.userReducer);
+    const { username, token } = useAppSelector(state => state.authReducer);
     const dispatch = useAppDispatch();
-
     const onSubmit: SubmitHandler<IModelInput> = ({
         cover,
         description,
         license,
         name,
         price,
+        category,
     }) => {
         const product: IProduct = {
-            author: { avatarArl, reputation, salesCount, name: username },
+            author: {
+                ...user,
+                name: username,
+            },
             createdAt: new Date().toISOString(),
             isLiked: false,
             isViewed: false,
@@ -43,14 +44,21 @@ const ModelAddForm = () => {
             likesCount: 0,
             viewsCount: 0,
             info: {},
-            category: '',
+            category,
             name,
             coverUrl: cover.name,
             description,
             license,
             price,
         };
-        const data: IModelInput = { name, cover, description, license, price };
+        const data: IModelInput = {
+            name,
+            cover,
+            description,
+            license,
+            price,
+            category,
+        };
         dispatch(addModel(product, data, token));
         reset();
         setIsShow(false);
@@ -58,7 +66,7 @@ const ModelAddForm = () => {
 
     interface Event<T = EventTarget> {
         target: T;
-    };
+    }
 
     const handleChange = (e: Event<HTMLInputElement>) => {
         setValue('cover', e.target.files?.[0]!);
@@ -94,6 +102,12 @@ const ModelAddForm = () => {
                             id="price"
                             {...register('price')}
                         />
+                        <label htmlFor="category">Категория</label>
+                        <input
+                            type="text"
+                            id="category"
+                            {...register('category')}
+                        />
                         <div
                             className="cursor-pointer"
                             onClick={() => pickCoverUrlRef.current!.click()}
@@ -107,7 +121,6 @@ const ModelAddForm = () => {
                             onChange={handleChange}
                             accept="image/*,.png,.jpg,.gif,.web"
                         />
-                        <div></div>
                         <button type="submit">Добавить</button>
                     </form>
                 </Modal>
@@ -117,4 +130,3 @@ const ModelAddForm = () => {
 };
 
 export default ModelAddForm;
-

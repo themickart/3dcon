@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IUserState {
-    // name: string;
-    avatarArl: string;
+    avatarUrl: string;
     salesCount: number;
     reputation: {
         reviews: number;
@@ -13,8 +12,7 @@ export interface IUserState {
 }
 
 const initialState: IUserState = {
-    // name: "",
-    avatarArl: '',
+    avatarUrl: '',
     salesCount: 0,
     reputation: {
         reviews: 0,
@@ -31,18 +29,12 @@ const userSlice = createSlice({
         userFetchingSuccess(
             state,
             {
-                payload: {
-                    avatarArl,
-                    // name,
-                    reputation,
-                    salesCount,
-                },
+                payload: { avatarUrl, reputation, salesCount },
             }: PayloadAction<IUserState>
         ) {
-            // console.log(avatarArl);
-            // console.log(name);
-            state.avatarArl = avatarArl;
-            // state.name = name;
+            state.avatarUrl = avatarUrl.length
+                ? avatarUrl
+                : '/avatars/empty.svg';
             state.reputation.reviews = reputation.reviews;
             state.reputation.reviewsThisMonth = reputation.reviewsThisMonth;
             state.reputation.reviewsThisWeek = reputation.reviewsThisWeek;

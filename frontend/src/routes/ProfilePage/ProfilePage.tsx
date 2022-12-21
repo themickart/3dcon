@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ModelItem } from '../../components/Model/ModelItem';
-import { fetchUser } from "../../store/actionCreators/actionCreatorsLogin";
-import { fetchModels } from "../../store/actionCreators/actionCreatorsProduct";
+import { fetchUser } from '../../store/actionCreators/actionCreatorsLogin';
+import { fetchModels } from '../../store/actionCreators/actionCreatorsProduct';
 
 export const ProfilePage = () => {
     const navigate = useNavigate();
@@ -112,18 +112,18 @@ export const ProfilePage = () => {
                             {error
                                 ? error
                                 : loading
-                                    ? 'Загрузка...'
-                                    : list?.length
-                                        ? list?.map(model => (
-                                            <motion.div
-                                                key={model.id}
-                                                initial={{ scale: 0.9 }}
-                                                whileInView={{ scale: 1 }}
-                                            >
-                                                <ModelItem {...model} />
-                                            </motion.div>
-                                        ))
-                                        : 'У вас пока нет собственных продуктов'}
+                                ? 'Загрузка...'
+                                : list?.length
+                                ? list?.map(model => (
+                                      <motion.div
+                                          key={model.id}
+                                          initial={{ scale: 0.9 }}
+                                          whileInView={{ scale: 1 }}
+                                      >
+                                          <ModelItem {...model} />
+                                      </motion.div>
+                                  ))
+                                : 'У вас пока нет собственных продуктов'}
                         </div>
                     </div>
                 </div>

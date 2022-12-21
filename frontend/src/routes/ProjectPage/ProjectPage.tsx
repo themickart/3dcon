@@ -6,11 +6,11 @@ import { motion } from 'framer-motion';
 import styles from './ProjectPage.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { IProduct } from '../../types/types';
-import { fetchProduct } from "../../store/actionCreators/actionCreatorsProduct";
+import { fetchProduct } from '../../store/actionCreators/actionCreatorsProduct';
 
 function getRandomProducts(products: IProduct[]): IProduct[] {
+    if (products.length < 3) return products;
     const res = [] as IProduct[];
-
     while (res.length < 3) {
         const randProduct =
             products[Math.trunc(Math.random() * products.length)];
@@ -106,7 +106,8 @@ export const ProjectPage: React.FC = () => {
                                         <img
                                             src={
                                                 process.env.PUBLIC_URL +
-                                                author?.avatarArl
+                                                (author?.avatarUrl ||
+                                                    '/avatars/empty.svg')
                                             }
                                             alt="ава"
                                         />
@@ -246,7 +247,7 @@ export const ProjectPage: React.FC = () => {
                                 productsError
                             ) : productsLoading ? (
                                 'Загрузка...'
-                            ) : list?.length > 2 ? (
+                            ) : list?.length > 1 ? (
                                 getRandomProducts(
                                     list.filter(({ id }) => id !== +productId!)
                                 )?.map(p => (
