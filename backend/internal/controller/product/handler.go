@@ -118,6 +118,7 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 // @Param orderBy query string false "orderBy"
 // @Param isDesc query boolean false "isDesc"
 // @Param filterBy query string false "filter"
+// @Param author query string false "author"
 // @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products [get]
@@ -126,7 +127,7 @@ func (h *Handler) Get(c *gin.Context) *appError.AppError {
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
-	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.FilterBy, r.IsDest)
+	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.FilterBy, r.Author, r.IsDest)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
@@ -190,30 +191,5 @@ func (h *Handler) Delete(c *gin.Context) *appError.AppError {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
-	return nil
-}
-
-// GetByAuthor
-// @Tags product
-// @Security ApiKeyAuth
-// @Accept json
-// @Produce json
-// @Param username path string true "username"
-// @Success 200 {string} ok
-// @Failure 404 {string} error
-// @Router /products/author/{username} [get]
-func (h *Handler) GetByAuthor(c *gin.Context) *appError.AppError {
-	username := c.Param("username")
-	userModel, err := h.userManager.GetByUsername(username)
-	if err != nil {
-		return appError.New(err, err.Error(), http.StatusNotFound)
-	}
-	products, err := h.productManager.GetAllByUserId(userModel.ID)
-	if err != nil {
-		return appError.New(err, err.Error(), http.StatusNotFound)
-	}
-	userModel, err = h.userManager.Extract(c)
-	productsDto := h.productMapper.ModelsToDto(products, userModel)
-	c.JSON(http.StatusOK, productsDto)
 	return nil
 }

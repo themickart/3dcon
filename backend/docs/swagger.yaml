@@ -241,6 +241,10 @@ paths:
         in: query
         name: filterBy
         type: string
+      - description: author
+        in: query
+        name: author
+        type: string
       produces:
       - application/json
       responses:
@@ -275,31 +279,6 @@ paths:
             $ref: '#/definitions/product.Dto'
         "400":
           description: Bad Request
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      tags:
-      - product
-  /products/author/{username}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: username
-        in: path
-        name: username
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "404":
-          description: Not Found
           schema:
             type: string
       security:

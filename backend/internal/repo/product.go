@@ -7,12 +7,14 @@ import (
 )
 
 type ProductManager struct {
-	db *gorm.DB
+	db          *gorm.DB
+	UserManager *UserManager
 }
 
 func NewProductManager(db *gorm.DB) *ProductManager {
 	return &ProductManager{
-		db: db,
+		db:          db,
+		UserManager: NewUserManger(db),
 	}
 }
 
@@ -38,7 +40,7 @@ func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	return products, nil
 }
 
-func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, isDesc bool) ([]*product.Product, error) {
+func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, author string, isDesc bool) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	db := pm.db.Preload("Author")
 	if orderBy != "" {
@@ -50,6 +52,12 @@ func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, isDes
 	}
 	if filterBy != "" {
 		db = db.Where("category = ?", filterBy)
+	}
+	if author != "" {
+		user, err := pm.UserManager.GetByUsername(author)
+		if err == nil {
+			db = db.Where("author_id = ?", user.ID)
+		}
 	}
 	err := db.Offset(offset).Limit(limit).Find(&products).Error
 	if err != nil {

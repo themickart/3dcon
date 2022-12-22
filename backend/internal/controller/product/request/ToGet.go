@@ -12,6 +12,7 @@ type ToGet struct {
 	Limit    int
 	Offset   int
 	IsDest   bool
+	Author   string
 }
 
 func NewToGet(c *gin.Context) (*ToGet, error) {
@@ -33,6 +34,8 @@ func NewToGet(c *gin.Context) (*ToGet, error) {
 	}
 	orderBy := c.Query("orderBy")
 	filterBy := c.Query("filterBy")
+	author := c.Query("author")
 	isDesc, _ := strconv.ParseBool(c.Query("isDesc"))
-	return &ToGet{OrderBy: orderBy, FilterBy: filterBy, Limit: int(limit), Offset: int(offset), IsDest: isDesc}, nil
+	return &ToGet{OrderBy: orderBy, FilterBy: filterBy, Limit: int(limit),
+		Offset: int(offset), IsDest: isDesc, Author: author}, nil
 }
