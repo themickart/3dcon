@@ -34,7 +34,7 @@ const productDetailSlice = createSlice({
         ) {
             state.error = message;
             state.loading = false;
-        },
+        }
     },
 });
 

@@ -23,6 +23,7 @@ import {
     productsFetching,
     productsFetchingError,
     productsFetchingSuccess,
+    productsFilter,
 } from '../slices/productSlice';
 
 export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
@@ -45,39 +46,39 @@ export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
 
 export const addModel =
     (model: IProduct, data: IModelInput, token: string) =>
-    async (dispatch: AppDispatch) => {
-        try {
-            dispatch(modelAddingSuccess({ model }));
-            await axios.post('products/upload', data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            dispatch(fetchModels(token));
-        } catch (error) {
-            dispatch(modelAddingError(error as Error));
-        }
-    };
+        async (dispatch: AppDispatch) => {
+            try {
+                dispatch(modelAddingSuccess({ model }));
+                await axios.post('products/upload', data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                dispatch(fetchModels(token));
+            } catch (error) {
+                dispatch(modelAddingError(error as Error));
+            }
+        };
 
 export const editModel =
     ({ id: payloadId, ...data }: InputType, token: string) =>
-    async (dispatch: AppDispatch) => {
-        try {
-            dispatch(modelEditingSuccess({ payloadId, ...data }));
-            await axios.patch(
-                `products/update`,
-                { productId: payloadId, ...data },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-        } catch (error) {
-            dispatch(modelEditingError(error as Error));
-        }
-    };
+        async (dispatch: AppDispatch) => {
+            try {
+                dispatch(modelEditingSuccess({ payloadId, ...data }));
+                await axios.patch(
+                    `products/update`,
+                    { productId: payloadId, ...data },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            } catch (error) {
+                dispatch(modelEditingError(error as Error));
+            }
+        };
 
 export const deleteModelById =
     (payloadId: number, token: string) => async (dispatch: AppDispatch) => {
@@ -123,3 +124,4 @@ export const fetchProduct =
             dispatch(productFetchingError(error as Error));
         }
     };
+
