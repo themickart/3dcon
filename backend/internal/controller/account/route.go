@@ -1,17 +1,17 @@
 package account
 
 import (
+	"api/internal/controller"
 	"api/internal/controller/auth"
-	"api/internal/domain/appHandler"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func Route(db *gorm.DB, r *gin.Engine) {
-	h := NewHandler(db)
+	h := newHandler(db)
 	account := r.Group("account")
 	account.Use(auth.Required())
-	account.GET("/me", appHandler.New(h.Me).HTTP)
-	account.DELETE("/delete", appHandler.New(h.Delete).HTTP)
-	account.PUT("avatar", appHandler.New(h.UpdateAvatar).HTTP)
+	account.GET("/me", controller.NewHandler(h.me).HTTP)
+	account.DELETE("/delete", controller.NewHandler(h.delete).HTTP)
+	account.PATCH("avatar", controller.NewHandler(h.updateAvatar).HTTP)
 }

@@ -1,14 +1,14 @@
 package auth
 
 import (
-	"api/internal/domain/appHandler"
+	"api/internal/controller"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func Route(db *gorm.DB, r *gin.Engine) {
-	h := NewHandler(db)
+	h := newHandler(db)
 	authorization := r.Group("auth")
-	authorization.POST("/join", appHandler.New(h.Join).HTTP)
-	authorization.POST("/login", appHandler.New(h.Login).HTTP)
+	authorization.POST("/join", controller.NewHandler(h.join).HTTP)
+	authorization.POST("/login", controller.NewHandler(h.login).HTTP)
 }

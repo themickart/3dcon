@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"api/internal/domain/appError"
+	"api/internal/controller"
 	"api/internal/domain/auth"
 	"api/internal/domain/user"
 	"api/internal/repo"
@@ -11,64 +11,64 @@ import (
 	"net/http"
 )
 
-type Handler struct {
+type handler struct {
 	userManager *repo.UserManager
 	jwtUtils    *util.JwtUtils
 }
 
-func NewHandler(db *gorm.DB) *Handler {
-	return &Handler{
+func newHandler(db *gorm.DB) *handler {
+	return &handler{
 		userManager: repo.NewUserManger(db),
 		jwtUtils:    util.NewJwt(),
 	}
 }
 
-// Login
+// login
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param Login body LoginModel true "login"
+// @Param login body LoginModel true "login"
 // @Success 200 {string} token
 // @Failure 400 {string} error
 // @Router /auth/login [post]
-func (h *Handler) Login(c *gin.Context) *appError.AppError {
+func (h *handler) login(c *gin.Context) *controller.Error {
 	var loginModel auth.LoginModel
 	if err := c.BindJSON(&loginModel); err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.GetByUsername(loginModel.Username)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusConflict)
+		return controller.NewError(err, err.Error(), http.StatusConflict)
 	}
 	if !userModel.CheckPassword(loginModel.Password) {
-		return appError.New(err, "неверный пароль", http.StatusUnauthorized)
+		return controller.NewError(err, "неверный пароль", http.StatusUnauthorized)
 	}
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	c.JSON(http.StatusOK, jwtToken)
 	return nil
 }
 
-// Join
+// join
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param Join body JoinModel true "join"
+// @Param join body JoinModel true "join"
 // @Success 201 {string} token
 // @Failure 400 {string} error
 // @Router /auth/join [post]
-func (h *Handler) Join(c *gin.Context) *appError.AppError {
+func (h *handler) join(c *gin.Context) *controller.Error {
 	var joinModel auth.JoinModel
 	if err := c.BindJSON(&joinModel); err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel := user.New(joinModel.Username, joinModel.Email, joinModel.Password, user.UserRole)
 	jwtToken, err := h.jwtUtils.GenerateJwt(userModel)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	err = h.userManager.Create(userModel)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusConflict)
+		return controller.NewError(err, err.Error(), http.StatusConflict)
 	}
 	c.JSON(http.StatusCreated, jwtToken)
 	return nil

@@ -1,8 +1,7 @@
 package product
 
 import (
-	"api/internal/controller/product/request"
-	"api/internal/domain/appError"
+	"api/internal/controller"
 	"api/internal/domain/product"
 	"api/internal/domain/user"
 	"api/internal/mapper"
@@ -14,7 +13,7 @@ import (
 	"strconv"
 )
 
-type Handler struct {
+type handler struct {
 	userManager    *repo.UserManager
 	productManager *repo.ProductManager
 	uploader       *util.Uploader
@@ -22,8 +21,8 @@ type Handler struct {
 	productMapper  *mapper.Product
 }
 
-func NewHandler(db *gorm.DB) *Handler {
-	return &Handler{
+func newHandler(db *gorm.DB) *handler {
+	return &handler{
 		uploader:       util.NewUploader(),
 		userManager:    repo.NewUserManger(db),
 		productManager: repo.NewProductManager(db),
@@ -32,7 +31,7 @@ func NewHandler(db *gorm.DB) *Handler {
 	}
 }
 
-// GetById
+// getById
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
@@ -41,14 +40,14 @@ func NewHandler(db *gorm.DB) *Handler {
 // @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products/{id} [get]
-func (h *Handler) GetById(c *gin.Context) *appError.AppError {
+func (h *handler) getById(c *gin.Context) *controller.Error {
 	productId, err := strconv.ParseUint(c.Param("id"), 10, 8)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel, err := h.productManager.GetById(productId)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, _ := h.userManager.Extract(c)
 	productDto := h.productMapper.ModelToDto(userModel, productModel)
@@ -56,7 +55,7 @@ func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 	return nil
 }
 
-// GetMy
+// getMy
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
@@ -64,18 +63,18 @@ func (h *Handler) GetById(c *gin.Context) *appError.AppError {
 // @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products/my [get]
-func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
+func (h *handler) getMy(c *gin.Context) *controller.Error {
 	userModel, _ := h.userManager.Extract(c)
 	products, err := h.productManager.GetAllByUserId(userModel.ID)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	productsDto := h.productMapper.ModelsToDto(products, userModel)
 	c.JSON(http.StatusOK, productsDto)
 	return nil
 }
 
-// Upload
+// upload
 // @Tags product
 // @Security ApiKeyAuth
 // @ID           product.upload
@@ -89,26 +88,26 @@ func (h *Handler) GetMy(c *gin.Context) *appError.AppError {
 // @Param        price formData  number          true  "price"
 // @Success      200   {string}  string        "ok"
 // @Router       /products/upload [post]
-func (h *Handler) Upload(c *gin.Context) *appError.AppError {
-	r, err := request.NewToUpload(c)
+func (h *handler) upload(c *gin.Context) *controller.Error {
+	r, err := newToUpload(c)
 	url, _, err := h.uploader.UploadFile(r.File, r.FileHeader)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.Extract(c)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel := product.New(r.Name, url, r.Description, r.Licence, r.Category, userModel.ID, r.Price)
 	err = h.productManager.Create(productModel)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusInternalServerError)
+		return controller.NewError(err, err.Error(), http.StatusInternalServerError)
 	}
 	c.JSON(http.StatusOK, url)
 	return nil
 }
 
-// Get
+// get
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
@@ -122,14 +121,14 @@ func (h *Handler) Upload(c *gin.Context) *appError.AppError {
 // @Success 200 {object} product.Dto
 // @Failure 400 {string} error
 // @Router /products [get]
-func (h *Handler) Get(c *gin.Context) *appError.AppError {
-	r, err := request.NewToGet(c)
+func (h *handler) get(c *gin.Context) *controller.Error {
+	r, err := newToGet(c)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.FilterBy, r.Author, r.IsDest)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, _ := h.userManager.Extract(c)
 	productsDto := h.productMapper.ModelsToDto(products, userModel)
@@ -137,32 +136,32 @@ func (h *Handler) Get(c *gin.Context) *appError.AppError {
 	return nil
 }
 
-// Update
+// update
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
 // @Produce json
-// @Param Update body product.UpdateInfo true "Update"
+// @Param update body product.UpdateInfo true "update"
 // @Success 200 {string} ok
 // @Failure 400 {string} error
 // @Router /products/update [patch]
-func (h *Handler) Update(c *gin.Context) *appError.AppError {
+func (h *handler) update(c *gin.Context) *controller.Error {
 	var updateIndo product.UpdateInfo
 	if err := c.BindJSON(&updateIndo); err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	userModel, err := h.userManager.Extract(c)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	if err = h.productManager.Update(userModel.ID, &updateIndo); err != nil { //TODO
-		return appError.New(err, err.Error(), http.StatusForbidden)
+		return controller.NewError(err, err.Error(), http.StatusForbidden)
 	}
 	c.Status(http.StatusOK)
 	return nil
 }
 
-// Delete
+// delete
 // @Tags product
 // @Security ApiKeyAuth
 // @Accept json
@@ -170,25 +169,25 @@ func (h *Handler) Update(c *gin.Context) *appError.AppError {
 // @Param id path int true "id"
 // @Success 200 {string} ok
 // @Failure 400 {string} error
-// @Router /products/delete/{id} [delete]
-func (h *Handler) Delete(c *gin.Context) *appError.AppError {
+// @Router /products/{id} [delete]
+func (h *handler) delete(c *gin.Context) *controller.Error {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 8)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	claims, err := h.jwtUtils.ExtractClaims(c)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	productModel, err := h.productManager.GetById(id)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	if productModel.Author.Username != claims[user.Username].(string) {
-		return appError.New(err, "можно удалять только своё", http.StatusForbidden)
+		return controller.NewError(err, "можно удалять только своё", http.StatusForbidden)
 	}
 	if err = h.productManager.Delete(productModel); err != nil {
-		return appError.New(err, err.Error(), http.StatusBadRequest)
+		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
 	c.Status(http.StatusOK)
 	return nil

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"api/internal/domain/appError"
+	"api/internal/controller"
 	"api/internal/domain/user"
 	"api/internal/repo"
 	"github.com/gin-gonic/gin"
@@ -17,7 +17,7 @@ func newHandler(db *gorm.DB) *handler {
 	return &handler{userManager: repo.NewUserManger(db)}
 }
 
-// GetById
+// getById
 // @Tags user
 // @Accept json
 // @Produce json
@@ -26,11 +26,11 @@ func newHandler(db *gorm.DB) *handler {
 // @Failure 400 {string} error
 // @Failure 404 {string} error
 // @Router /user/{username} [get]
-func (h *handler) get(c *gin.Context) *appError.AppError {
+func (h *handler) get(c *gin.Context) *controller.Error {
 	username := c.Param("username")
 	userModel, err := h.userManager.GetByUsername(username)
 	if err != nil {
-		return appError.New(err, err.Error(), http.StatusNotFound)
+		return controller.NewError(err, err.Error(), http.StatusNotFound)
 	}
 	dto := user.NewDto(userModel)
 	c.JSON(http.StatusOK, dto)

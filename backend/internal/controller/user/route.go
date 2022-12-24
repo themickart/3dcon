@@ -1,7 +1,7 @@
 package user
 
 import (
-	"api/internal/domain/appHandler"
+	"api/internal/controller"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -9,5 +9,5 @@ import (
 func Route(db *gorm.DB, r *gin.Engine) {
 	h := newHandler(db)
 	user := r.Group("user")
-	user.GET(":username", appHandler.New(h.get).HTTP)
+	user.GET(":username", controller.NewHandler(h.get).HTTP)
 }

@@ -117,7 +117,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "join",
-                        "name": "Join",
+                        "name": "join",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -155,7 +155,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "login",
-                        "name": "Login",
+                        "name": "login",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -467,8 +467,8 @@ const docTemplate = `{
                 ],
                 "parameters": [
                     {
-                        "description": "Update",
-                        "name": "Update",
+                        "description": "update",
+                        "name": "update",
                         "in": "body",
                         "required": true,
                         "schema": {
