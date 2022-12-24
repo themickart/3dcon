@@ -54,6 +54,10 @@ func (userManger *UserManager) Delete(user *user.User) error {
 	return nil
 }
 
+func (userManger *UserManager) UpdateAvatar(url string, user *user.User) error {
+	return userManger.db.Model(user).Where(user).Update("avatar_url", url).Error
+}
+
 func (userManger *UserManager) Extract(g *gin.Context) (*user.User, error) {
 	claims, err := userManger.jwtUtils.ExtractClaims(g)
 	if err != nil {

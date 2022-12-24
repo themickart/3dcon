@@ -108,6 +108,27 @@ info:
   contact: {}
   title: 3Dcon
 paths:
+  /account/avatar:
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: новый аватар
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - account
   /account/delete:
     delete:
       consumes:

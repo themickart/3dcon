@@ -13,12 +13,14 @@ import (
 type Handler struct {
 	jwtUtils    *util.JwtUtils
 	userManager *repo.UserManager
+	uploader    *util.Uploader
 }
 
 func NewHandler(db *gorm.DB) *Handler {
 	return &Handler{
 		jwtUtils:    util.NewJwt(),
 		userManager: repo.NewUserManger(db),
+		uploader:    util.NewUploader(),
 	}
 }
 
@@ -53,6 +55,35 @@ func (h *Handler) Delete(c *gin.Context) *appError.AppError {
 		return appError.New(err, err.Error(), http.StatusInternalServerError)
 	}
 	err = h.userManager.Delete(userModel)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	c.Status(http.StatusOK)
+	return nil
+}
+
+// UpdateAvatar
+// @Tags account
+// @Security ApiKeyAuth
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        avatar formData  file          true  "новый аватар"
+// @Success      200   {string}  string        "ok"
+// @Router       /account/avatar [put]
+func (h *Handler) UpdateAvatar(c *gin.Context) *appError.AppError {
+	userModel, err := h.userManager.Extract(c)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	file, fileHeader, err := c.Request.FormFile("avatar")
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	url, _, err := h.uploader.UploadFile(file, fileHeader)
+	if err != nil {
+		return appError.New(err, err.Error(), http.StatusBadRequest)
+	}
+	err = h.userManager.UpdateAvatar(url, userModel)
 	if err != nil {
 		return appError.New(err, err.Error(), http.StatusBadRequest)
 	}

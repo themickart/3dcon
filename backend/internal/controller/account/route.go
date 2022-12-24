@@ -13,4 +13,5 @@ func Route(db *gorm.DB, r *gin.Engine) {
 	account.Use(auth.Required())
 	account.GET("/me", appHandler.New(h.Me).HTTP)
 	account.DELETE("/delete", appHandler.New(h.Delete).HTTP)
+	account.PUT("avatar", appHandler.New(h.UpdateAvatar).HTTP)
 }
