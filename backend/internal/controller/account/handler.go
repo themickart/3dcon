@@ -47,7 +47,7 @@ func (h *handler) me(c *gin.Context) *controller.Error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} user.Dto
-// @Router /account/delete [delete]
+// @Router /account [delete]
 func (h *handler) delete(c *gin.Context) *controller.Error {
 	claims, _ := h.jwtUtils.ExtractClaims(c)
 	userModel, err := h.userManager.GetByUsername(claims[user.Username].(string))

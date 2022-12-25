@@ -81,10 +81,28 @@ definitions:
     - price
     - productId
     type: object
+  review.UserReviewDto:
+    properties:
+      author:
+        $ref: '#/definitions/user.Dto'
+      rated:
+        $ref: '#/definitions/user.Dto'
+      text:
+        type: string
+    type: object
+  review.UserUpload:
+    properties:
+      text:
+        type: string
+    required:
+    - text
+    type: object
   user.Dto:
     properties:
       avatarUrl:
         type: string
+      id:
+        type: integer
       name:
         type: string
       reputation:
@@ -108,8 +126,23 @@ info:
   contact: {}
   title: 3Dcon
 paths:
+  /account:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Dto'
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - account
   /account/avatar:
-    put:
+    patch:
       consumes:
       - multipart/form-data
       parameters:
@@ -125,21 +158,6 @@ paths:
           description: ok
           schema:
             type: string
-      security:
-      - ApiKeyAuth: []
-      tags:
-      - account
-  /account/delete:
-    delete:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user.Dto'
       security:
       - ApiKeyAuth: []
       tags:
@@ -166,7 +184,7 @@ paths:
       parameters:
       - description: join
         in: body
-        name: Join
+        name: join
         required: true
         schema:
           $ref: '#/definitions/auth.JoinModel'
@@ -190,7 +208,7 @@ paths:
       parameters:
       - description: login
         in: body
-        name: Login
+        name: login
         required: true
         schema:
           $ref: '#/definitions/auth.LoginModel'
@@ -282,31 +300,6 @@ paths:
       tags:
       - product
   /products/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/product.Dto'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      tags:
-      - product
-  /products/delete/{id}:
     delete:
       consumes:
       - application/json
@@ -331,7 +324,55 @@ paths:
       - ApiKeyAuth: []
       tags:
       - product
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/product.Dto'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - product
   /products/like/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - interaction
     patch:
       consumes:
       - application/json
@@ -375,39 +416,14 @@ paths:
       - ApiKeyAuth: []
       tags:
       - product
-  /products/remove_like/{id}:
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      tags:
-      - interaction
   /products/update:
     patch:
       consumes:
       - application/json
       parameters:
-      - description: Update
+      - description: update
         in: body
-        name: Update
+        name: update
         required: true
         schema:
           $ref: '#/definitions/product.UpdateInfo'
@@ -525,6 +541,73 @@ paths:
             type: string
       tags:
       - user
+  /user/review:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: ratedId
+        in: query
+        name: ratedId
+        type: integer
+      - description: authorId
+        in: query
+        name: authorId
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/review.UserReviewDto'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      tags:
+      - interaction
+  /user/review/{ratedId}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: userReview
+        in: body
+        name: review
+        required: true
+        schema:
+          $ref: '#/definitions/review.UserUpload'
+      - description: ratedId
+        in: path
+        name: ratedId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      tags:
+      - interaction
 securityDefinitions:
   ApiKeyAuth:
     in: header

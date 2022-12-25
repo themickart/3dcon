@@ -1,18 +1,13 @@
 package interaction
 
 import (
-	"api/internal/controller"
-	"api/internal/controller/auth"
+	"api/internal/controller/interaction/product"
+	"api/internal/controller/interaction/user"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func Route(db *gorm.DB, r *gin.Engine) {
-	h := newHandler(db)
-	products := r.Group("products")
-
-	products.Use(auth.Required())
-	products.PATCH("/like/:id", controller.NewHandler(h.like).HTTP)
-	products.DELETE("/like/:id", controller.NewHandler(h.deleteLike).HTTP)
-	products.PATCH("/view/:id", controller.NewHandler(h.view).HTTP)
+	product.Route(db, r)
+	user.Route(db, r)
 }

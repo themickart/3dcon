@@ -3,6 +3,7 @@ package app
 import (
 	"api/internal/domain/interaction"
 	"api/internal/domain/product"
+	"api/internal/domain/review"
 	"api/internal/domain/user"
 	"fmt"
 	"gorm.io/driver/postgres"
@@ -25,7 +26,7 @@ func newDatabase() *gorm.DB {
 		time.Sleep(time.Second * 4) //TODO
 		db, err = gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	}
-	err = db.AutoMigrate(&user.User{}, &product.Product{}, &interaction.View{}, &interaction.Like{})
+	err = db.AutoMigrate(&user.User{}, &product.Product{}, &interaction.View{}, &interaction.Like{}, &review.UserReview{})
 	if err != nil {
 		panic(err)
 	}

@@ -1,4 +1,4 @@
-package interaction
+package product
 
 import (
 	"api/internal/controller"
