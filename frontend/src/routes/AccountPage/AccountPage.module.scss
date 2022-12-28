@@ -1,7 +1,7 @@
 .container {
     @apply pt-3;
     &__topSection {
-        @apply flex justify-between mt-10;
+        @apply flex justify-between;
         &__statisticsBlock {
             @apply flex flex-col border rounded-[15px] w-[950px] h-[505px];
             &__stonks {

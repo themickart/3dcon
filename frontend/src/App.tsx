@@ -5,9 +5,10 @@ import { Populars } from './routes/Populars';
 import { Projects } from './routes/Projects';
 import { Pictures } from './routes/Pictures';
 import { ProjectPage } from './routes/ProjectPage/ProjectPage';
-import { ProfilePage } from './routes/ProfilePage/ProfilePage';
+import { AccountPage } from './routes/AccountPage/AccountPage';
 import { LoginPage } from './routes/LoginPage';
 import { Register } from './routes/RegisterPage';
+import { ProfilePage } from './routes/ProfilePage/ProfilePage';
 
 function App() {
     return (
@@ -18,9 +19,12 @@ function App() {
                     <Route path=":productId" element={<ProjectPage />} />
                     <Route path="populars" element={<Populars />} />
                     <Route path="pictures" element={<Pictures />} />
-                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="profile" element={<AccountPage />} />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<Register />} />
+                    <Route path="user">
+                        <Route path=":username" element={<ProfilePage />} />
+                    </Route>
                 </Route>
             </Routes>
         </div>

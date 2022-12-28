@@ -4,6 +4,7 @@ import { IProduct } from '../../types/types';
 interface IProductState {
     list: IProduct[];
     cachedList: IProduct[];
+    // isNotFound: boolean;
     loading: boolean;
     error: string | null;
 }
@@ -11,6 +12,7 @@ interface IProductState {
 const initialState: IProductState = {
     list: [],
     cachedList: [],
+    // isNotFound: false,
     loading: false,
     error: null,
 };
@@ -39,8 +41,12 @@ const productSlice = createSlice({
             state.loading = false;
         },
         productsFilter(state, action: PayloadAction<string>) {
-            state.list = state.cachedList.filter((product) => product.name.includes(action.payload));
-        }
+            state.list = state.cachedList.filter(product =>
+                product.name
+                    .toLowerCase()
+                    .startsWith(action.payload.toLowerCase())
+            );
+        },
     },
 });
 

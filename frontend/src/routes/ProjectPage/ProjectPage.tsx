@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, FC } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
 import { SliderGroup } from '../../components/SliderGroup/SliderGroup';
 import { motion } from 'framer-motion';
@@ -21,7 +21,7 @@ function getRandomProducts(products: IProduct[]): IProduct[] {
     return res;
 }
 
-export const ProjectPage: React.FC = () => {
+export const ProjectPage: FC = () => {
     const { productId } = useParams<{ productId: string }>();
     const dispatch = useAppDispatch();
     const {
@@ -93,46 +93,48 @@ export const ProjectPage: React.FC = () => {
                                 </button>
                             </div>
                             <div className={styles.topSection__authorTags}>
-                                <div
-                                    className={
-                                        styles.topSection__authorTags__author
-                                    }
-                                >
+                                <Link to={`/user/${author?.name}`}>
                                     <div
                                         className={
-                                            styles.topSection__authorTags__author__avatar
+                                            styles.topSection__authorTags__author
                                         }
                                     >
-                                        <img
-                                            src={
-                                                process.env.PUBLIC_URL +
-                                                (author?.avatarUrl ||
-                                                    '/avatars/empty.svg')
-                                            }
-                                            alt="ава"
-                                        />
-                                    </div>
-                                    <div
-                                        className={
-                                            styles.topSection__authorTags__author__info
-                                        }
-                                    >
-                                        <p
+                                        <div
                                             className={
-                                                styles.topSection__authorTags__author__name
+                                                styles.topSection__authorTags__author__avatar
                                             }
                                         >
-                                            {author?.name}
-                                        </p>
-                                        <p
+                                            <img
+                                                src={
+                                                    process.env.PUBLIC_URL +
+                                                    (author?.avatarUrl ||
+                                                        '/avatars/empty.svg')
+                                                }
+                                                alt="ава"
+                                            />
+                                        </div>
+                                        <div
                                             className={
-                                                styles.topSection__authorTags__author__sales
+                                                styles.topSection__authorTags__author__info
                                             }
                                         >
-                                            {author?.salesCount}
-                                        </p>
+                                            <p
+                                                className={
+                                                    styles.topSection__authorTags__author__name
+                                                }
+                                            >
+                                                {author?.name}
+                                            </p>
+                                            <p
+                                                className={
+                                                    styles.topSection__authorTags__author__sales
+                                                }
+                                            >
+                                                {author?.salesCount}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                                 <hr
                                     className={
                                         styles.topSection__authorTags__tags

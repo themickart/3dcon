@@ -23,7 +23,6 @@ import {
     productsFetching,
     productsFetchingError,
     productsFetchingSuccess,
-    productsFilter,
 } from '../slices/productSlice';
 
 export const fetchModels = (token: string) => async (dispatch: AppDispatch) => {
@@ -84,7 +83,7 @@ export const deleteModelById =
     (payloadId: number, token: string) => async (dispatch: AppDispatch) => {
         try {
             dispatch(modelDeletingSuccess({ payloadId }));
-            await axios.delete(`products/delete/${payloadId}`, {
+            await axios.delete(`products/${payloadId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -94,20 +93,25 @@ export const deleteModelById =
         }
     };
 
-export const fetchProducts = () => async (dispatch: AppDispatch) => {
-    try {
-        dispatch(productsFetching());
-        dispatch(
-            productsFetchingSuccess({
-                products: (
-                    await axios.get<IProduct[]>('products?offset=0&limit=10')
-                ).data,
-            })
-        );
-    } catch (error) {
-        dispatch(productsFetchingError(error as Error));
-    }
-};
+export const fetchProducts =
+    (username?: string) => async (dispatch: AppDispatch) => {
+        try {
+            dispatch(productsFetching());
+            dispatch(
+                productsFetchingSuccess({
+                    products: (
+                        await axios.get<IProduct[]>(
+                            `products?offset=0&limit=10${
+                                username ? `&author=${username}` : ''
+                            }`
+                        )
+                    ).data,
+                })
+            );
+        } catch (error) {
+            dispatch(productsFetchingError(error as Error));
+        }
+    };
 
 export const fetchProduct =
     (payloadId: number) => async (dispatch: AppDispatch) => {
