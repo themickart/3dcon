@@ -30,12 +30,10 @@ export const Search: React.FC = () => {
                     className={styles.container__form__input}
                 />
                 <div className="flex-[0_0_31px]">
-                    {isVisible && (
-                        <img
-                            src={process.env.PUBLIC_URL + '/header/search.svg'}
-                            alt=""
-                        />
-                    )}
+                    <img
+                        src={process.env.PUBLIC_URL + '/header/search.svg'}
+                        alt=""
+                    />
                 </div>
             </motion.form>
         </div>
