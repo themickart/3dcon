@@ -9,7 +9,7 @@ import (
 
 type toGet struct {
 	OrderBy  string
-	FilterBy string
+	Category string
 	Limit    int
 	Offset   int
 	IsDest   bool
@@ -34,10 +34,10 @@ func newToGet(c *gin.Context) (*toGet, error) {
 		return nil, err
 	}
 	orderBy := c.Query("orderBy")
-	filterBy := c.Query("filterBy")
+	category := c.Query("category")
 	author := c.Query("author")
 	isDesc, _ := strconv.ParseBool(c.Query("isDesc"))
-	return &toGet{OrderBy: orderBy, FilterBy: filterBy, Limit: int(limit),
+	return &toGet{OrderBy: orderBy, Category: category, Limit: int(limit),
 		Offset: int(offset), IsDest: isDesc, Author: author}, nil
 }
 

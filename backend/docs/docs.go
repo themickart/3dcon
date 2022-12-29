@@ -255,7 +255,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "orderBy",
+                        "description": "price, likes_count, views_count",
                         "name": "orderBy",
                         "in": "query"
                     },
@@ -267,8 +267,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "filter",
-                        "name": "filterBy",
+                        "description": "category",
+                        "name": "category",
                         "in": "query"
                     },
                     {

@@ -40,7 +40,7 @@ func (pm *ProductManager) GetAllByUserId(id uint) ([]*product.Product, error) {
 	return products, nil
 }
 
-func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, author string, isDesc bool) ([]*product.Product, error) {
+func (pm *ProductManager) Get(limit, offset int, orderBy, category string, author string, isDesc bool) ([]*product.Product, error) {
 	products := make([]*product.Product, 0)
 	db := pm.db.Preload("Author")
 	if orderBy != "" {
@@ -50,8 +50,8 @@ func (pm *ProductManager) Get(limit, offset int, orderBy, filterBy string, autho
 		}
 		db = db.Order(orderBy + " " + desc)
 	}
-	if filterBy != "" {
-		db = db.Where("category = ?", filterBy)
+	if category != "" {
+		db = db.Where("category = ?", category)
 	}
 	if author != "" {
 		user, err := pm.UserManager.GetByUsername(author)
