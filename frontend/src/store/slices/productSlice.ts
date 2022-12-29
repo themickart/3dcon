@@ -1,3 +1,4 @@
+import { categories } from './../../constData';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProduct } from '../../types/types';
 
@@ -39,7 +40,15 @@ const productSlice = createSlice({
             state.loading = false;
         },
         productsFilter(state, action: PayloadAction<string>) {
-            state.list = state.cachedList.filter((product) => product.name.includes(action.payload));
+            state.list = state.cachedList
+                .filter((product) => (action.payload === "" || product.name.includes(action.payload))
+                    || (action.payload === "" || product.category.includes(action.payload)));
+        },
+        productsSortByPrice(state, action: PayloadAction<boolean>) {
+            state.list = state.cachedList.sort((a, b) => {
+                const value = action.payload ? 1 : -1;
+                return a.price > b.price ? value : a.price < b.price ? -value : 0
+            })
         }
     },
 });
@@ -48,6 +57,7 @@ export const {
     productsFetching,
     productsFetchingError,
     productsFetchingSuccess,
-    productsFilter
+    productsFilter,
+    productsSortByPrice,
 } = productSlice.actions;
 export default productSlice.reducer;

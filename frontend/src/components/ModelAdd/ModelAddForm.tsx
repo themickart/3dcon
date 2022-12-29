@@ -6,6 +6,7 @@ import context from './ModelAddContext';
 import { Modal } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { addModel } from '../../store/actionCreators/actionCreatorsProduct';
+import { categories } from '../../constData';
 
 export interface IModelInput {
     name: string;
@@ -103,11 +104,16 @@ const ModelAddForm = () => {
                             {...register('price')}
                         />
                         <label htmlFor="category">Категория</label>
-                        <input
-                            type="text"
+                        <select
                             id="category"
+                            className='mb-[20px] m-[10px]'
                             {...register('category')}
-                        />
+                        >
+                            <option value="">Выбрать категорию</option>
+                            {categories.map(c => (
+                                <option key={'__key__' + c} value={c}>{c}</option>
+                            ))}
+                        </select>
                         <div
                             className="cursor-pointer"
                             onClick={() => pickCoverUrlRef.current!.click()}

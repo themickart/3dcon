@@ -84,7 +84,7 @@ export const deleteModelById =
     (payloadId: number, token: string) => async (dispatch: AppDispatch) => {
         try {
             dispatch(modelDeletingSuccess({ payloadId }));
-            await axios.delete(`products/delete/${payloadId}`, {
+            await axios.delete(`products/${payloadId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
