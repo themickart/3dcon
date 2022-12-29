@@ -268,7 +268,7 @@ paths:
         name: limit
         required: true
         type: integer
-      - description: orderBy
+      - description: price, likes_count, views_count
         in: query
         name: orderBy
         type: string
@@ -276,9 +276,9 @@ paths:
         in: query
         name: isDesc
         type: boolean
-      - description: filter
+      - description: category
         in: query
-        name: filterBy
+        name: category
         type: string
       - description: author
         in: query

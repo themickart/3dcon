@@ -114,9 +114,9 @@ func (h *handler) upload(c *gin.Context) *controller.Error {
 // @Produce json
 // @Param offset query int true "offset"
 // @Param limit query int true "limit"
-// @Param orderBy query string false "orderBy"
+// @Param orderBy query string false "price, likes_count, views_count"
 // @Param isDesc query boolean false "isDesc"
-// @Param filterBy query string false "filter"
+// @Param category query string false "category"
 // @Param author query string false "author"
 // @Success 200 {object} product.Dto
 // @Failure 400 {string} error
@@ -126,7 +126,7 @@ func (h *handler) get(c *gin.Context) *controller.Error {
 	if err != nil {
 		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
-	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.FilterBy, r.Author, r.IsDest)
+	products, err := h.productManager.Get(r.Limit, r.Offset, r.OrderBy, r.Category, r.Author, r.IsDest)
 	if err != nil {
 		return controller.NewError(err, err.Error(), http.StatusBadRequest)
 	}
