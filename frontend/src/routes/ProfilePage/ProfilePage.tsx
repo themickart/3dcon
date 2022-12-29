@@ -39,45 +39,52 @@ export const ProfilePage = () => {
                                 <p className="text-5xl">{username}</p>
                             </div>
                         </div>
-                        <div className="w-[950px] h-[157px] border rounded-[15px] flex">
-                            <div className="w-[383px] h-[71px]">
+                        <div className="w-[950px] h-[157px] border rounded-[15px] flex items-center pl-10 pr-[118px]">
+                            <div className="flex justify-between w-[383px] h-[71px]">
                                 <img
                                     src={
                                         process.env.PUBLIC_URL +
-                                        '/icons/profile/star.svg'
+                                        '/profile/star.svg'
                                     }
+                                    width={71}
                                     alt=""
                                 />
                                 <img
                                     src={
                                         process.env.PUBLIC_URL +
-                                        '/icons/profile/star.svg'
+                                        '/profile/star.svg'
                                     }
+                                    width={71}
                                     alt=""
                                 />{' '}
                                 <img
                                     src={
                                         process.env.PUBLIC_URL +
-                                        '/icons/profile/star.svg'
+                                        '/profile/star.svg'
                                     }
+                                    width={71}
                                     alt=""
                                 />{' '}
                                 <img
                                     src={
                                         process.env.PUBLIC_URL +
-                                        '/icons/profile/star.svg'
+                                        '/profile/star.svg'
                                     }
+                                    width={71}
                                     alt=""
                                 />{' '}
                                 <img
                                     src={
                                         process.env.PUBLIC_URL +
-                                        '/icons/profile/star.svg'
+                                        '/profile/star.svg'
                                     }
+                                    width={71}
                                     alt=""
                                 />
                             </div>
-                            <button></button>
+                            <button className="w-[270px] h-[50px] ml-[139px] rounded-[10px] text-xl text-[#FFFFFF] bg-[#80E0A1]">
+                                Оставить отзыв
+                            </button>
                         </div>
                     </div>
                     <div className="w-[560px] h-[505px] border rounded-[15px] pt-[18px] flex flex-col items-center">
@@ -111,7 +118,6 @@ export const ProfilePage = () => {
                     </div>
                 </div>
                 <div className={styles.container__my}>
-                    <p className={styles.container__my__title}>Мои модели</p>
                     <CardsList />
                 </div>
             </div>

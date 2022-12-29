@@ -1,7 +1,7 @@
 .container {
-    @apply flex-[0_0_373px] ml-[51px] mr-[92x] max-h-[45px] max-w-[405px] text-black;
+    @apply w-[373px] mr-[74px] h-[70px] text-black;
     &__form {
-        @apply bg-white rounded-[35px] h-[45px] flex justify-between items-center pl-[61px] pr-[19px] overflow-hidden;
+        @apply bg-white rounded-[35px] h-full flex justify-between items-center pl-[37px] pr-[34px] overflow-hidden border border-[#BFBFBF];
         &__input {
             @apply text-xl bg-white outline-none opacity-100;
         }

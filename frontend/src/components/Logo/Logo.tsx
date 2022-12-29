@@ -10,9 +10,7 @@ export const Logo: React.FC = () => {
             whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
         >
             <Link to={'/'}>
-                <span>3</span>
-                <span>D</span>
-                <span>con</span>
+                <img src={process.env.PUBLIC_URL + '/logo/logo.svg'} alt="" />
             </Link>
         </motion.div>
     );

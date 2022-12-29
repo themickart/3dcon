@@ -1,9 +1,8 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from './components/Layout/Layout';
-import { Populars } from './routes/Populars';
+import { Bests } from './routes/Bests';
 import { Projects } from './routes/Projects';
-import { Pictures } from './routes/Pictures';
 import { ProjectPage } from './routes/ProjectPage/ProjectPage';
 import { AccountPage } from './routes/AccountPage/AccountPage';
 import { LoginPage } from './routes/LoginPage';
@@ -17,8 +16,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Projects />} />
                     <Route path=":productId" element={<ProjectPage />} />
-                    <Route path="populars" element={<Populars />} />
-                    <Route path="pictures" element={<Pictures />} />
+                    <Route path="bests" element={<Bests />} />
                     <Route path="profile" element={<AccountPage />} />
                     <Route path="login" element={<LoginPage />} />
                     <Route path="register" element={<Register />} />

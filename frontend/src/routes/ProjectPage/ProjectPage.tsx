@@ -46,7 +46,7 @@ export const ProjectPage: FC = () => {
         loading: productsLoading,
         error: productsError,
     } = useAppSelector(state => state.productReducer);
-
+    const { username } = useAppSelector(state => state.authReducer);
     useEffect(() => {
         dispatch(fetchProduct(+productId!));
     }, [dispatch, productId]);
@@ -93,7 +93,13 @@ export const ProjectPage: FC = () => {
                                 </button>
                             </div>
                             <div className={styles.topSection__authorTags}>
-                                <Link to={`/user/${author?.name}`}>
+                                <Link
+                                    to={
+                                        author?.name === username
+                                            ? '/profile'
+                                            : `/user/${author?.name}`
+                                    }
+                                >
                                     <div
                                         className={
                                             styles.topSection__authorTags__author

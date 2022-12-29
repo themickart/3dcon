@@ -6,7 +6,6 @@ import { useAppDispatch } from '../../hooks/reduxHooks';
 import { productsFilter } from '../../store/slices/productSlice';
 
 export const Search: FC = () => {
-    const [isVisible, setIsVisible] = useState(false);
     const [value, setValue] = useState('');
     const dispatch = useAppDispatch();
     const debounced = useDebounce<string>(value);
@@ -23,19 +22,15 @@ export const Search: FC = () => {
             >
                 <input
                     onChange={e => setValue(e.target.value)}
-                    onFocus={() => setIsVisible(true)}
-                    onBlur={() => setIsVisible(false)}
                     type="text"
                     placeholder="Поиск"
                     className={styles.container__form__input}
                 />
                 <div className="flex-[0_0_31px]">
-                    {isVisible && (
-                        <img
-                            src={process.env.PUBLIC_URL + '/header/search.svg'}
-                            alt=""
-                        />
-                    )}
+                    <img
+                        src={process.env.PUBLIC_URL + '/header/search.svg'}
+                        alt=""
+                    />
                 </div>
             </motion.form>
         </div>

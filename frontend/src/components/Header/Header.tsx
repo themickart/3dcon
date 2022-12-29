@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Logo } from '../Logo/Logo';
 import { Navbar } from '../Navbar/Navbar';
 import { Search } from '../Search/Search';
@@ -6,9 +6,7 @@ import { Signbar } from '../Signbar/Signbar';
 import { Profilebar } from '../Profilebar/Profilebar';
 import styles from './Header.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import ModelAddContext from '../ModelAdd/ModelAddContext';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 import { fetchUser } from '../../store/actionCreators/actionCreatorsLogin';
 
 export const Header: FC = () => {
@@ -17,8 +15,6 @@ export const Header: FC = () => {
     );
     const { avatarUrl } = useAppSelector(state => state.userReducer);
     const [avatar, setAvatar] = useState<string>();
-    const setIsShow = useContext(ModelAddContext)[1];
-    const { pathname } = useLocation();
     const dispatch = useAppDispatch();
     useEffect(() => {
         if (isAuth) {
@@ -34,29 +30,15 @@ export const Header: FC = () => {
             <Navbar
                 menuItems={[
                     {
-                        title: 'Популярное',
-                        path: '/populars',
+                        title: 'Лучшее',
+                        path: '/bests',
                     },
                     {
                         title: 'Проекты',
                         path: '/',
                     },
-                    {
-                        title: 'Изображения',
-                        path: '/pictures',
-                    },
                 ]}
             />
-            {isAuth && pathname.startsWith('/profile') ? (
-                <button
-                    className="text-[22.5px] bg-[#80e0a1] text-[#4f4f4f] w-[200px] h-[45px] rounded-[20px] ml-[53px]"
-                    onClick={() => setIsShow(true)}
-                >
-                    Загрузить
-                </button>
-            ) : (
-                <div className="w-[253px]"></div>
-            )}
             <Search />
             {isAuth ? (
                 <Profilebar name={username} avatar={avatar!} />
