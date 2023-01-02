@@ -1,5 +1,5 @@
 .wrapper {
-    @apply w-[1436px] text-[26px] border-t border-solid border-black border-b h-[108px] flex items-center justify-between pl-[35px] pr-[50px];
+    @apply w-[1378px] text-[#919191] text-xl border border-[#D9D9D9] rounded-[10px] h-[74px] flex items-center justify-between px-5 py-6;
     &__options {
         @apply w-[220px] flex justify-between;
     }

@@ -11,7 +11,7 @@ export const ProductCard: React.FC<IProduct> = ({
     coverUrl,
 }) => {
     return (
-        <Link to={`/${id}`}>
+        <Link to={`/products/${id}`}>
             <div className={styles.container}>
                 <figure className={styles.container__card}>
                     <img

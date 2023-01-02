@@ -106,12 +106,14 @@ const ModelAddForm = () => {
                         <label htmlFor="category">Категория</label>
                         <select
                             id="category"
-                            className='mb-[20px] m-[10px]'
+                            className="mb-[20px] m-[10px]"
                             {...register('category')}
                         >
                             <option value="">Выбрать категорию</option>
-                            {categories.map(c => (
-                                <option key={'__key__' + c} value={c}>{c}</option>
+                            {categories.map(({ title }) => (
+                                <option key={'__key__' + title} value={title}>
+                                    {title}
+                                </option>
                             ))}
                         </select>
                         <div

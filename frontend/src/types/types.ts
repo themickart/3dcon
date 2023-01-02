@@ -45,3 +45,8 @@ export interface IProduct {
     isLiked: boolean;
     isViewed: boolean;
 }
+
+export interface ICategory {
+    title: string;
+    imgUrl: string;
+}

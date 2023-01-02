@@ -94,7 +94,7 @@ export const deleteModelById =
     };
 
 export const fetchProducts =
-    (username?: string) => async (dispatch: AppDispatch) => {
+    (username?: string, category?: string) => async (dispatch: AppDispatch) => {
         try {
             dispatch(productsFetching());
             dispatch(
@@ -103,7 +103,7 @@ export const fetchProducts =
                         await axios.get<IProduct[]>(
                             `products?offset=0&limit=10${
                                 username ? `&author=${username}` : ''
-                            }`
+                            }${category ? `&category=${category}` : ''}`
                         )
                     ).data,
                 })

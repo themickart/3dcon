@@ -30,12 +30,12 @@ export const Header: FC = () => {
             <Navbar
                 menuItems={[
                     {
-                        title: 'Лучшее',
+                        title: 'Лучшие',
                         path: '/bests',
                     },
                     {
                         title: 'Проекты',
-                        path: '/',
+                        path: '/products',
                     },
                 ]}
             />

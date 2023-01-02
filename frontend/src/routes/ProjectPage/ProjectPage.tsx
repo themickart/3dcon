@@ -7,6 +7,7 @@ import styles from './ProjectPage.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { IProduct } from '../../types/types';
 import { fetchProduct } from '../../store/actionCreators/actionCreatorsProduct';
+import axios from '../../axios';
 
 function getRandomProducts(products: IProduct[]): IProduct[] {
     if (products.length < 3) return products;
@@ -36,6 +37,7 @@ export const ProjectPage: FC = () => {
             name,
             viewsCount,
             gallery = [],
+            isViewed,
         },
         error,
         loading,
@@ -46,10 +48,19 @@ export const ProjectPage: FC = () => {
         loading: productsLoading,
         error: productsError,
     } = useAppSelector(state => state.productReducer);
-    const { username } = useAppSelector(state => state.authReducer);
+    const { username, isAuth, token } = useAppSelector(
+        state => state.authReducer
+    );
     useEffect(() => {
         dispatch(fetchProduct(+productId!));
-    }, [dispatch, productId]);
+        if (isAuth && !isViewed) {
+            (async () => {
+                await axios.patch(`products/view/${productId}`, +productId!, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+            })();
+        }
+    }, [dispatch, productId, isAuth, isViewed, token]);
 
     return (
         <div>

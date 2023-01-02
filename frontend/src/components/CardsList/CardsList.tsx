@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
+import { useEffect, FC } from 'react';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { motion } from 'framer-motion';
 import styles from './CardsList.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { fetchProducts } from "../../store/actionCreators/actionCreatorsProduct";
+import { fetchProducts } from '../../store/actionCreators/actionCreatorsProduct';
+import { useSearchParams } from 'react-router-dom';
 
-export const CardsList: React.FC = () => {
-	const { list, error, loading } = useAppSelector(
+export const CardsList: FC<{ username?: string }> = ({ username }) => {
+    const { list, error, loading } = useAppSelector(
         state => state.productReducer
     );
     const dispatch = useAppDispatch();
-
+    const [searchParams] = useSearchParams();
     useEffect(() => {
-        dispatch(fetchProducts());
-    }, [dispatch]);
+        dispatch(fetchProducts(username, searchParams.get('cat')!));
+    }, [dispatch, username, searchParams]);
 
     return (
         <div className={styles.wrapper}>

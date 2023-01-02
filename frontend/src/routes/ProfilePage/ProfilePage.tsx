@@ -118,7 +118,7 @@ export const ProfilePage = () => {
                     </div>
                 </div>
                 <div className={styles.container__my}>
-                    <CardsList />
+                    <CardsList username={username} />
                 </div>
             </div>
         </>
