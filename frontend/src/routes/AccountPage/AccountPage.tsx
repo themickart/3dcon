@@ -112,18 +112,18 @@ export const AccountPage = () => {
                             {error
                                 ? error
                                 : loading
-                                ? 'Загрузка...'
-                                : list?.length
-                                ? list?.map(model => (
-                                      <motion.div
-                                          key={model.id}
-                                          initial={{ scale: 0.9 }}
-                                          whileInView={{ scale: 1 }}
-                                      >
-                                          <ModelItem {...model} />
-                                      </motion.div>
-                                  ))
-                                : 'У вас пока нет собственных продуктов'}
+                                    ? 'Загрузка...'
+                                    : list?.length
+                                        ? list?.map(model => (
+                                            <motion.div
+                                                key={model.id}
+                                                initial={{ scale: 0.9 }}
+                                                whileInView={{ scale: 1 }}
+                                            >
+                                                <ModelItem {...model} />
+                                            </motion.div>
+                                        ))
+                                        : 'У вас пока нет собственных продуктов'}
                         </div>
                     </div>
                 </div>

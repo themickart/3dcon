@@ -7,11 +7,10 @@ import { fetchProducts } from '../../store/actionCreators/actionCreatorsProduct'
 import { useSearchParams } from 'react-router-dom';
 
 export const CardsList: FC<{ username?: string }> = ({ username }) => {
-    const { list, error, loading } = useAppSelector(
-        state => state.productReducer
-    );
+    const { list, error, loading } = useAppSelector(state => state.productReducer);
     const dispatch = useAppDispatch();
     const [searchParams] = useSearchParams();
+
     useEffect(() => {
         dispatch(fetchProducts(username, searchParams.get('cat')!));
     }, [dispatch, username, searchParams]);
@@ -35,7 +34,7 @@ export const CardsList: FC<{ username?: string }> = ({ username }) => {
                     </motion.div>
                 ))
             ) : (
-                <>Пока здесь ничего нет 😢</>
+                <>Проекты не найдены 😢</>
             )}
         </div>
     );

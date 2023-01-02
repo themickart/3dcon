@@ -15,9 +15,8 @@ export const CategoriesPage: FC = () => {
                     <div
                         className="w-full h-full"
                         style={{
-                            background: `url(${
-                                process.env.PUBLIC_URL + cat.imgUrl
-                            }) #646464`,
+                            background: `url(${process.env.PUBLIC_URL + cat.imgUrl
+                                }) #646464`,
 
                             WebkitFilter: 'blur(2px)',
                         }}

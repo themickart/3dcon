@@ -1,4 +1,3 @@
-import { categories } from './../../constData';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProduct } from '../../types/types';
 
@@ -47,17 +46,7 @@ const productSlice = createSlice({
                     .toLowerCase()
                     .startsWith(action.payload.toLowerCase())
             );
-        },
-        productsSortByPrice(state, action: PayloadAction<boolean>) {
-            state.list = state.cachedList.sort((a, b) => {
-                const value = action.payload ? 1 : -1;
-                return a.price > b.price
-                    ? value
-                    : a.price < b.price
-                    ? -value
-                    : 0;
-            });
-        },
+        }
     },
 });
 
@@ -66,7 +55,6 @@ export const {
     productsFetchingError,
     productsFetchingSuccess,
     productsFilter,
-    productsSortByPrice,
 } = productSlice.actions;
 
 export default productSlice.reducer;
