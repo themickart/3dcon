@@ -106,7 +106,7 @@ export const ProjectPage: FC = () => {
                             <div className={styles.topSection__authorTags}>
                                 <Link
                                     to={
-                                        author?.name === username
+                                        author?.name === username && isAuth
                                             ? '/profile'
                                             : `/user/${author?.name}`
                                     }
