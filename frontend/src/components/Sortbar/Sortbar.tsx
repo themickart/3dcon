@@ -5,7 +5,7 @@ import { categories } from '../../constData';
 import { useAppDispatch } from '../../hooks/reduxHooks';
 import {
     productsFilter,
-    productsSortByPrice,
+
 } from '../../store/slices/productSlice';
 import styles from './Sortbar.module.scss';
 
@@ -22,12 +22,8 @@ export const Sortbar: React.FC<{ params: string[] }> = ({ params }) => {
         dispatch(productsFilter(e.target.value));
     };
 
-    const sortHandler = (flag: boolean) => {
-        dispatch(productsSortByPrice(flag));
-    };
-
     const { register, reset, handleSubmit } = useForm<ISortInput>();
-    const onSubmit: SubmitHandler<ISortInput> = ({ rating, price }) => {};
+    const onSubmit: SubmitHandler<ISortInput> = ({ rating, price }) => { };
     return (
         <form className={styles.wrapper} onSubmit={handleSubmit(onSubmit)}>
             {/* <div className={styles.wrapper__options}>

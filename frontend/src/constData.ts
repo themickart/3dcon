@@ -2,48 +2,48 @@ import { ICategory } from './types/types';
 
 export const categories: ICategory[] = [
     {
-        title: 'животные и домашние питомцы',
+        title: 'Животные и домашние питомцы',
         imgUrl: '/categories/animals.png',
     },
-    { title: 'архитектура', imgUrl: '/categories/architecture.png' },
+    { title: 'Архитектура', imgUrl: '/categories/architecture.png' },
     {
-        title: 'автомобили',
+        title: 'Автомобили',
         imgUrl: '/categories/cars.png',
     },
     {
-        title: 'еда и напитки',
+        title: 'Еда и напитки',
         imgUrl: '/categories/food.png',
     },
     {
-        title: 'природа и растения',
+        title: 'Природа и растения',
         imgUrl: '/categories/nature.png',
     },
     {
-        title: 'персонажи и существа',
+        title: 'Персонажи и существа',
         imgUrl: '/categories/characters.png',
     },
     {
-        title: 'роботы и электроника',
+        title: 'Роботы и электроника',
         imgUrl: '/categories/robots.png',
     },
     {
-        title: 'мебель и дом',
+        title: 'Мебель и дом',
         imgUrl: '/categories/house.jfif',
     },
     {
-        title: 'стиль и мода',
+        title: 'Стиль и мода',
         imgUrl: '/categories/fashion.png',
     },
     {
-        title: 'оружие и военная тематика',
+        title: 'Оружие и военная тематика',
         imgUrl: '/categories/war.png',
     },
     {
-        title: 'искусство и абстракция',
+        title: 'Искусство и абстракция',
         imgUrl: '/categories/nature.png',
     },
     {
-        title: 'музыка',
+        title: 'Музыка',
         imgUrl: '/categories/music.png',
     },
 ];

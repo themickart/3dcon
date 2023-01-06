@@ -6,8 +6,10 @@ import { motion } from 'framer-motion';
 import styles from './ProjectPage.module.scss';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { IProduct } from '../../types/types';
-import { fetchProduct } from '../../store/actionCreators/actionCreatorsProduct';
-import axios from '../../axios';
+import {
+    fetchProduct,
+    likeAction,
+} from '../../store/actionCreators/actionCreatorsProduct';
 
 function getRandomProducts(products: IProduct[]): IProduct[] {
     if (products.length < 3) return products;
@@ -37,12 +39,11 @@ export const ProjectPage: FC = () => {
             name,
             viewsCount,
             gallery = [],
-            isViewed,
+            isLiked,
         },
         error,
         loading,
     } = useAppSelector(state => state.productDetailReducer);
-
     const {
         list,
         loading: productsLoading,
@@ -51,17 +52,11 @@ export const ProjectPage: FC = () => {
     const { username, isAuth, token } = useAppSelector(
         state => state.authReducer
     );
-    useEffect(() => {
-        dispatch(fetchProduct(+productId!));
-        if (isAuth && !isViewed) {
-            (async () => {
-                await axios.patch(`products/view/${productId}`, +productId!, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-            })();
-        }
-    }, [dispatch, productId, isAuth, isViewed, token]);
 
+    useEffect(() => {
+        dispatch(fetchProduct(+productId!, token, isAuth, username));
+    }, [productId, dispatch, token, isAuth, username]);
+    
     return (
         <div>
             {error ? (
@@ -106,7 +101,7 @@ export const ProjectPage: FC = () => {
                             <div className={styles.topSection__authorTags}>
                                 <Link
                                     to={
-                                        author?.name === username && isAuth
+                                        author?.name === username
                                             ? '/profile'
                                             : `/user/${author?.name}`
                                     }
@@ -205,6 +200,24 @@ export const ProjectPage: FC = () => {
                                             '/icons/likes.svg'
                                         }
                                         alt=""
+                                        onClick={() => {
+                                            if (
+                                                isAuth &&
+                                                username !== author?.name
+                                            ) {
+                                                dispatch(
+                                                    likeAction(
+                                                        +productId!,
+                                                        token,
+                                                        isAuth,
+                                                        username,
+                                                        isLiked
+                                                            ? 'delete'
+                                                            : 'add'
+                                                    )
+                                                );
+                                            }
+                                        }}
                                     />
                                     <div>{likesCount}</div>
                                     <img

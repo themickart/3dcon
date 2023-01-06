@@ -25,6 +25,7 @@ export interface IAuthor {
     avatarUrl: string;
     salesCount: number;
     reputation: IReputation;
+    id?: number;
 }
 
 export interface IProduct {
@@ -41,9 +42,9 @@ export interface IProduct {
     tags: string[];
     info: IInfo;
     license: string;
-    createdAt: string;
-    isLiked: boolean;
-    isViewed: boolean;
+    createdAt?: string;
+    isLiked?: boolean;
+    isViewed?: boolean;
 }
 
 export interface ICategory {

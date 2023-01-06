@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IUserState {
+    id?: number;
+    name: string;
     avatarUrl: string;
     salesCount: number;
     reputation: {
@@ -12,6 +14,7 @@ export interface IUserState {
 }
 
 const initialState: IUserState = {
+    name: '',
     avatarUrl: '',
     salesCount: 0,
     reputation: {

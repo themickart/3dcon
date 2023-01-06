@@ -114,18 +114,57 @@ export const fetchProducts =
     };
 
 export const fetchProduct =
-    (payloadId: number) => async (dispatch: AppDispatch) => {
+    (payloadId: number, token: string, isAuth: boolean, username: string) =>
+    async (dispatch: AppDispatch) => {
         try {
             dispatch(productFetching());
+            const product = (
+                await axios.get<IProduct>(
+                    `products/${payloadId}`,
+                    token
+                        ? { headers: { Authorization: `Bearer ${token}` } }
+                        : {}
+                )
+            ).data;
+            console.log(product);
             dispatch(
                 productFetchingSuccess({
-                    product: (
-                        await axios.get<IProduct>(`products/${payloadId}`)
-                    ).data,
+                    product,
                 })
             );
+            if (
+                isAuth &&
+                username !== product?.author?.name &&
+                !product?.isViewed
+            )
+                await axios.patch(`products/view/${payloadId}`, undefined, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
         } catch (error) {
             dispatch(productFetchingError(error as Error));
         }
     };
 
+export const likeAction =
+    (
+        payloadId: number,
+        token: string,
+        isAuth: boolean,
+        username: string,
+        action: 'add' | 'delete'
+    ) =>
+    async (dispatch: AppDispatch) => {
+        try {
+            if (action === 'add')
+                await axios.patch(`products/like/${payloadId}`, payloadId, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+            else
+                await axios.delete(`products/like/${payloadId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+            dispatch(fetchProduct(payloadId, token, isAuth, username));
+        } catch (error) {}
+    };
+
+    
