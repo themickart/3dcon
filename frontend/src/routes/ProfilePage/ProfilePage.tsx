@@ -32,6 +32,8 @@ export const ProfilePage = () => {
                                         (avatarUrl || '/avatars/empty.svg')
                                     }
                                     width={300}
+                                    height={300}
+                                    className="rounded-[50%] max-h-[300px]"
                                     alt=""
                                 />
                             </div>

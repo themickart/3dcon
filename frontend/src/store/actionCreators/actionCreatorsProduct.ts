@@ -126,7 +126,6 @@ export const fetchProduct =
                         : {}
                 )
             ).data;
-            console.log(product);
             dispatch(
                 productFetchingSuccess({
                     product,

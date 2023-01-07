@@ -28,17 +28,38 @@ export const login = (data: ILoginData) => async (dispatch: AppDispatch) => {
 };
 
 export const fetchUser = (token: string) => async (dispatch: AppDispatch) => {
-	try {
-		dispatch(
-			userFetchingSuccess(
-				(
-					await axios.get<IUserResponse>('account/me', {
-						headers: { Authorization: `Bearer ${token}` },
-					})
-				).data
-			)
-		);
-	} catch (e) {
-		console.error((e as Error).message);
-	}
+    try {
+        dispatch(
+            userFetchingSuccess(
+                (
+                    await axios.get<IUserResponse>('account/me', {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                ).data
+            )
+        );
+    } catch (e) {
+        console.error((e as Error).message);
+    }
 };
+
+export const editAvatar =
+    (token: string, avatar: File) => async (dispatch: AppDispatch) => {
+        try {
+            await axios.patch(
+                'account/avatar',
+                { avatar },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+            dispatch(fetchUser(token));
+        } catch (e) {
+            console.error((e as Error).message);
+        }
+    };

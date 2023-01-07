@@ -117,6 +117,9 @@ export const ProjectPage: FC = () => {
                                             }
                                         >
                                             <img
+                                                width={100}
+                                                height={100}
+                                                className="rounded-[50%] max-w-[100px] max-h-[100px]"
                                                 src={
                                                     process.env.PUBLIC_URL +
                                                     (author?.avatarUrl ||
