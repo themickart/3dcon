@@ -28,7 +28,7 @@ export const ProductCard: React.FC<IProduct> = ({
                                 <div className="text-[35px]">{name}</div>
                                 <div className="text-xl">{author?.name}</div>
                             </div>
-                            <div className="text-2xl">{price}</div>
+                            <div className="text-2xl">{price} &#8381;</div>
                         </div>
                         <div className="text-xl">{description}</div>
                     </figcaption>

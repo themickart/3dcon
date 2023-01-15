@@ -15,11 +15,11 @@ const initialState: IUserState = {
     },
 };
 
-const userSlice = createSlice({
-    name: 'user',
+const otherUserSlice = createSlice({
+    name: 'otherUser',
     initialState,
     reducers: {
-        userFetchingSuccess(
+        otherUserFetchingSuccess(
             state,
             {
                 payload: { avatarUrl, reputation, salesCount },
@@ -37,5 +37,5 @@ const userSlice = createSlice({
     },
 });
 
-export default userSlice.reducer;
-export const { userFetchingSuccess } = userSlice.actions;
+export default otherUserSlice.reducer;
+export const { otherUserFetchingSuccess } = otherUserSlice.actions;

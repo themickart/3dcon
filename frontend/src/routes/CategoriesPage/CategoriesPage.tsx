@@ -6,7 +6,7 @@ import { categories } from '../../constData';
 export const CategoriesPage: FC = () => {
     const navigate = useNavigate();
     return (
-        <div className="pb-20 flex flex-col">
+        <div className="pb-20 flex flex-col items-center">
             <div className="grid w-[1435px] grid-cols-3 grid-rows-4 gap-y-5 mb-36">
                 {categories.map(cat => (
                     <motion.div

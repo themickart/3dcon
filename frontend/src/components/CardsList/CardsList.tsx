@@ -6,14 +6,27 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { fetchProducts } from '../../store/actionCreators/actionCreatorsProduct';
 import { useSearchParams } from 'react-router-dom';
 
-export const CardsList: FC<{ username?: string }> = ({ username }) => {
-    const { list, error, loading } = useAppSelector(state => state.productReducer);
+export const CardsList: FC<{
+    username?: string;
+    orderBy?: 'price' | 'likes_count' | 'views_count';
+    priceIsDesc?: boolean;
+}> = ({ username, orderBy, priceIsDesc }) => {
+    const { list, error, loading } = useAppSelector(
+        state => state.productReducer
+    );
     const dispatch = useAppDispatch();
     const [searchParams] = useSearchParams();
 
     useEffect(() => {
-        dispatch(fetchProducts(username, searchParams.get('cat')!));
-    }, [dispatch, username, searchParams]);
+        dispatch(
+            fetchProducts(
+                username,
+                searchParams.get('cat')!,
+                orderBy,
+                priceIsDesc
+            )
+        );
+    }, [dispatch, username, searchParams, orderBy, priceIsDesc]);
 
     return (
         <div className={styles.wrapper}>

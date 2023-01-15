@@ -4,6 +4,7 @@ import productReducer from './slices/productSlice';
 import productDetailReducer from './slices/productDetailSlice';
 import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
+import otherUserReducer from './slices/otherUserSlice';
 
 const rootReducer = combineReducers({
     modelReducer,
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
     productDetailReducer,
     authReducer,
     userReducer,
+    otherUserReducer,
 });
 
 export const store = configureStore({ reducer: rootReducer });

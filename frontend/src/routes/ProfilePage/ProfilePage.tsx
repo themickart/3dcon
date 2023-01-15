@@ -10,7 +10,7 @@ export const ProfilePage = () => {
     const navigate = useNavigate();
     const { username } = useParams<{ username: string }>();
     const { reputation, avatarUrl } = useAppSelector(
-        state => state.userReducer
+        state => state.otherUserReducer
     );
     const dispatch = useAppDispatch();
 

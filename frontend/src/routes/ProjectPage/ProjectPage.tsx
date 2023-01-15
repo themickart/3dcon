@@ -1,4 +1,4 @@
-import { useEffect, FC } from 'react';
+import { useEffect, FC, useRef, SyntheticEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ProductCard } from '../../components/ProductCard/ProductCard';
 import { SliderGroup } from '../../components/SliderGroup/SliderGroup';
@@ -56,7 +56,21 @@ export const ProjectPage: FC = () => {
     useEffect(() => {
         dispatch(fetchProduct(+productId!, token, isAuth, username));
     }, [productId, dispatch, token, isAuth, username]);
-    
+    const likeRef = useRef<HTMLImageElement>(null);
+    const likeHandler = (e: SyntheticEvent) => {
+        e.preventDefault();
+        if (isAuth && username !== author?.name) {
+            dispatch(
+                likeAction(
+                    +productId!,
+                    token,
+                    isAuth,
+                    username,
+                    isLiked ? 'delete' : 'add'
+                )
+            );
+        }
+    };
     return (
         <div>
             {error ? (
@@ -75,7 +89,7 @@ export const ProjectPage: FC = () => {
                                         styles.topSection__buyInfo__price
                                     }
                                 >
-                                    {price}
+                                    {price} &#8381;
                                 </p>
                                 <p
                                     className={
@@ -203,27 +217,11 @@ export const ProjectPage: FC = () => {
                                             '/icons/likes.svg'
                                         }
                                         alt=""
-                                        onClick={() => {
-                                            if (
-                                                isAuth &&
-                                                username !== author?.name
-                                            ) {
-                                                dispatch(
-                                                    likeAction(
-                                                        +productId!,
-                                                        token,
-                                                        isAuth,
-                                                        username,
-                                                        isLiked
-                                                            ? 'delete'
-                                                            : 'add'
-                                                    )
-                                                );
-                                            }
-                                        }}
+                                        onClick={likeHandler}
                                     />
                                     <div>{likesCount}</div>
                                     <img
+                                        ref={likeRef}
                                         src={
                                             process.env.PUBLIC_URL +
                                             '/icons/flag.svg'

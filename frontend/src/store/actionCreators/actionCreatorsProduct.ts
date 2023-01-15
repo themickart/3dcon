@@ -94,7 +94,13 @@ export const deleteModelById =
     };
 
 export const fetchProducts =
-    (username?: string, category?: string) => async (dispatch: AppDispatch) => {
+    (
+        username?: string,
+        category?: string,
+        orderBy?: 'price' | 'likes_count' | 'views_count',
+        priceIsDesc?: boolean
+    ) =>
+    async (dispatch: AppDispatch) => {
         try {
             dispatch(productsFetching());
             dispatch(
@@ -103,7 +109,13 @@ export const fetchProducts =
                         await axios.get<IProduct[]>(
                             `products?offset=0&limit=10${
                                 username ? `&author=${username}` : ''
-                            }${category ? `&category=${category}` : ''}`
+                            }${category ? `&category=${category}` : ''}${
+                                orderBy
+                                    ? `&orderBy=${orderBy}&isDesc=${
+                                          priceIsDesc ?? true
+                                      }`
+                                    : ''
+                            }`
                         )
                     ).data,
                 })
@@ -121,7 +133,7 @@ export const fetchProduct =
             const product = (
                 await axios.get<IProduct>(
                     `products/${payloadId}`,
-                    token
+                    isAuth
                         ? { headers: { Authorization: `Bearer ${token}` } }
                         : {}
                 )
@@ -136,11 +148,20 @@ export const fetchProduct =
                 username !== product?.author?.name &&
                 !product?.isViewed
             )
-                await axios.patch(`products/view/${payloadId}`, undefined, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                dispatch(viewAction(payloadId, token));
         } catch (error) {
             dispatch(productFetchingError(error as Error));
+        }
+    };
+
+export const viewAction =
+    (payloadId: number, token: string) => async (dispatch: AppDispatch) => {
+        try {
+            await axios.patch(`products/view/${payloadId}`, payloadId, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+        } catch (error) {
+            console.error(error);
         }
     };
 
